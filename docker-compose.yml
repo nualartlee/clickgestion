@@ -36,12 +36,12 @@ services:
           - ./django_container/:/app
         depends_on:
           - postgres
-        command: uwsgi ./ytcomments/uwsgi.ini
+        command: uwsgi ./clickgestion/uwsgi.ini
         secrets:
           - postgres_password
           - django_secret_key
         environment:
-          DJANGO_SETTINGS_MODULE: ytcomments.settings.production
+          DJANGO_SETTINGS_MODULE: clickgestion.settings.production
         restart: unless-stopped
         networks:
           default:
@@ -49,7 +49,7 @@ services:
     nginx:
         build: ./nginx_container/
         volumes:
-          - ./django_container/ytcomments/static/:/app/static/
+          - ./django_container/clickgestion/static/:/app/static/
           - ./nginx_container/logs:/etc/nginx/logs/
         depends_on:
           - django
