@@ -1,0 +1,25 @@
+server {
+	listen	80;
+	listen	[::]:80;
+	server_name clickgestion.clowd.app;
+
+	# Pass this particular URL off to certbot, to authenticate HTTPS certificates
+	location '/.well-known/acme-challenge' {
+	  default_type "text/plain";
+	  proxy_pass http://localhost:1337;
+	}
+
+
+    # pass static file requests
+	location /static {
+	  root /app;
+	}
+
+	# pass non-static to uwsgi server
+	location / {
+	  uwsgi_pass  django:9091;
+	  include uwsgi_params;
+	}
+
+}
+

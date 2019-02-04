@@ -1,0 +1,9 @@
+Django
+django-debug-toolbar
+django-filter
+django-pure-pagination
+psycopg2
+requests
+lxml
+uwsgi
+

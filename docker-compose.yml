@@ -1,0 +1,78 @@
+version: "3.1"
+
+networks:
+  default:
+  nginx_main:
+    external: true
+
+secrets:
+  django_secret_key:
+    file: ./secrets/django_secret_key.txt
+  django_admin_pass:
+    file: ./secrets/django_admin_pass.txt
+  postgres_password:
+    file: ./secrets/postgres_password.txt
+  certbot_email:
+    file: ./secrets/certbot_email.txt
+  key.pem:
+    file: ./secrets/key.pem
+
+services:
+
+    postgres:
+        image: "postgres:latest"
+        environment:
+          POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+          POSTGRES_DB: "ytcomments"
+        secrets:
+          - postgres_password
+        restart: unless-stopped
+        networks:
+          default:
+
+    scrapyd:
+        build: ./scrapy_container/
+        volumes:
+          - ./scrapy_container/data:/var/lib/scrapyd
+          - ./scrapy_container:/app
+        working_dir: /app
+        depends_on:
+          - postgres
+        secrets:
+          - postgres_password
+        restart: unless-stopped
+        networks:
+          default:
+
+    django:
+        build: ./django_container/
+        volumes:
+          - ./django_container/:/app
+        depends_on:
+          - scrapyd
+        command: uwsgi ./ytcomments/uwsgi.ini
+        secrets:
+          - postgres_password
+          - django_secret_key
+        environment:
+          DJANGO_SETTINGS_MODULE: ytcomments.settings.production
+        restart: unless-stopped
+        networks:
+          default:
+
+    nginx:
+        build: ./nginx_container/
+        volumes:
+          - ./django_container/ytcomments/static/:/app/static/
+          - ./nginx_container/logs:/etc/nginx/logs/
+        depends_on:
+          - django
+        environment:
+          CERTBOT_EMAIL: /run/secrets/certbot_email
+        secrets:
+         - source: certbot_email
+        restart: unless-stopped
+        networks:
+          default:
+          nginx_main:
+            ipv4_address: 172.16.0.7
