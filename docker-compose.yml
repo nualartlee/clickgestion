@@ -23,7 +23,7 @@ services:
         image: "postgres:latest"
         environment:
           POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-          POSTGRES_DB: "ytcomments"
+          POSTGRES_DB: "clickgestion"
         secrets:
           - postgres_password
         restart: unless-stopped
