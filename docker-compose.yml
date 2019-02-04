@@ -30,20 +30,6 @@ services:
         networks:
           default:
 
-    scrapyd:
-        build: ./scrapy_container/
-        volumes:
-          - ./scrapy_container/data:/var/lib/scrapyd
-          - ./scrapy_container:/app
-        working_dir: /app
-        depends_on:
-          - postgres
-        secrets:
-          - postgres_password
-        restart: unless-stopped
-        networks:
-          default:
-
     django:
         build: ./django_container/
         volumes:
