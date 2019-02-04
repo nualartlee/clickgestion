@@ -35,7 +35,7 @@ services:
         volumes:
           - ./django_container/:/app
         depends_on:
-          - scrapyd
+          - postgres
         command: uwsgi ./ytcomments/uwsgi.ini
         secrets:
           - postgres_password
