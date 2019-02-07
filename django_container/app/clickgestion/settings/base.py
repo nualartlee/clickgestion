@@ -122,6 +122,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
+LOGIN_URL = '/main/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 TIME_ZONE = 'Europe/Madrid'
 #TIME_ZONE = 'UTC'
 

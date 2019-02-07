@@ -25,13 +25,13 @@ if __name__ == "__main__":
     # Collect static files
     execute_from_command_line(['manage.py', 'collectstatic', '--noinput'])
 
-    # Create default user
+    # Create default users
     print('\n')
     print('Creating default users:')
     from django.contrib.auth import get_user_model
     User = get_user_model()
 
-    # Create admin user
+    # Create real admin
     with open('/run/secrets/django_admin_user') as f:
         admin_user = f.readline().rstrip('\n')
     try:
@@ -46,16 +46,27 @@ if __name__ == "__main__":
         print("Admin user created")
         print("{0} ({1})\n{2}".format(admin_user, admin_email, admin_pass))
 
-    # Create test1 user
+    # Create test users
+    print('\n')
+    print('Creating test users:')
+    # Create test admin
+    user_name = 'admin'
+    user_email = 'admin@here.com'
+    user_pass = 'admin'
     try:
-        User.objects.get(username='test1')
-        print("test1 user already exists")
+        User.objects.get(username=user_name)
+        print("{} testuser already exists".format(user_name))
     except:
-        User.objects.create_user('test1', 'test1@here.com', 'test1pass')
-        print("test1 user created")
+        User.objects.create_superuser(user_name, user_email, user_pass)
+        print("{} testuser created".format(user_name))
 
-
-
-
-
-
+    # Create test user
+    user_name = 'test'
+    user_email = 'test@here.com'
+    user_pass = 'test'
+    try:
+        User.objects.get(username=user_name)
+        print("{} testuser already exists".format(user_name))
+    except:
+        User.objects.create_user(user_name, user_email, user_pass)
+        print("{} testuser created".format(user_name))

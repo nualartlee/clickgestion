@@ -40,7 +40,7 @@ services:
           - ./django_container/app:/app
         depends_on:
           - postgres
-        command: uwsgi ./clickgestion/uwsgi.ini
+        command: uwsgi ./clickgestion/uwsgi.ini --procname-master uwsgim
         secrets:
           - postgres_password
           - django_secret_key
