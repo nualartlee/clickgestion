@@ -22,13 +22,22 @@ else
     mkdir secrets
     check_errs $? "Failed creating secrets directory"
 fi
-chmod 660 secrets
+chmod 770 secrets
 check_errs $? "Failed setting secret directory permissions"
 
 # Create passwords
 create_password secrets/postgres_password.txt 27
 create_password secrets/django_secret_key.txt 47
 create_password secrets/django_admin_pass.txt 27
+
+# Confirm manually set passwords
+file=secrets/django_admin_user.txt
+[ -e $file ]
+check_errs $? "$file not set"
+file=secrets/django_admin_email.txt
+[ -e $file ]
+check_errs $? "$file not set"
+
 
 # Get email address for LetsEncrypt certbot
 file=secrets/certbot_email.txt

@@ -8,6 +8,10 @@ networks:
 secrets:
   django_secret_key:
     file: ./secrets/django_secret_key.txt
+  django_admin_user:
+    file: ./secrets/django_admin_user.txt
+  django_admin_email:
+    file: ./secrets/django_admin_email.txt
   django_admin_pass:
     file: ./secrets/django_admin_pass.txt
   postgres_password:
@@ -40,8 +44,11 @@ services:
         secrets:
           - postgres_password
           - django_secret_key
+          - django_admin_user
+          - django_admin_email
+          - django_admin_pass
         environment:
-          DJANGO_SETTINGS_MODULE: clickgestion.settings.production
+          DJANGO_SETTINGS_MODULE: clickgestion.settings.development
         restart: unless-stopped
         networks:
           default:

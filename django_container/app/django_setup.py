@@ -19,6 +19,43 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+    # Migrate
     execute_from_command_line(['manage.py', 'migrate'])
+
+    # Collect static files
     execute_from_command_line(['manage.py', 'collectstatic', '--noinput'])
+
+    # Create default user
+    print('\n')
+    print('Creating default users:')
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+
+    # Create admin user
+    with open('/run/secrets/django_admin_user') as f:
+        admin_user = f.readline().rstrip('\n')
+    try:
+        User.objects.get(username=admin_user)
+        print("Admin user already exists")
+    except:
+        with open('/run/secrets/django_admin_email') as f:
+            admin_email = f.readline().rstrip('\n')
+        with open('/run/secrets/django_admin_pass') as f:
+            admin_pass = f.readline().rstrip('\n')
+        User.objects.create_superuser(admin_user, admin_email, admin_pass)
+        print("Admin user created")
+        print("{0} ({1})\n{2}".format(admin_user, admin_email, admin_pass))
+
+    # Create test1 user
+    try:
+        User.objects.get(username='test1')
+        print("test1 user already exists")
+    except:
+        User.objects.create_user('test1', 'test1@here.com', 'test1pass')
+        print("test1 user created")
+
+
+
+
+
 
