@@ -23,4 +23,4 @@ check_errs $EUID "This script must be run as root"
 echo
 echo
 echo test
-docker-compose exec django python3 manage.py test
+docker-compose exec django python3 manage.py test --settings=clickgestion.settings.production

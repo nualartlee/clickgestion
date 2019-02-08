@@ -63,7 +63,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         self.client.force_login(self.normaluser)
 
 
-class CustomViewTestCase(CustomTestCase):  # pragma: no cover
+class CustomViewTestCase:  # pragma: no cover
     """
     Derived class with utility functions to test views
     If test_get/post is set, it will test the method over the three access levels.

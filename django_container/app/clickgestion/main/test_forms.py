@@ -1,12 +1,14 @@
-from littleserverdjango.littleserver_core.test import LittleServerTestCase
-from littleserverdjango.littleserver_core import forms
+from clickgestion.main.test import CustomTestCase
+from clickgestion.main import forms
+from unittest import skip
 
 
-class TestDefaultDeleteForm(LittleServerTestCase):
+@skip
+class TestDefaultDeleteForm(CustomTestCase):
 
     def test_form_ok(self):
         form_data = {}
-        form = forms.DefaultDeleteForm(referer='/home')
+        form = forms.DefaultDeleteForm(referer='/')
         self.assertFalse(form.is_valid())
 
 

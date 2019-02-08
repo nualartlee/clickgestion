@@ -1,8 +1,8 @@
-from littleserverdjango.littleserver_core.test import LittleServerTestCase
-from littleserverdjango.littleserver_core import wsgi
+from clickgestion.main.test import CustomTestCase
+from clickgestion import wsgi
 
 
-class TestWSGI(LittleServerTestCase):
+class TestWSGI(CustomTestCase):
 
     def test_wsgi(self):
         assert wsgi.application
