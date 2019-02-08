@@ -19,6 +19,10 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
+
+    # Make migrations
+    execute_from_command_line(['manage.py', 'makemigrations'])
+
     # Migrate
     execute_from_command_line(['manage.py', 'migrate'])
 

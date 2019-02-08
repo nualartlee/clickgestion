@@ -1,0 +1,15 @@
+{% extends "main/base.html" %}
+{% block content %}
+<p style="margin-top:30px"></p>
+<div class="container">
+    <h4>Comment</h4>
+    <h5>Author: <a href="{% url 'user' pk=comment.user.id %}">{{ comment.user.name }}</a></h3>
+    <h5>Video: <a href="{% url 'video' pk=comment.video.id %}">{{ comment.video.title }}</a></h5>
+    <h5>Estimated Publication Date: {{ comment.published_time_calculated }}</h4>
+    <h5>Likes: {{ comment.likes }}</h5>
+    <h5>Comment:</h5>
+    <p>{{ comment.text }}</p>
+        <h5>Replies: <a href="{% url 'comments' comment_id=comment.id %}">{{ comment.replies }}</a></h5>
+    <h5>Last Scrape Date: {{ comment.scrape_date }}</h5>
+</div>
+{% endblock %}

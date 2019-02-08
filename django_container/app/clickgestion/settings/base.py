@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'pure_pagination',
     'clickgestion.main',
+    'clickgestion.apartment_rentals',
 ]
 
 MIDDLEWARE = [
