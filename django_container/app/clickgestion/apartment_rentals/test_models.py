@@ -9,7 +9,7 @@ class TestNightRateRange(CustomTestCase):
         assert self.night_rate_range
 
     def test_get_night_rate_ok(self):
-        assert get_night_rate(timezone.datetime.today)
+        assert get_night_rate(timezone.datetime.today())
 
 
 class TestApartmentRental(CustomTestCase):
