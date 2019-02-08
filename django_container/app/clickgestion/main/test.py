@@ -37,7 +37,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         # Create a price range for the next year
         cls.night_rate_range = NightRateRange.objects.create(
             start_date=timezone.datetime.today(),
-            end_date=timezone.datetime.today() + timezone.timedelta.days(730),
+            end_date=timezone.datetime.today() + timezone.timedelta(days=730),
             monday=10,
             tuesday=20,
             wednesday=30,
@@ -51,7 +51,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         cls.apartment_rental = ApartmentRental.objects.create(
             transaction=cls.transaction,
             checkin=timezone.datetime.today(),
-            checkout=timezone.datetime.today() + timezone.timedelta.days(7),
+            checkout=timezone.datetime.today() + timezone.timedelta(days=7),
         )
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)

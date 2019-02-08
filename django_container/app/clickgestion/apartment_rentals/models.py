@@ -27,7 +27,7 @@ def get_night_rate(date):
     :return: Cost for the night (always assumed to be default currency)
     """
     # Find the last (latest) rate range that the given date falls in
-    rate = NightRateRange.objects.filter(start_date <= date, end_date >= date).latest('id')
+    rate = NightRateRange.objects.filter(start_date__lte=date, end_date__gte=date).latest('id')
     # Get the rate according to the weekday
     weekday = date.isoweekday()
     if weekday == 1:
@@ -85,7 +85,7 @@ class ApartmentRental(Concept):
         """
         daily_rates = []
         for i in range(self.nights):
-            daily_rates.append(get_night_rate(self.checkin + timezone.timedelta.days(i)))
+            daily_rates.append(get_night_rate(self.checkin + timezone.timedelta(days=i)))
         return daily_rates
 
     @property
@@ -95,9 +95,9 @@ class ApartmentRental(Concept):
         """
         return sum(self.rates)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.rates = self.get_rates()
-        super().save()
+        super().save(*args, **kwargs)
 
     @property
     def type(self):

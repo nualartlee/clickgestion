@@ -19,18 +19,6 @@ echo
 # Check user is root
 check_errs $EUID "This script must be run as root"
 
-# Make migrations
-echo
-echo
-echo makemigrations
-docker-compose exec django python3 manage.py makemigrations
-
-# Migrate
-echo
-echo
-echo migrate
-docker-compose exec django python3 manage.py migrate
-
 # Test
 echo
 echo
