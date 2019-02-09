@@ -17,6 +17,6 @@ def new_transaction(request):
         transaction_form = TransactionForm(transaction)
         extra_context['transaction'] = transaction
         extra_context['transaction_form'] = transaction_form
-        return render(request, 'main/transaction.html', extra_context)
+        return render(request, 'core/transaction.html', extra_context)
 
 

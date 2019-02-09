@@ -14,7 +14,7 @@ class TestNotFoundView(CustomTestCase, CustomViewTestCase):
         cls.url = 'login'
         cls.kwargs = {'server_id': 9999}
         cls.referer = '/'
-        cls.get_template = 'main/404.html'
+        cls.get_template = 'core/404.html'
 
     def test_custom_get(self):
         self.log_admin_in()
@@ -45,19 +45,19 @@ class TestLoginView(CustomTestCase, CustomViewTestCase):
         cls.url = 'login'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'main/login.html'
+        cls.get_template = 'core/login.html'
 
     def test_get_ok(self):
         response = self.client.get(reverse('login'), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.request['PATH_INFO'], reverse('login'))
-        self.assertTemplateUsed(response, 'main/login.html')
+        self.assertTemplateUsed(response, 'core/login.html')
 
     def test_post_no_data(self):
         response = self.client.post('/login/',
                                     {'username': '', 'password': ''})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main/login.html')
+        self.assertTemplateUsed(response, 'core/login.html')
         self.assertFormError(response, 'form', 'username', [u'This field is required.'])
         self.assertFormError(response, 'form', 'password', [u'This field is required.'])
     
@@ -65,7 +65,7 @@ class TestLoginView(CustomTestCase, CustomViewTestCase):
         response = self.client.post('/login/',
                                     {'username': 'nobody', 'password': 'nobodyspassword'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main/login.html')
+        self.assertTemplateUsed(response, 'core/login.html')
 
     def test_post_right_data(self):
         # Will redirect to homeview by default when admin and server are configured
