@@ -7,16 +7,14 @@ from clickgestion.transactions.forms import TransactionForm
 @login_required()
 def new_transaction(request):
     extra_context = {}
-    transaction = Transaction()
 
     if request.method == 'POST':
 
         return redirect('login')
 
     else:
-        transaction_form = TransactionForm(transaction)
-        extra_context['transaction'] = transaction
+        transaction_form = TransactionForm()
         extra_context['transaction_form'] = transaction_form
-        return render(request, 'core/transaction.html', extra_context)
+        return render(request, 'transactions/new_transaction.html', extra_context)
 
 

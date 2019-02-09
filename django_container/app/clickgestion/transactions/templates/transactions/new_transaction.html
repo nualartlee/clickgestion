@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+    <p style="margin-top:20px"></p>
+    <h4>{% trans 'New Transaction' %}</h4>
+    <p style="margin-top:20px"></p>
+    <form method="POST" class="TransactionForm">
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ transaction_form.client_first_name|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+                {{ transaction_form.client_last_name|as_crispy_field }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
