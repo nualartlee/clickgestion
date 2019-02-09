@@ -11,7 +11,9 @@ class Transaction(models.Model):
     a client. The interaction might involve multiple exchanges such as
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
-    user = models.ForeignKey(User, editable=False)
+    employee = models.ForeignKey(User, editable=False)
+    client_name = models.CharField(max_length=255)
+    apt_number = models.SmallIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

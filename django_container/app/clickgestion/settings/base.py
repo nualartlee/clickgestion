@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'debug_toolbar',
+    'crispy_forms',
     'pure_pagination',
     'clickgestion.main',
     'clickgestion.apartment_rentals',
