@@ -8,7 +8,7 @@
 
     <!-- Filter Form -->
     {% with filter.form.text as search_field %}
-    {% include 'main/searchbar.html' %}
+    {% include 'core/searchbar.html' %}
     {% endwith %}
 
     <p style="margin-top:5px;"></p>
@@ -20,7 +20,7 @@
         {% endfor %}
     </ul>
     {% if is_paginated %}
-        {% include 'main/pagination.html' %}
+        {% include 'core/pagination.html' %}
     {% endif %}
 
 </div>
