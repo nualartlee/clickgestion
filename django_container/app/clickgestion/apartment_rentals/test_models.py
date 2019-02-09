@@ -1,5 +1,5 @@
 from clickgestion.apartment_rentals.models import ApartmentRental, NightRateRange, get_night_rate
-from clickgestion.main.test import CustomTestCase
+from clickgestion.core.test import CustomTestCase
 from django.utils import timezone
 
 

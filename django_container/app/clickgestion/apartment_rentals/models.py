@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.main.models import Concept, ConceptValue
+from clickgestion.transactions.models import Concept
 from django.utils.translation import gettext
 from django.db import models
 from django.utils import timezone
