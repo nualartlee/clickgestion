@@ -67,13 +67,14 @@ class ApartmentRental(Concept):
 
     @property
     def description_short(self):
-        i = self.checkin
-        o = self.checkout
-        n = self.nights
-        p = self.price
-        d = gettext('Apartment Rental: %(checkin) - %(checkout), %(nigths) nights, %(price)') % \
-                      {'checkin': i, 'checkout': o, 'nights': n, 'price': p}
-        return d
+        dict = {
+            'checkin': self.checkin.strftime('%a, %d %b %Y'),
+            'checkout': self.checkout.strftime('%a, %d %b %Y'),
+            'nights': self.nights,
+            'price': self.price,
+        }
+        desc = gettext('Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s') % dict
+        return desc
 
     @property
     def description_long(self):

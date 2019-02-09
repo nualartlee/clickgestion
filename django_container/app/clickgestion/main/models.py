@@ -16,9 +16,6 @@ class Transaction(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return str(self.id)
-
-    def __str__(self):
         return 'Transaction {0}'.format(self.id)
 
 

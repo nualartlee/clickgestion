@@ -11,11 +11,20 @@ class TestNightRateRange(CustomTestCase):
     def test_get_night_rate_ok(self):
         assert get_night_rate(timezone.datetime.today())
 
-    def test_fail(self):
-        assert 1==2
-
 
 class TestApartmentRental(CustomTestCase):
 
-    def test_model(self):
-        assert self.apartment_rental
+    def test_nights(self):
+        self.assertEqual(self.apartment_rental.nights, 7)
+
+    def test_description_short(self):
+        assert self.apartment_rental.description_short
+
+    def test_description_long(self):
+        assert self.apartment_rental.description_long
+
+    def test_type(self):
+        assert self.apartment_rental.type
+
+
+
