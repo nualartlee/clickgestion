@@ -1,4 +1,4 @@
-from clickgestion.main.test import CustomTestCase
+from clickgestion.core.test import CustomTestCase
 from clickgestion import wsgi
 
 

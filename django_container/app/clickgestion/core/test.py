@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from clickgestion.main.models import Transaction
+from clickgestion.transactions.models import Transaction
 from clickgestion.apartment_rentals.models import ApartmentRental, NightRateRange
 from django.utils import timezone
 

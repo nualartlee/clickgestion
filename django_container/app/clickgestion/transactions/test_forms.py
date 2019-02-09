@@ -1,5 +1,5 @@
-from clickgestion.main.test import CustomTestCase
-from clickgestion.main import forms
+from clickgestion.core.test import CustomTestCase
+from clickgestion.transactions import forms
 from unittest import skip
 
 

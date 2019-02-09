@@ -1,5 +1,5 @@
 from django.urls import reverse
-from clickgestion.main.test import CustomTestCase, CustomViewTestCase
+from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from unittest import skip
 
 

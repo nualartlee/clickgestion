@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'crispy_forms',
     'pure_pagination',
-    'clickgestion.main',
+    'clickgestion.core',
+    'clickgestion.transactions',
     'clickgestion.apartment_rentals',
 ]
 
