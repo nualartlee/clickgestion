@@ -13,7 +13,7 @@ class Transaction(models.Model):
     """
     employee = models.ForeignKey(User, editable=False)
     client_name = models.CharField(max_length=255)
-    apt_number = models.SmallIntegerField()
+    apt_number = models.SmallIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
