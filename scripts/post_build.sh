@@ -8,6 +8,13 @@ cd "${0%/*}/.."
 # Import common functions
 source deploy-scripts/common.sh
 
+# Loop until postgres container is ready
+until docker-compose exec --user postgres postgres psql -l
+do
+    echo "Waiting for postgres container..."
+    sleep 3
+done
+
 # Loop until django container is ready
 until docker-compose exec django echo "Django container ready"
 do
