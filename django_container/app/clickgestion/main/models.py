@@ -12,7 +12,8 @@ class Transaction(models.Model):
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
     employee = models.ForeignKey(User, editable=False)
-    client_name = models.CharField(max_length=255)
+    client_first_name = models.CharField(max_length=255, blank=True, null=True)
+    client_last_name = models.CharField(max_length=255, blank=True, null=True)
     apt_number = models.SmallIntegerField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
