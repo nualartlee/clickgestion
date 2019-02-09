@@ -11,6 +11,9 @@ source deploy-scripts/common.sh
 # Assume the project's name is the same as the containing directory
 projectname=${PWD##*/}
 
+# Get the owner of the project
+projectowner=$(ls -ld $PWD | awk '{print $3}')
+
 # Print header
 echo "============================================================="
 echo "           Testing $projectname django coverage"
@@ -23,16 +26,11 @@ check_errs $EUID "This script must be run as root"
 echo
 echo
 docker-compose exec django coverage run --source='.' manage.py test --settings=clickgestion.settings.production
-check_errs $? "Django Test Failed"
 
-# Report test coverage, fail under limit
+# Generage html report
 echo
 echo
-limit=100
-docker-compose exec django coverage report --fail-under $limit
-check_errs $? "Django coverage test failed (less than $limit%)"
+docker-compose exec django coverage html
 
-# Exit
-echo "Django coverage test passed"
-echo
-echo
+# Display report in firefox
+su $projectowner firefox ./django_container/app/htmlcov/index.html
