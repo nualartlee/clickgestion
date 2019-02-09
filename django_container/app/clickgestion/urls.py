@@ -19,6 +19,7 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^', include('clickgestion.core.urls')),
+    url(r'^transactions/', include('clickgestion.transactions.urls')),
 ]
 
 if settings.DEBUG:
