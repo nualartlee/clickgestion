@@ -32,7 +32,7 @@ class TestIndexView(CustomTestCase, CustomViewTestCase):
         cls.url = '/'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'main/index.html'
+        cls.get_template = 'core/index.html'
 
 
 class TestLoginView(CustomTestCase, CustomViewTestCase):
@@ -74,7 +74,7 @@ class TestLoginView(CustomTestCase, CustomViewTestCase):
                                      'password': 'admin'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'main/index.html')
+        self.assertTemplateUsed(response, 'core/index.html')
 
 
 class TestLogoutView(CustomTestCase, CustomViewTestCase):
