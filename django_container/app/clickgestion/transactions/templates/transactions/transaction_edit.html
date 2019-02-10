@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+    <p style="margin-top:20px"></p>
+    <h4>{% trans 'New Transaction' %}</h4>
+    <p style="margin-top:20px"></p>
+    {% crispy transaction_form %}
+    <p style="margin-top:20px"></p>
+    <h5>{% trans 'Concepts:' %}</h5>
+</div>
+{% endblock %}

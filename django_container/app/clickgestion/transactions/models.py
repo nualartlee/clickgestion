@@ -15,6 +15,8 @@ class Transaction(models.Model):
     client_first_name = models.CharField(max_length=255, blank=True, null=True)
     client_last_name = models.CharField(max_length=255, blank=True, null=True)
     apt_number = models.SmallIntegerField(blank=True, null=True)
+    closed = models.BooleanField(default=False)
+    closed_time = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
