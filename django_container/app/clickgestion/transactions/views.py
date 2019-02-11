@@ -5,6 +5,23 @@ from clickgestion.transactions.forms import TransactionForm
 from django.utils.translation import gettext
 
 
+def get_available_concepts(employee, transaction):
+    """
+    Get a list of the available concepts that can be added to the given transaction.
+
+    :param employee: The employee executing the transaction (current user)
+    :param transaction: The open transaction
+    :return: A list of dictionaries.
+    """
+    concepts = []
+    apt_rental = {
+        'name': gettext('Apartment Rental'),
+        'url': '/apt-rentals/new/{}'.format(transaction.id),
+    }
+    concepts.append(apt_rental)
+    return concepts
+
+
 @login_required()
 def transaction_edit(request, *args, **kwargs):
     extra_context = {}
@@ -27,6 +44,12 @@ def transaction_edit(request, *args, **kwargs):
 
     # GET
     else:
+
+        # Get available concepts to add
+        available_concepts = get_available_concepts(request.user, transaction)
+        extra_context['available_concepts'] = available_concepts
+
+        # Get the form
         transaction_form = TransactionForm()
         extra_context['transaction_form'] = transaction_form
         return render(request, 'transactions/transaction_edit.html', extra_context)

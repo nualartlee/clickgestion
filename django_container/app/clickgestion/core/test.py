@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from clickgestion.transactions.models import Transaction
-from clickgestion.apartment_rentals.models import ApartmentRental, NightRateRange
+from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange
 from django.utils import timezone
 
 
@@ -31,7 +31,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
 
         #
-        # apartment_rentals data
+        # apt_rentals data
         #
 
         # Create a price range for the next year

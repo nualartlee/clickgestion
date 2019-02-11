@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import gettext
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Button, Div, Hidden, Layout, Field, Fieldset, Row, Column
+from crispy_forms.bootstrap import FieldWithButtons, StrictButton
 
 
 class TransactionForm(forms.Form):

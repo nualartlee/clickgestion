@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'pure_pagination',
     'clickgestion.core',
     'clickgestion.transactions',
-    'clickgestion.apartment_rentals',
+    'clickgestion.apt_rentals',
 ]
 
 MIDDLEWARE = [

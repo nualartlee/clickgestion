@@ -6,10 +6,23 @@
 {% block content %}
 <div class="container">
     <p style="margin-top:20px"></p>
-    <h4>{% trans 'New Transaction' %}</h4>
+    <h4>{% trans 'Transaction' %}</h4>
     <p style="margin-top:20px"></p>
     {% crispy transaction_form %}
     <p style="margin-top:20px"></p>
+    {% if transaction.concepts %}
     <h5>{% trans 'Concepts:' %}</h5>
+    {% endif %}
+    <div class="dropdown show">
+      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {% trans 'Add Concept' %}
+      </a>
+
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          {% for concept in available_concepts %}
+            <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
+          {% endfor %}
+      </div>
+    </div>
 </div>
 {% endblock %}
