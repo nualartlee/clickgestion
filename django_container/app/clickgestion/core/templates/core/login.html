@@ -1,14 +1,14 @@
 {% extends 'core/base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
 
 
 {% block content %}
-<div class="container-fluid" style="margin-top: 50px;">
-        <div class="form-group">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button class="btn btn-secondary" type="submit">Login</button>
-            </form>
-        </div>
+<p style="margin-top: 50px;"></p>
+<div class="row">
+    <div class="col-sm-6 offset-sm-3 text-center">
+            {% crispy form %}
+        <br>
+    </div>
 </div>
 {% endblock %}

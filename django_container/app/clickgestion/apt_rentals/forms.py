@@ -27,8 +27,7 @@ class RentalForm(forms.Form):
                     Field(
                         'checkin',
                         title=gettext("Arrival date"),
-                        css_class='col-8',
-                        id='datepicker',
+                        css_class='form-control col-8',
                     ),
                     css_class='col-6',
                 ),
@@ -36,7 +35,7 @@ class RentalForm(forms.Form):
                     Field(
                         'checkout',
                         title=gettext("Departure date"),
-                        css_class='col-8',
+                        css_class='form-control col-8',
                     ),
                     css_class='col-6',
                 ),

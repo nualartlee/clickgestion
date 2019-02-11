@@ -21,7 +21,7 @@ class TransactionForm(forms.Form):
                         id='client_apt_number',
                         title=gettext("The client's apartment number"),
                         placeholder=gettext("101"),
-                        css_class='col-12',
+                        css_class='form-control col-12',
                     ),
                     css_class='col-2',
                 ),

@@ -32,6 +32,9 @@ SECRET_KEY = DJANGO_SECRET_KEY
 ALLOWED_HOSTS = ['*']
 
 
+# Crispy forms templates
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # Application definition
 
 INSTALLED_APPS = [
