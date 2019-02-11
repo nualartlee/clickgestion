@@ -5,8 +5,18 @@ from crispy_forms.layout import Layout, Field, Row, Column
 
 
 class RentalForm(forms.Form):
-    checkin = forms.DateField(label=gettext('Checkin'))
-    checkout = forms.DateField(label=gettext('Checkout'))
+    checkin = forms.DateField(
+        label=gettext('Checkin'),
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+        ),
+    )
+    checkout = forms.DateField(
+        label=gettext('Checkout'),
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+        ),
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -17,7 +27,8 @@ class RentalForm(forms.Form):
                     Field(
                         'checkin',
                         title=gettext("Arrival date"),
-                        css_class='col-12',
+                        css_class='col-8',
+                        id='datepicker',
                     ),
                     css_class='col-6',
                 ),
@@ -25,7 +36,7 @@ class RentalForm(forms.Form):
                     Field(
                         'checkout',
                         title=gettext("Departure date"),
-                        css_class='col-12',
+                        css_class='col-8',
                     ),
                     css_class='col-6',
                 ),
