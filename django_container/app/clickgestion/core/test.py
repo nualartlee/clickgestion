@@ -27,7 +27,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         cls.normaluser = User.objects.create_user(user_name, user_email, user_pass)
         # Create transaction
         cls.transaction = Transaction.objects.create(
-            user=cls.normaluser,
+            employee=cls.normaluser,
         )
 
         #

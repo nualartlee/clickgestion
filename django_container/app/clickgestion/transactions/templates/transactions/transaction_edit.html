@@ -12,6 +12,12 @@
     <p style="margin-top:20px"></p>
     {% if transaction.concepts %}
     <h5>{% trans 'Concepts:' %}</h5>
+    {% for concept in transaction.concepts.all %}
+    {{ concept.description_short }}
+    {#
+        {% include 'transactions/concept_listitem.html' %}
+    #}
+    {% endfor %}
     {% endif %}
     <div class="dropdown show">
       <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

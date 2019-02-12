@@ -1,7 +1,9 @@
 from django import forms
 from django.utils.translation import gettext
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Row, Column
+from crispy_forms.layout import Layout, Field, Row, Column, Submit
+from clickgestion.apt_rentals.models import ApartmentRental
+from django.core.exceptions import ValidationError
 
 
 class RentalForm(forms.Form):
@@ -21,13 +23,14 @@ class RentalForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
                 Column(
                     Field(
                         'checkin',
                         title=gettext("Arrival date"),
-                        css_class='form-control col-8',
+                        css_class='col-8',
                     ),
                     css_class='col-6',
                 ),
@@ -35,11 +38,28 @@ class RentalForm(forms.Form):
                     Field(
                         'checkout',
                         title=gettext("Departure date"),
-                        css_class='form-control col-8',
+                        css_class='col-8',
                     ),
                     css_class='col-6',
                 ),
             ),
         )
+
+    def clean(self):
+
+        # Assert that all nightly prices are set
+        rates = ApartmentRental(
+            checkin=self.cleaned_data.get('checkin'),
+            checkout=self.cleaned_data.get('checkout'),
+        ).get_rates()
+        if 'missing' in rates:
+            error = gettext('Missing prices in selected dates')
+            raise ValidationError(error)
+
+        return self.cleaned_data
+
+
+
+
 
 

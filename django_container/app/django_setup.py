@@ -74,3 +74,25 @@ if __name__ == "__main__":
     except:
         User.objects.create_user(user_name, user_email, user_pass)
         print("{} testuser created".format(user_name))
+
+    # Create a test apartment rental price range
+    print('\n')
+    print("Creating test apartment price range")
+    from django.utils import timezone
+    from clickgestion.apt_rentals.models import NightRateRange
+    if NightRateRange.objects.all().count() == 0:
+        NightRateRange.objects.create(
+            start_date=timezone.datetime.today(),
+            end_date=timezone.datetime.today() + timezone.timedelta(days=365),
+            monday=10,
+            tuesday=20,
+            wednesday=30,
+            thursday=40,
+            friday=50,
+            saturday=60,
+            sunday=70,
+        )
+        print("Test price range created")
+    else:
+        print("A test price range already exists")
+

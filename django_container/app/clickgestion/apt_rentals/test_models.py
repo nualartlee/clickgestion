@@ -26,5 +26,8 @@ class TestApartmentRental(CustomTestCase):
     def test_type(self):
         assert self.apartment_rental.type
 
+    def test_url(self):
+        assert self.apartment_rental.url
+
 
 

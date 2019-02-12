@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import Concept
+from clickgestion.transactions.models import BaseConcept
 from django.utils.translation import gettext
 from django.db import models
 from django.utils import timezone
@@ -27,7 +27,10 @@ def get_night_rate(date):
     :return: Cost for the night (always assumed to be default currency)
     """
     # Find the last (latest) rate range that the given date falls in
-    rate = NightRateRange.objects.filter(start_date__lte=date, end_date__gte=date).latest('id')
+    try:
+        rate = NightRateRange.objects.filter(start_date__lte=date, end_date__gte=date).latest('id')
+    except NightRateRange.DoesNotExist:
+        return 'missing'
     # Get the rate according to the weekday
     weekday = date.isoweekday()
     if weekday == 1:
@@ -46,7 +49,7 @@ def get_night_rate(date):
         return rate.sunday
 
 
-class ApartmentRental(Concept):
+class ApartmentRental(BaseConcept):
     """
     Transaction Concept
     Apartment rental
@@ -104,6 +107,9 @@ class ApartmentRental(Concept):
     def type(self):
         return gettext('Apartment Rental')
 
+    @property
+    def url(self):
+       return 'apt-rentals/{}'.format(self.id)
 
 
 

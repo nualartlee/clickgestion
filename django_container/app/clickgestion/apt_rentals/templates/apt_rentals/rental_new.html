@@ -8,6 +8,11 @@
     <p style="margin-top:20px"></p>
     <h4>{% trans 'Apartment Rental' %}</h4>
     <p style="margin-top:20px"></p>
-    {% crispy rental_form %}
+    <form method="post">
+    {% crispy form %}
+    <p style="margin-top:50px"></p>
+    <input type="submit" value="{% trans 'Add' %}" class="btn btn-secondary col-2"/>
+    <a class="btn btn-danger col-2" href="{% url 'transaction_edit' transaction_id=transaction.id %}">{% trans 'Cancel' %}</a>
+    </form>
 </div>
 {% endblock %}

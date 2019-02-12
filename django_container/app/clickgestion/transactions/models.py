@@ -28,9 +28,21 @@ class Concept(models.Model):
     """
     A transaction concept records the type of exchange:
     Sale, rent, refund, etc...
+    This model is liked one-to-one to concrete concepts that inherit BaseConcept
+    """
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='concepts')
+
+
+class BaseConcept(models.Model):
+    """
+    A transaction concept records the type of exchange:
+    Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    concept = models.OneToOneField(Concept, on_delete=models.CASCADE, related_name='data')
+
+    class Meta:
+        abstract = True
 
     def description_short(self):
         """
@@ -47,6 +59,12 @@ class Concept(models.Model):
     def type(self):
         """
         :return: The type of concept, e.g.: Apartment Rental
+        """
+        raise NotImplementedError
+
+    def url(self):
+        """
+        :return: The concept's base url
         """
         raise NotImplementedError
 
