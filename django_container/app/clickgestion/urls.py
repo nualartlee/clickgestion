@@ -26,3 +26,10 @@ urlpatterns = [
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns.append(url(r'^__debug__/', include(debug_toolbar.urls)))
+
+
+handler400 = 'clickgestion.core.views.badrequest'
+handler403 = 'clickgestion.core.views.forbidden'
+handler404 = 'clickgestion.core.views.notfound'
+handler500 = 'clickgestion.core.views.servererror'
+

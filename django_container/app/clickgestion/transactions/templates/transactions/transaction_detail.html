@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+<p style="margin-top:20px"></p>
+<h4>{% trans 'Transaction' %}</h4>
+<p style="margin-top:20px"></p>
+<ul>
+<li class="list-group-item">
+
+    <div class="row align-items-center">
+
+        <div class="col-sm-9 text-left">
+            <a class="p text-dark" href="/transactions/{{ transaction.id }}"
+               title="{{ transaction.description_long }}"
+               data-toggle="popover" data-trigger="hover">
+                <div class="row">
+                    <div class="col-sm-4 text-left">
+                        {% trans 'Transaction: #' %}{{ transaction.id }}
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        {% trans 'Apartment: ' %}{{ transaction.apt_number }}
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        {% trans 'Client: ' %}{{ transaction.client }}
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-sm-3 align-middle text-right align-self-end">
+            <a href="/transactions/{{ transaction.id }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+                Edit
+            </a>
+            <a href="/transactions/{{ transaction.id }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+                Delete
+            </a>
+        </div>
+
+    </div>
+
+</li>
+</ul>
+</div>
+{% endblock %}

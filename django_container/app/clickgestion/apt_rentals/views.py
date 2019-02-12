@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import ApartmentRental
 from clickgestion.apt_rentals.forms import RentalForm
 from django.utils.translation import gettext
+from clickgestion.core.forms import CoreBackForm, CoreDeleteForm
 
 
 @login_required()
@@ -43,6 +44,35 @@ def rental_new(request, *args, **kwargs):
         form = RentalForm()
         extra_context['form'] = form
         return render(request, 'apt_rentals/rental_edit.html', extra_context)
+
+
+def rental_delete(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the rental
+    rental_id = kwargs.get('rental_id', None)
+    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    extra_context['rental'] = rental
+    extra_context['transaction'] = rental.transaction
+
+    # Use default views
+    extra_context['header'] = gettext('Delete {}?'.format(rental.type))
+    extra_context['message'] = rental.description_short
+    referer = request.META['HTTP_REFERER']
+    extra_context['form'] = CoreDeleteForm(referer=referer)
+
+    # POST
+    if request.method == 'POST':
+        default_next = reverse('transaction_detail', kwargs={'transaction_id': rental.transaction.id})
+        rental.delete()
+        next_page = request.POST.get('next', default_next)
+        return redirect(next_page)
+
+    # GET
+    else:
+        return render(request, 'core/message.html', extra_context)
 
 
 def rental_detail(request, *args, **kwargs):

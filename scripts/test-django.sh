@@ -13,14 +13,26 @@ projectname=${PWD##*/}
 
 # Print header
 echo "============================================================="
-echo "           Testing $projectname django application"
+echo "           Testing $projectname django coverage"
 echo
 
 # Check user is root
 check_errs $EUID "This script must be run as root"
 
-# Test
+# Execute unit tests
 echo
 echo
-echo test
-docker-compose exec django python3 manage.py test --settings=clickgestion.settings.production
+docker-compose exec django coverage run --source='.' manage.py test --settings=clickgestion.settings.production
+check_errs $? "Django Test Failed"
+
+# Report test coverage, fail under limit
+echo
+echo
+limit=100
+docker-compose exec django coverage report --fail-under $limit
+check_errs $? "Django coverage test failed (less than $limit%)"
+
+# Exit
+echo "Django coverage test passed"
+echo
+echo

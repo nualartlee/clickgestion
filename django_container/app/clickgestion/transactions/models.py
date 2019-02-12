@@ -78,6 +78,10 @@ class ConceptData(models.Model):
     class Meta:
         abstract = True
 
+    def delete(self, *args, **kwargs):
+        #super().delete(*args, **kwargs)
+        self.concept.delete()
+
     def description_short(self):
         """
         :return: A short single line description of the concept.

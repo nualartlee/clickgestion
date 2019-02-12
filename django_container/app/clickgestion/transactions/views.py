@@ -22,7 +22,20 @@ def get_available_concepts(employee, transaction):
     return concepts
 
 
-@login_required()
+@login_required
+def transaction_detail(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the transaction
+    transaction_id = kwargs.get('transaction_id', None)
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    extra_context['transaction'] = transaction
+    return render(request, 'transactions/transaction_detail.html', extra_context)
+
+
+@login_required
 def transaction_edit(request, *args, **kwargs):
     extra_context = {}
 
