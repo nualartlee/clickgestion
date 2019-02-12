@@ -34,7 +34,7 @@ def rental_new(request, *args, **kwargs):
 
         else:
             extra_context['form'] = form
-            return render(request, 'apt_rentals/rental_new.html', extra_context)
+            return render(request, 'apt_rentals/rental_edit.html', extra_context)
 
     # GET
     else:
@@ -42,11 +42,53 @@ def rental_new(request, *args, **kwargs):
         # Get the form
         form = RentalForm()
         extra_context['form'] = form
-        return render(request, 'apt_rentals/rental_new.html', extra_context)
+        return render(request, 'apt_rentals/rental_edit.html', extra_context)
 
 
 def rental_detail(request, *args, **kwargs):
-    return 'hello'
+    extra_context = {}
 
+    # Check permissions
+
+    # Get the rental
+    rental_id = kwargs.get('rental_id', None)
+    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    extra_context['rental'] = rental
+    extra_context['transaction'] = rental.transaction
+    return render(request, 'apt_rentals/rental_detail.html', extra_context)
+
+
+@login_required()
 def rental_edit(request, *args, **kwargs):
-    return 'hello'
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the rental
+    rental_id = kwargs.get('rental_id', None)
+    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    extra_context['rental'] = rental
+    extra_context['transaction'] = rental.transaction
+
+    # Check that the transaction is open
+    if rental.transaction.closed:
+        return redirect('message', message=gettext('Transaction Closed'))
+
+    # POST
+    if request.method == 'POST':
+        form = RentalForm(request.POST, instance=rental)
+        if form.is_valid():
+            form.save()
+            return redirect('transaction_edit', transaction_id=rental.transaction.id)
+
+        else:
+            extra_context['form'] = form
+            return render(request, 'apt_rentals/rental_edit.html', extra_context)
+
+    # GET
+    else:
+
+        # Get the form
+        form = RentalForm(instance=rental)
+        extra_context['form'] = form
+        return render(request, 'apt_rentals/rental_edit.html', extra_context)

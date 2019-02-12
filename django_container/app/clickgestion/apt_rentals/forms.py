@@ -6,7 +6,7 @@ from clickgestion.apt_rentals.models import ApartmentRental
 from django.core.exceptions import ValidationError
 
 
-class RentalForm(forms.Form):
+class RentalForm(forms.ModelForm):
     checkin = forms.DateField(
         label=gettext('Checkin'),
         widget=forms.DateInput(
@@ -19,6 +19,9 @@ class RentalForm(forms.Form):
             attrs={'type': 'date'},
         ),
     )
+    class Meta:
+        model = ApartmentRental
+        fields = ('checkin', 'checkout')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

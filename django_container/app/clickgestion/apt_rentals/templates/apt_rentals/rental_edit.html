@@ -8,10 +8,14 @@
     <p style="margin-top:20px"></p>
     <h4>{% trans 'Apartment Rental' %}</h4>
     <p style="margin-top:20px"></p>
+    <ul class="list-group">
+        {% include 'transactions/transaction_listitem.html' %}
+    </ul>
+    <p style="margin-top:20px"></p>
     <form method="post">
     {% crispy form %}
     <p style="margin-top:50px"></p>
-    <input type="submit" value="{% trans 'Add' %}" class="btn btn-secondary col-2"/>
+    <input type="submit" value="{% trans 'Save' %}" class="btn btn-secondary col-2"/>
     <a class="btn btn-danger col-2" href="{% url 'transaction_edit' transaction_id=transaction.id %}">{% trans 'Cancel' %}</a>
     </form>
 </div>

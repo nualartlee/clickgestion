@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+    <p style="margin-top:20px"></p>
+    <h4>{% trans 'Apartment Rental' %}</h4>
+    <p style="margin-top:20px"></p>
+    <ul class="list-group">
+        {% include 'transactions/transaction_listitem.html' %}
+    </ul>
+    <p style="margin-top:20px"></p>
+    <p><b>{% trans 'Checkin: ' %}</b>{{ rental.checkin }}</p>
+    <p><b>{% trans 'Checkout: ' %}</b>{{ rental.checkout }}</p>
+    <p><b>{% trans 'Nights: ' %}</b>{{ rental.nights }}</p>
+    <p><b>{% trans 'Rates per night: ' %}</b>{{ rental.rates }}</p>
+    <p><b>{% trans 'Total: ' %}</b>{{ rental.price }}</p>
+</div>
+{% endblock %}

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext
 
 User = get_user_model()
 
@@ -22,6 +23,38 @@ class Transaction(models.Model):
 
     def __unicode__(self):
         return 'Transaction {0}'.format(self.id)
+
+    @property
+    def client(self):
+        """
+        :return: The client's full name if set
+        """
+        if self.client_first_name or self.client_last_name:
+            name = '{0} {1}'.format(self.client_first_name, self.client_last_name)
+        else:
+            name = gettext('Not Set')
+        return name
+
+    @property
+    def description_short(self):
+        """
+        :return: A short single line description of the concept.
+        """
+        description = gettext('Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}'.format(
+            self.id, self.apt_number, self.client, self.concepts.all().count(), self.total,
+        ))
+        return description
+
+    @property
+    def total(self):
+        """
+        :return: The total amount of all concepts
+        """
+        total = 0
+        for concept in self.concepts.all():
+            total += concept.data.price
+        return total
+
 
 
 class Concept(models.Model):
