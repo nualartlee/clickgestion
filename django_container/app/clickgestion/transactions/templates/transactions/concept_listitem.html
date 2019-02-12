@@ -1,19 +1,28 @@
-<li class="list-group-item clearfix list-group-item-dark">
-    <a class="h4" href="concept.data.url"
-       title="concept.description_long"
-       data-toggle="popover" data-trigger="hover"
-       data-content="{{ datacontent }}">
-        {{ concept.description_short }}
-    </a>
-    <span class='pull-right button-group'>
-				<a href="{{ concept.data.url }}/edit/"
-                   class='btn btn-default'>
-					<span class='glyphicon glyphicon-edit'/>
-				</a>
-				<a href="{{ concept.data.url }}/delete/"
-                   class="btn btn-danger" role="button">
-					<span class='glyphicon glyphicon-remove'/>
-				</a>
-			</span>
+{% load i18n %}
+<li class="list-group-item">
+
+    <div class="row align-items-center">
+
+        <div class="col-sm-7 text-left">
+            <a class="p text-dark" href="{{ concept.data.url }}"
+               title="{{ concept.data.description_long }}"
+               data-toggle="popover" data-trigger="hover">
+                {{ concept.data.description_short }}
+            </a>
+        </div>
+
+        <div class="col-sm-3 text-center">
+                <a href="{{ concept.data.url }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+                    Edit
+                </a>
+                <a href="{{ concept.data.url }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+                    Delete
+                </a>
+        </div>
+
+        <div class="col-sm-2 align-middle text-right align-self-end">
+            <p>{{ concept.data.price }}</p>
+        </div>
+    </div>
 
 </li>
