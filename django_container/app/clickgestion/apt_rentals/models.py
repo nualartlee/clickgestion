@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import BaseConcept
+from clickgestion.transactions.models import ConceptData
 from django.utils.translation import gettext
 from django.db import models
 from django.utils import timezone
@@ -49,7 +49,7 @@ def get_night_rate(date):
         return rate.sunday
 
 
-class ApartmentRental(BaseConcept):
+class ApartmentRental(ConceptData):
     """
     Transaction Concept
     Apartment rental
@@ -109,7 +109,7 @@ class ApartmentRental(BaseConcept):
 
     @property
     def url(self):
-       return 'apt-rentals/{}'.format(self.id)
+       return '/apt-rentals/{}'.format(self.id)
 
 
 

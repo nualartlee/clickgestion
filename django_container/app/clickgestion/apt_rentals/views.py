@@ -25,11 +25,11 @@ def rental_new(request, *args, **kwargs):
     if request.method == 'POST':
         form = RentalForm(request.POST)
         if form.is_valid():
-            ApartmentRental.objects.create(
+            ApartmentRental(
                 transaction=transaction,
                 checkin=form.cleaned_data['checkin'],
                 checkout=form.cleaned_data['checkout'],
-            )
+            ).save()
             return redirect('transaction_edit', transaction_id=transaction.id)
 
         else:
@@ -45,3 +45,8 @@ def rental_new(request, *args, **kwargs):
         return render(request, 'apt_rentals/rental_new.html', extra_context)
 
 
+def rental_detail(request, *args, **kwargs):
+    return 'hello'
+
+def rental_edit(request, *args, **kwargs):
+    return 'hello'

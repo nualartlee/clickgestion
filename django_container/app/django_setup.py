@@ -53,6 +53,7 @@ if __name__ == "__main__":
     # Create test users
     print('\n')
     print('Creating test users:')
+
     # Create test admin
     user_name = 'admin'
     user_email = 'admin@here.com'

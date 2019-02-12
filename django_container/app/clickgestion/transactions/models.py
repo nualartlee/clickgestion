@@ -33,13 +33,14 @@ class Concept(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='concepts')
 
 
-class BaseConcept(models.Model):
+class ConceptData(models.Model):
     """
     A transaction concept records the type of exchange:
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
     concept = models.OneToOneField(Concept, on_delete=models.CASCADE, related_name='data')
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='baseconcepts')
 
     class Meta:
         abstract = True
@@ -67,6 +68,16 @@ class BaseConcept(models.Model):
         :return: The concept's base url
         """
         raise NotImplementedError
+
+    def save(self, *args, **kwargs):
+        try:
+           assert self.concept
+           self.concept.save()
+        except Concept.DoesNotExist:
+            self.concept = Concept.objects.create(
+                transaction=self.transaction,
+            )
+        super().save(*args, **kwargs)
 
 
 class Currency(models.Model):

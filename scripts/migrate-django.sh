@@ -19,13 +19,6 @@ echo
 # Check user is root
 check_errs $EUID "This script must be run as root"
 
-# Delete migrations
-echo
-echo
-echo delete migrations
-find ./django_container/app -path "*/migrations/*.py" -not -name "__init__.py" -delete
-find ./django_container/app -path "*/migrations/*.pyc"  -delete
-
 # Make migrations
 echo
 echo

@@ -14,6 +14,7 @@ do
     echo "Waiting for postgres container..."
     sleep 3
 done
+echo "Postgres container is ready"
 
 # Loop until django container is ready
 until docker-compose exec django echo "Django container ready"

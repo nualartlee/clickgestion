@@ -19,8 +19,19 @@ echo
 # Check user is root
 check_errs $EUID "This script must be run as root"
 
-# Drop the database
-sudo docker-compose exec --user postgres postgres dropdb clickgestion
+# Delete migrations
+echo
+echo
+echo delete migrations
+find ./django_container/app -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find ./django_container/app -path "*/migrations/*.pyc"  -delete
 
 # Drop the database
+echo
+echo drop database
+sudo docker-compose exec --user postgres postgres dropdb clickgestion
+
+# Recreate the database
+echo
+echo recreate database
 sudo docker-compose exec --user postgres postgres createdb clickgestion

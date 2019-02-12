@@ -48,11 +48,12 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
 
         # Create an apartment rental
-        cls.apartment_rental = ApartmentRental.objects.create(
+        cls.apartment_rental = ApartmentRental(
             transaction=cls.transaction,
             checkin=timezone.datetime.today(),
             checkout=timezone.datetime.today() + timezone.timedelta(days=7),
         )
+        cls.apartment_rental.save()
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
