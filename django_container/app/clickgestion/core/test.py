@@ -119,10 +119,10 @@ class CustomViewTestCase:  # pragma: no cover
             if anonymous:
                 self.assertEqual(response.status_code, 200)
                 self.assertEqual(response.request['PATH_INFO'], reverse('login'))
-                self.assertTemplateUsed(response, 'littleserver_core/login.html')
+                self.assertTemplateUsed(response, 'core/login.html')
             else:
                 self.assertEqual(response.status_code, 403)
-                self.assertTemplateUsed(response, 'littleserver_core/403.html')
+                self.assertTemplateUsed(response, 'core/403.html')
         else:
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))

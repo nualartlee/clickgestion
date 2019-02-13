@@ -7,31 +7,54 @@
 <div class="container">
 
     <p style="margin-top:20px"></p>
-    <h4>{% trans 'Transaction' %}</h4>
+    <h4>{% trans 'Transaction #' %}{{ transaction.id }}</h4>
     <p style="margin-top:20px"></p>
-    {% crispy transaction_form %}
-    <p style="margin-top:20px"></p>
+    <form method="post" novalidate>
+        {% if transaction.concepts %}
+        <ul class="list-group">
+        {% for concept in transaction.concepts.all %}
+            {% include 'transactions/concept_listitem.html' %}
+        {% endfor %}
+            <li class="list-group-item">
 
-    {% if transaction.concepts %}
-    <h5>{% trans 'Concepts:' %}</h5>
-    <ul class="list-group">
-    {% for concept in transaction.concepts.all %}
-        {% include 'transactions/concept_listitem.html' %}
-    {% endfor %}
-    </ul>
-    {% endif %}
+                <div class="row align-items-center">
 
-    <p style="margin-top:20px"></p>
-    <div class="dropdown show">
-      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% trans 'Add Concept' %}
-      </a>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          {% for concept in available_concepts %}
-            <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
-          {% endfor %}
-      </div>
-    </div>
+                    <div class="col-sm-7 text-left">
+                        <b>{% trans 'Total: ' %}</b>
+                    </div>
+
+                    <div class="col-sm-3 text-center">
+                    </div>
+
+                    <div class="col-sm-2 align-middle text-right align-self-end">
+                        <b>{{ transaction.total }}</b>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+        {% endif %}
+
+        <p style="margin-top:20px"></p>
+
+        {% crispy form %}
+
+        <div class="dropdown show">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% trans 'Add Concept' %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              {% for concept in available_concepts %}
+                <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
+              {% endfor %}
+          </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary" onclick='document.getElementById("id_pay_button").value = "True";form.submit();'>{% trans 'Proceed To Payment' %}</button>
+        <button type="submit" class="btn btn-secondary" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>
+        <button type="submit" class="btn btn-danger" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();">{% trans 'Cancel' %}</button>
+    </form>
 
 </div>
 {% endblock %}

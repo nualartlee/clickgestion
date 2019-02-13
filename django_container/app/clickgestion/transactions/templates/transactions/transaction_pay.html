@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+
+    <p style="margin-top:20px"></p>
+    <h4>{% trans 'Transaction #' %}{{ transaction.id }}</h4>
+    <p style="margin-top:20px"></p>
+    <form method="post" novalidate>
+        <ul class="list-group">
+        {% for concept in transaction.concepts.all %}
+            {% include 'transactions/concept_listitem.html' %}
+        {% endfor %}
+            <li class="list-group-item">
+
+                <div class="row align-items-center">
+
+                    <div class="col-sm-7 text-left">
+                        <b>{% trans 'Total: ' %}</b>
+                    </div>
+
+                    <div class="col-sm-3 text-center">
+                    </div>
+
+                    <div class="col-sm-2 align-middle text-right align-self-end">
+                        <b>{{ transaction.total }}</b>
+                    </div>
+                </div>
+
+            </li>
+        </ul>
+        <p style="margin-top:30px"></p>
+
+        {% crispy form %}
+
+        <p style="margin-top:40px"></p>
+        <button type="submit" class="btn btn-success" title="{% trans 'Confirm and close this transaction' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
+        <button type="submit" class="btn btn-secondary" title="{% trans 'Finish this transaction later' %}" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>
+        <button type="submit" class="btn btn-danger" title="{% trans 'Cancel this transaction and delete all data' %}" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();">{% trans 'Cancel' %}</button>
+    </form>
+
+</div>
+{% endblock %}

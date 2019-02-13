@@ -1,0 +1,45 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>ClickGestion</title>
+        {% load static %}
+        {% block meta %}
+        {% endblock %}
+        <link rel="shortcut icon" type="image/png" href="{% static 'core/img/logo-40x40.png' %}"/>
+        <link rel="stylesheet" href="{% static 'core/js/bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
+    </head>
+    <body style="overflow-y:scroll;">
+        <header>
+            <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                      <a class="navbar-brand" href="/"><div class="img"><img src="{% static 'core/img/logo-name-280x45.png' %}" width="180" height="30" alt="ClickGestion"></div></a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main role="main" class="container" style="padding-top:60px;padding-bottom:60px;">
+            <div class="app-content content">
+                <div class="content-wrapper">
+                    <div class="content-body">
+                        <h1>404</h1>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer fixed-bottom bg-light">
+            <div class="container">
+                <!-- Copyright -->
+                <div class="footer-copyright text-center py-3">© 2019 Javier Nualart Lee </div>
+                <!-- Copyright -->
+            </div>
+        </footer>
+        <script src="{% static 'core/js/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'core/js/popper-1.14.4.js' %}"></script>
+        <script src="{% static 'core/js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+    </body>
+</html>

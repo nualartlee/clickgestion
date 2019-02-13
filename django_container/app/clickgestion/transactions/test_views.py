@@ -1,3 +1,102 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
-from unittest import skip
+from clickgestion.transactions.models import Transaction
+
+
+class TestTransactionListView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'transaction_list'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_list.html'
+
+
+class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'transaction_edit'
+        cls.kwargs = {'transaction_id': cls.transaction.id}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_edit.html'
+
+    def test_post_pay_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {'pay_button': True, 'cancel_button': False},
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_pay.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_cancel_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {'cancel_button': True,},
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/index.html')
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(Transaction.DoesNotExist):
+            Transaction.objects.get(id=self.transaction.id)
+
+
+class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'transaction_pay'
+        cls.kwargs = {'transaction_id': cls.transaction.id}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_pay.html'
+
+    def test_post_confirm_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {'confirm_button': True, 'cancel_button': False},
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_save_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {
+                'save_button': True,
+                'cancel_button': False,
+                'client_apt_number': '1605',
+                'client_first_name': 'Donna',
+                'client_last_name': 'Kavanagh',
+            },
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_cancel_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {'cancel_button': True,},
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/index.html')
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(Transaction.DoesNotExist):
+            Transaction.objects.get(id=self.transaction.id)

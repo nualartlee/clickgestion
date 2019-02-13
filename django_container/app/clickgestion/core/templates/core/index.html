@@ -6,6 +6,27 @@
 <p style="margin-top:60px"></p>
 <div class="container">
     <p style="margin-top:20px"></p>
-    <a class="btn btn-secondary btn-large" href="{% url 'transaction_new' %}">{% trans 'Start A New Transaction' %}</a>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View All Transactions' %}</a>
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View Open Transactions' %}</a>
+            <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Start A New Transaction' %}</a>
+        </div>
+        <div class="col-4">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View All Transactions' %}</a>
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View Current Cash Balance' %}</a>
+            <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Close Cash Desk' %}</a>
+        </div>
+        <div class="col-4">
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -32,12 +32,16 @@
         </div>
 
         <div class="col-sm-3 align-middle text-right align-self-end">
+            {% if transaction.closed %}
+            <p>{{ transaction.closed_time }}</p>
+            {% else %}
             <a href="/transactions/{{ transaction.id }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
                 Edit
             </a>
             <a href="/transactions/{{ transaction.id }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
                 Delete
             </a>
+            {% endif %}
         </div>
 
     </div>
