@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.conf import settings
 
-
 urlpatterns = [
     url(r'^', include('clickgestion.core.urls')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
     url(r'^apt-rentals/', include('clickgestion.apt_rentals.urls')),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
 
 if settings.DEBUG:

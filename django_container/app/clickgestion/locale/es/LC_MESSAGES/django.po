@@ -1,0 +1,276 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-02-13 21:43-0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: clickgestion/apt_rentals/forms.py:11
+msgid "Checkin"
+msgstr "Llegada"
+
+#: clickgestion/apt_rentals/forms.py:17
+msgid "Checkout"
+msgstr "Salida"
+
+#: clickgestion/apt_rentals/forms.py:35
+msgid "Arrival date"
+msgstr "Fecha de llegada"
+
+#: clickgestion/apt_rentals/forms.py:43
+msgid "Departure date"
+msgstr "Fecha de salida"
+
+#: clickgestion/apt_rentals/forms.py:59
+msgid "Missing prices in selected dates"
+msgstr "Faltan precios en las fechas seleccionadas"
+
+#: clickgestion/apt_rentals/models.py:79
+#, python-format
+msgid ""
+"Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s"
+msgstr "Alquiler Apartamento: %(checkin)s - %(checkout)s, %(nights)s noches, %(price)s"
+
+
+#: clickgestion/apt_rentals/models.py:108
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:9
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:9
+#: clickgestion/transactions/views.py:23
+msgid "Apartment Rental"
+msgstr "Alquiler Apartamento"
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:15
+msgid "Checkin: "
+msgstr "Llegada: "
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:16
+msgid "Checkout: "
+msgstr "Salida: "
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:17
+msgid "Nights: "
+msgstr "Noches: "
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:18
+msgid "Rates per night: "
+msgstr "Precios por noche: "
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:19
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:45
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:22
+msgid "Total: "
+msgstr "Total: "
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:18
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:91
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:54
+msgid "Save"
+msgstr "Guardar"
+
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:19
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:95
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:57
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: clickgestion/apt_rentals/views.py:22 clickgestion/apt_rentals/views.py:103
+#: clickgestion/transactions/views.py:88 clickgestion/transactions/views.py:202
+msgid "Transaction Closed"
+msgstr "Transacción Cerrada"
+
+#: clickgestion/apt_rentals/views.py:60
+msgid "Delete {}?"
+msgstr "Borrar {}?"
+
+#: clickgestion/core/forms.py:21
+msgid "username"
+msgstr "usuario"
+
+#: clickgestion/core/forms.py:22
+msgid "Username"
+msgstr "Usuario"
+
+#: clickgestion/core/forms.py:28
+msgid "password"
+msgstr "contraseña"
+
+#: clickgestion/core/forms.py:29
+msgid "Password"
+msgstr "Contraseña"
+
+#: clickgestion/core/forms.py:37
+msgid "Login"
+msgstr "Login"
+
+#: clickgestion/core/templates/core/delete.html:18
+#: clickgestion/core/templates/core/message.html:15
+msgid "Click to go back"
+msgstr "Pincha para volver"
+
+#: clickgestion/core/templates/core/delete.html:18
+#: clickgestion/core/templates/core/message.html:15
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:51
+msgid "Back"
+msgstr "Volver"
+
+#: clickgestion/core/templates/core/delete.html:21
+msgid "Delete"
+msgstr "Borrar"
+
+#: clickgestion/core/templates/core/delete.html:21
+msgid "Click to delete"
+msgstr "Pincha para borrar"
+
+#: clickgestion/core/templates/core/index.html:13
+msgid "Start A New Transaction"
+msgstr "Iniciar Nueva Transacción"
+
+#: clickgestion/core/templates/core/index.html:14
+msgid "View Open Transactions"
+msgstr "Ver Transacciones Abiertas"
+
+#: clickgestion/core/templates/core/index.html:24
+msgid "View All Transactions"
+msgstr "Ver Todas Transacciones"
+
+#: clickgestion/core/templates/core/index.html:25
+msgid "View Current Cash Balance"
+msgstr ""
+
+#: clickgestion/core/templates/core/index.html:26
+msgid "Close Cash Desk"
+msgstr "Cerrar Caja"
+
+#: clickgestion/transactions/filters.py:9
+msgid "Search by employee"
+msgstr "Buscar por empleado"
+
+#: clickgestion/transactions/forms.py:83
+msgid "The client's apartment number"
+msgstr "El número de apartamento del cliente"
+
+#: clickgestion/transactions/forms.py:84
+msgid "101"
+msgstr "101"
+
+#: clickgestion/transactions/forms.py:92
+msgid "The client's first name"
+msgstr "El nombre del cliente"
+
+#: clickgestion/transactions/forms.py:93
+msgid "John"
+msgstr "Juan"
+
+#: clickgestion/transactions/forms.py:101
+msgid "The client's last name"
+msgstr "Appellidos del cliente"
+
+#: clickgestion/transactions/forms.py:102
+msgid "Smith"
+msgstr "Martínez Gomez"
+
+#: clickgestion/transactions/models.py:35
+msgid "Not Set"
+msgstr ""
+
+#: clickgestion/transactions/models.py:43
+#, python-brace-format
+msgid "Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}"
+msgstr "Transacción #:{0} Apt:{1} Cliente: {2} Conceptos: {3} Total: {4}"
+
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:9
+msgid "Transaction"
+msgstr "Transacción"
+
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:22
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:12
+msgid "Transaction: #"
+msgstr "Transacción: #"
+
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:25
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:15
+msgid "Apartment: "
+msgstr "Apartamento: "
+
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:28
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:18
+msgid "Client: "
+msgstr "Cliente: "
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:10
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:10
+msgid "Transaction #"
+msgstr "Transacción #"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:21
+msgid "Select concepts to add below: "
+msgstr "Selecciona conceptos para añadir más abajo"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:74
+msgid "Click to select a concept to add"
+msgstr "Pincha para seleccionar el concepto a añadir"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:75
+msgid "Add Concept"
+msgstr "Añadir Concepto"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:87
+msgid "Go to payment screen"
+msgstr "Ir a la página de pago"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:87
+msgid "Proceed To Payment"
+msgstr "Proceder A Pagar"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:91
+msgid "Save the transaction as pending"
+msgstr "Guardar la transacción como pendiente"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:95
+msgid "Cancel the transaction and delete all data"
+msgstr "Cancelar la transacción y borrar todo"
+
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:48
+msgid "Confirm and close this transaction"
+msgstr "Confirmar y cerrar esta transacción"
+
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:48
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:51
+msgid "Go back to review the concepts"
+msgstr "Volver para editar conceptos"
+
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:54
+msgid "Finish this transaction later"
+msgstr "Finalizar esta transacción mas tarde"
+
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:57
+msgid "Cancel this transaction and delete all data"
+msgstr "Cancelar esta transacción y borrar todo"
+
+#: clickgestion/transactions/views.py:42
+msgid "Delete Transaction?"
+msgstr "Borrar la Transacción?"
+
+#: clickgestion/transactions/views.py:137
+msgid "Transactions"
+msgstr "Transacciones"
+
+#: clickgestion/transactions/views.py:255
+#, python-format
+msgid "Open transactions by %(employee)s"
+msgstr "Transacciones abiertas por %(employee)s"
