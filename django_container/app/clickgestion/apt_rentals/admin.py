@@ -1,10 +1,10 @@
-#from django.contrib import admin
-#from clickgestion.comments.models import Comment
-#
-#
-#class CommentAdmin(admin.ModelAdmin):
-#    list_filter = ('user', 'video')
-#    search_fields = ['user', 'video']
-#
-#
-#admin.site.register(Comment, CommentAdmin)
+from django.contrib import admin
+from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange
+
+
+class ApartmentRentalAdmin(admin.ModelAdmin):
+    list_filter = ('checkin', 'checkout')
+
+
+admin.site.register(ApartmentRental, ApartmentRentalAdmin)
+admin.site.register(NightRateRange)
