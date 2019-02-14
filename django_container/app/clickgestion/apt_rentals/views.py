@@ -4,7 +4,6 @@ from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import ApartmentRental
 from clickgestion.apt_rentals.forms import RentalForm
 from django.utils.translation import gettext
-from clickgestion.core.forms import CoreBackForm, CoreDeleteForm
 
 
 @login_required()
@@ -57,11 +56,10 @@ def rental_delete(request, *args, **kwargs):
     extra_context['rental'] = rental
     extra_context['transaction'] = rental.transaction
 
-    # Use default views
+    # Use default delete view
     extra_context['header'] = gettext('Delete {}?'.format(rental.type))
     extra_context['message'] = rental.description_short
-    referer = request.META['HTTP_REFERER']
-    extra_context['form'] = CoreDeleteForm(referer=referer)
+    extra_context['next'] = request.META['HTTP_REFERER']
 
     # POST
     if request.method == 'POST':
@@ -72,7 +70,7 @@ def rental_delete(request, *args, **kwargs):
 
     # GET
     else:
-        return render(request, 'core/message.html', extra_context)
+        return render(request, 'core/delete.html', extra_context)
 
 
 def rental_detail(request, *args, **kwargs):

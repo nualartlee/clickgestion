@@ -10,11 +10,33 @@
     <h4>{% trans 'Transaction #' %}{{ transaction.id }}</h4>
     <p style="margin-top:20px"></p>
     <form method="post" novalidate>
-        {% if transaction.concepts %}
         <ul class="list-group">
-        {% for concept in transaction.concepts.all %}
+
+            {% ifequal transaction.concepts.count 0 %}
+            <li class="list-group-item">
+
+                <div class="row align-items-center">
+
+                    <div class="col-sm-2 text-left">
+                    </div>
+
+                    <div class="col-sm-8 text-center">
+                        <b>{% trans 'Select concepts to add below: ' %}</b>
+                    </div>
+
+                    <div class="col-sm-2 align-middle text-right align-self-end">
+                    </div>
+                </div>
+
+            </li>
+            {% else %}
+
+            {% for concept in transaction.concepts.all %}
             {% include 'transactions/concept_listitem.html' %}
-        {% endfor %}
+            {% endfor %}
+
+            {% endifequal %}
+
             <li class="list-group-item">
 
                 <div class="row align-items-center">
@@ -33,27 +55,47 @@
 
             </li>
         </ul>
-        {% endif %}
 
-        <p style="margin-top:20px"></p>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
 
         {% crispy form %}
 
-        <div class="dropdown show">
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {% trans 'Add Concept' %}
-          </a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              {% for concept in available_concepts %}
-                <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
-              {% endfor %}
-          </div>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+
+        <div class="row">
+
+           <div class="col-4" >
+            <div class="dropdown show">
+              <a class="btn btn-secondary btn-block dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              title="{% trans 'Click to select a concept to add' %}">
+                {% trans 'Add Concept' %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  {% for concept in available_concepts %}
+                    <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
+                  {% endfor %}
+              </div>
+            </div>
+           </div>
+
+
+            <div class="col-4" >
+                <button type="submit" class="btn btn-primary btn-block" onclick='document.getElementById("id_pay_button").value = "True";form.submit();' title="{% trans 'Go to payment screen' %}">{% trans 'Proceed To Payment' %}</button>
+            </div>
+
+            <div class="col-2" >
+                <button type="submit" class="btn btn-secondary btn-block" onclick="document.getElementById('id_save_button').value = 'True';form.submit();" title="{% trans 'Save the transaction as pending' %}">{% trans 'Save' %}</button>
+            </div>
+
+            <div class="col-2" >
+                <button type="submit" class="btn btn-danger btn-block" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();" title="{% trans 'Cancel the transaction and delete all data' %}">{% trans 'Cancel' %}</button>
+            </div>
+
         </div>
-
-
-        <button type="submit" class="btn btn-primary" onclick='document.getElementById("id_pay_button").value = "True";form.submit();'>{% trans 'Proceed To Payment' %}</button>
-        <button type="submit" class="btn btn-secondary" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>
-        <button type="submit" class="btn btn-danger" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();">{% trans 'Cancel' %}</button>
     </form>
 
 </div>

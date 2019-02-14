@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<p style="margin-top:60px"></p>
+<div class="container">
+    <p style="margin-top:20px"></p>
+    <h3> {{ header }} </h3>
+    <p> {{ message }} </p>
+    <p style="margin-top:20px"></p>
+
+    <form method="post">
+        {% csrf_token %}
+        <input name="next" value="{{ next }}" type="hidden">
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Click to go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+            </div>
+            <div class="col">
+                <input type="submit" value="{% trans 'Delete' %}"  class="btn btn-danger btn-block" title="{% trans 'Click to delete' %}">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

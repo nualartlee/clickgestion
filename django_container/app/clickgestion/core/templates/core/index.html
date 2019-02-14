@@ -10,20 +10,21 @@
         <div class="col-4">
         </div>
         <div class="col-6">
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View All Transactions' %}</a>
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View Open Transactions' %}</a>
             <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Start A New Transaction' %}</a>
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transactions_open' %}">{% trans 'View Open Transactions' %}</a>
         </div>
         <div class="col-4">
         </div>
     </div>
+    <p style="margin-top:20px"></p>
     <div class="row">
         <div class="col-4">
         </div>
         <div class="col-6">
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View All Transactions' %}</a>
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View Current Cash Balance' %}</a>
-            <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Close Cash Desk' %}</a>
+            <a class="btn btn-outline-danger btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Close Cash Desk' %}</a>
+
         </div>
         <div class="col-4">
         </div>

@@ -1,6 +1,5 @@
 {% extends "core/base.html" %}
 {% load i18n %}
-{% load crispy_forms_tags %}
 
 
 {% block content %}
@@ -10,8 +9,18 @@
     <h3> {{ header }} </h3>
     <p> {{ message }} </p>
     <p style="margin-top:20px"></p>
-    <div class="form-group">
-        {% crispy form %}
+
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Click to go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
+        <div class="col">
+        </div>
     </div>
+
 </div>
 {% endblock %}

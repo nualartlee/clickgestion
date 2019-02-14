@@ -32,14 +32,31 @@
 
             </li>
         </ul>
-        <p style="margin-top:30px"></p>
+
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
 
         {% crispy form %}
 
-        <p style="margin-top:40px"></p>
-        <button type="submit" class="btn btn-success" title="{% trans 'Confirm and close this transaction' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
-        <button type="submit" class="btn btn-secondary" title="{% trans 'Finish this transaction later' %}" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>
-        <button type="submit" class="btn btn-danger" title="{% trans 'Cancel this transaction and delete all data' %}" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();">{% trans 'Cancel' %}</button>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+        <p class="mt-4"></p>
+
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-success btn-block" title="{% trans 'Confirm and close this transaction' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back to review the concepts' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-secondary btn-block" title="{% trans 'Finish this transaction later' %}" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-danger btn-block" title="{% trans 'Cancel this transaction and delete all data' %}" onclick="document.getElementById('id_cancel_button').value = 'True';form.submit();">{% trans 'Cancel' %}</button>
+            </div>
+        </div>
     </form>
 
 </div>

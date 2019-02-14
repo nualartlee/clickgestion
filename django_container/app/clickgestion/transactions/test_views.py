@@ -100,3 +100,16 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(Transaction.DoesNotExist):
             Transaction.objects.get(id=self.transaction.id)
+
+
+class TestTransactionsOpenView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'transactions_open'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_list.html'

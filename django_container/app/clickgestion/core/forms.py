@@ -40,33 +40,4 @@ class CoreAuthenticationForm(AuthenticationForm):
         )
 
 
-class CoreBackForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        referer = kwargs.pop('referer', None)
-        super().__init__(*args, **kwargs)
 
-        self.helper = FormHelper(self)
-        self.helper.add_input(Button('back', 'Back',
-                                     onclick="javascript:location.href = '%s';" %referer))
-        self.helper.add_input(Hidden('next',
-                                     value=referer))
-        self.helper.form_method = 'POST'
-
-
-class CoreDeleteForm(CoreBackForm):
-    def __init__(self, *args, **kwargs):
-        referer = kwargs.pop('referer', None)
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper(self)
-        self.helper.add_input(Button(
-            'back',
-            'Back',
-            onclick="javascript:location.href = '%s';" %referer)
-        )
-
-        self.helper.add_input(Hidden('next',
-                                     value=referer))
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('delete', 'Delete',
-                                     css_class='btn-danger'))
