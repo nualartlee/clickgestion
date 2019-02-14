@@ -93,7 +93,7 @@ def transaction_edit(request, *args, **kwargs):
 
     # POST
     if request.method == 'POST':
-        form = TransactionEditForm(request.POST)
+        form = TransactionEditForm(request.POST, instance=transaction)
         valid = form.is_valid()
 
         # Delete and go home
@@ -123,7 +123,7 @@ def transaction_edit(request, *args, **kwargs):
     else:
 
         # Create the form
-        form = TransactionEditForm()
+        form = TransactionEditForm(instance=transaction)
         extra_context['form'] = form
         return render(request, 'transactions/transaction_edit.html', extra_context)
 

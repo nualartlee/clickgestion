@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column, Submit
 from clickgestion.apt_rentals.models import ApartmentRental
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext
 
 
 class RentalForm(forms.ModelForm):
@@ -32,6 +33,7 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkin',
+                        label=gettext('Checkin'),
                         title=gettext("Arrival date"),
                         css_class='col-8',
                     ),
@@ -40,6 +42,7 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkout',
+                        label=gettext('Checkout'),
                         title=gettext("Departure date"),
                         css_class='col-8',
                     ),

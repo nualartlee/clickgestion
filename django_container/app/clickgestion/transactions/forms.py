@@ -1,12 +1,11 @@
 from django import forms
 from django.utils.translation import gettext
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Button, Div, Hidden, Layout, Field, Fieldset, Row, Column
-from crispy_forms.bootstrap import FieldWithButtons, StrictButton
+from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.transactions.models import Transaction
 
 
-class TransactionEditForm(forms.Form):
+class TransactionEditForm(forms.ModelForm):
     # Pay the transaction if submitted as True
     pay_button = forms.BooleanField(
         initial=False,
@@ -22,6 +21,19 @@ class TransactionEditForm(forms.Form):
         initial=False,
         required=False,
     )
+
+    class Meta:
+        model = Transaction
+        fields = (
+            'apt_number',
+            'client_first_name',
+            'client_last_name',
+        )
+        labels = {
+            'apt_number': gettext('Apartment'),
+            'client_first_name': gettext('First Name'),
+            'client_last_name': gettext('Last Name'),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -66,6 +78,11 @@ class TransactionPayForm(forms.ModelForm):
             'client_first_name',
             'client_last_name',
         )
+        labels = {
+            'apt_number': gettext('Apartment'),
+            'client_first_name': gettext('First Name'),
+            'client_last_name': gettext('Last Name'),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -79,7 +96,6 @@ class TransactionPayForm(forms.ModelForm):
                 Column(
                     Field(
                         'apt_number',
-                        id='apt_number',
                         title=gettext("The client's apartment number"),
                         placeholder=gettext("101"),
                         css_class='col-12',
