@@ -112,7 +112,7 @@ msgstr "Contraseña"
 
 #: clickgestion/core/forms.py:37
 msgid "Login"
-msgstr "Login"
+msgstr "Entrar"
 
 #: clickgestion/core/templates/core/delete.html:18
 #: clickgestion/core/templates/core/message.html:15
@@ -139,15 +139,15 @@ msgstr "Iniciar Nueva Transacción"
 
 #: clickgestion/core/templates/core/index.html:14
 msgid "View Open Transactions"
-msgstr "Ver Transacciones Abiertas"
+msgstr "Ver Transacciones Pendientes"
 
 #: clickgestion/core/templates/core/index.html:24
 msgid "View All Transactions"
-msgstr "Ver Todas Transacciones"
+msgstr "Ver Todas Las Transacciones"
 
 #: clickgestion/core/templates/core/index.html:25
 msgid "View Current Cash Balance"
-msgstr ""
+msgstr "Ver Balance De Caja"
 
 #: clickgestion/core/templates/core/index.html:26
 msgid "Close Cash Desk"
@@ -183,7 +183,7 @@ msgstr "Martínez Gomez"
 
 #: clickgestion/transactions/models.py:35
 msgid "Not Set"
-msgstr ""
+msgstr " "
 
 #: clickgestion/transactions/models.py:43
 #, python-brace-format

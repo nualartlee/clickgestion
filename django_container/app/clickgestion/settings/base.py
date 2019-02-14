@@ -127,12 +127,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGES = (
-    ('en-us', 'English'),
+    ('en', 'English'),
     ('es', 'Español')
 )
 
-#LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'en'
+#LANGUAGE_CODE = 'es'
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'

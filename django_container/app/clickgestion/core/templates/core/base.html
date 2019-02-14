@@ -31,9 +31,13 @@
                         {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                         {% endif %}
+
                         {% if user.is_superuser %}
                         <li class="nav-item"><a class="nav-link" href="/admin">Admin</a></li>
                         {% endif %}
+
+                        {% include 'core/languageselect.html' %}
+
                     </ul>
                 </div>
             </nav>

@@ -1,0 +1,22 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% get_language_info for LANGUAGE_CODE as LANGUAGE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+
+<form id="language_form" action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ redirect_to }}">
+    <input name="language" id="id_language" type="hidden" value="{{ LANGUAGE_CODE }}">
+
+    <li class="nav-item dropdown">
+        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">{{ LANGUAGE.name_local }}<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            {% for language in languages %}
+            <li class="nav-item">
+                <option class="nav-link{% if language.code == LANGUAGE_CODE %} active{% endif %}" value="{{ language.code }}" onclick='document.getElementById("id_language").value = "{{ language.code }}";document.getElementById("language_form").submit();' title="{{ language.name_local }} ({{ language.code }})">{{ language.name_local }}</option>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+</form>
