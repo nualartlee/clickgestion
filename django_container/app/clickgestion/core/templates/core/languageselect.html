@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_language_info for LANGUAGE_CODE as LANGUAGE %}
 {% get_available_languages as LANGUAGES %}
@@ -10,11 +11,18 @@
     <input name="language" id="id_language" type="hidden" value="{{ LANGUAGE_CODE }}">
 
     <li class="nav-item dropdown">
-        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">{{ LANGUAGE.name_local }}<b class="caret"></b></a>
+        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">
+            {% with 'core/img/flag_'|add:LANGUAGE_CODE|add:'.png' as image_static %}
+            <img width="22" height="16" src="{% static image_static %}" title="{{ LANGUAGE.name_local }}" alt="{{ LANGUAGE.name_local }}"/>
+            {% endwith %}
+            <b class="caret"></b>
+        </a>
         <ul class="dropdown-menu">
             {% for language in languages %}
-            <li class="nav-item">
-                <option class="nav-link{% if language.code == LANGUAGE_CODE %} active{% endif %}" value="{{ language.code }}" onclick='document.getElementById("id_language").value = "{{ language.code }}";document.getElementById("language_form").submit();' title="{{ language.name_local }} ({{ language.code }})">{{ language.name_local }}</option>
+            <li class="nav-item m-1">
+                {% with 'core/img/flag_'|add:language.code|add:'.png' as image_static %}
+                <img width="22" height="16" src="{% static image_static %}" title="{{ language.name_local }}" alt="{{ language.name_local }}" onclick='document.getElementById("id_language").value = "{{ language.code }}";document.getElementById("language_form").submit();'/>
+                {% endwith %}
             </li>
             {% endfor %}
         </ul>
