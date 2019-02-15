@@ -134,7 +134,7 @@ class TransactionList(PaginationMixin, ListView):
     context_object_name = 'transactions'
     paginate_by = 10
     queryset = None
-    header = gettext_lazy('Transactions')
+    header = None
     request = None
     filter = None
 
@@ -152,6 +152,8 @@ class TransactionList(PaginationMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         # Add data
+        if not self.header:
+            header = gettext_lazy('Transactions')
         context['header'] = self.header
         context['filter'] = self.filter
 

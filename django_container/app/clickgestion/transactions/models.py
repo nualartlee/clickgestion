@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext
+from django.utils.translation import gettext, gettext_lazy, ugettext, ugettext_lazy
 from django.utils import timezone
 import uuid
+from django.utils.encoding import python_2_unicode_compatible
 
 User = get_user_model()
 
@@ -14,26 +15,26 @@ def get_new_transaction_code():
     """
     params = {
         'time': timezone.datetime.now().strftime('%m%d'),
-        'uuid': uuid.uuid4().hex[:4],
+        'uuid': uuid.uuid4().hex[:6],
     }
     code = 'T%(time)s%(uuid)s' % params
     code = code.upper()
     # Check if already used
-    #try:
-    #    Transaction.objects.get(code=code)
-    #    return get_new_transaction_code()
-    #except Transaction.DoesNotExist:
-    #    return code
-    return code
+    try:
+        Transaction.objects.get(code=code)
+        return get_new_transaction_code()
+    except Transaction.DoesNotExist:
+        return code
 
 
+@python_2_unicode_compatible
 class Transaction(models.Model):
     """
     A transaction records a single interaction between the host and
     a client. The interaction might involve multiple exchanges such as
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
-    #code = models.CharField(max_length=10, unique=True, default=get_new_transaction_code, editable=False)
+    code = models.CharField(max_length=32, unique=True, default=get_new_transaction_code, editable=False)
     employee = models.ForeignKey(User, editable=False)
     client_first_name = models.CharField(max_length=255, blank=True, null=True)
     client_last_name = models.CharField(max_length=255, blank=True, null=True)
@@ -43,8 +44,12 @@ class Transaction(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
-        return 'Transaction {0}'.format(self.id)
+    class Meta:
+        verbose_name = gettext_lazy('Transaction')
+        verbose_name_plural = gettext_lazy('Transactions')
+
+    def __str__(self):
+        return self.code
 
     @property
     def client(self):
@@ -54,7 +59,7 @@ class Transaction(models.Model):
         if self.client_first_name or self.client_last_name:
             name = '{0} {1}'.format(self.client_first_name, self.client_last_name)
         else:
-            name = gettext('Not Set')
+            name = ''
         return name
 
     @property
@@ -79,6 +84,7 @@ class Transaction(models.Model):
 
 
 
+@python_2_unicode_compatible
 class Concept(models.Model):
     """
     A transaction concept records the type of exchange:
@@ -87,7 +93,15 @@ class Concept(models.Model):
     """
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='concepts')
 
+    class Meta:
+        verbose_name = gettext_lazy('Abstract Concept')
+        verbose_name_plural = gettext_lazy('Abstract Concepts')
 
+    def __str__(self):
+        return '{0}-C{1}'.format(self.transaction.code, self.id)
+
+
+@python_2_unicode_compatible
 class ConceptData(models.Model):
     """
     A transaction concept records the type of exchange:

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-15 01:52+0100\n"
+"POT-Creation-Date: 2019-02-15 22:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,10 +18,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: clickgestion/apt_rentals/forms.py:11 clickgestion/apt_rentals/forms.py:35
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:15
 msgid "Checkin"
 msgstr "Llegada"
 
 #: clickgestion/apt_rentals/forms.py:17 clickgestion/apt_rentals/forms.py:44
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:16
 msgid "Checkout"
 msgstr "Salida"
 
@@ -37,7 +39,34 @@ msgstr "Fecha de salida"
 msgid "Missing prices in selected dates"
 msgstr "Faltan precios en las fechas seleccionadas"
 
+#: clickgestion/apt_rentals/models.py:25
+msgid "Nightly Rate Range"
+msgstr "Rango De Precios Por Noche"
+
+#: clickgestion/apt_rentals/models.py:26
+msgid "Nightly Rate Ranges"
+msgstr "Rangos De Precios Por Noche"
+
+#: clickgestion/apt_rentals/models.py:29
+msgid "Nightly Rate Range %(id)s"
+msgstr "Rango De Precios %(id)s"
+
+#: clickgestion/apt_rentals/models.py:75 clickgestion/apt_rentals/models.py:125
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:9
+#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:9
+#: clickgestion/transactions/views.py:23
+msgid "Apartment Rental"
+msgstr "Alquiler De Apartamento"
+
+#: clickgestion/apt_rentals/models.py:76
+msgid "Apartment Rentals"
+msgstr "Alquileres De Apartamentos"
+
 #: clickgestion/apt_rentals/models.py:79
+msgid "Apt Rental %(id)s"
+msgstr "Alquiler De Apt %(id)s"
+
+#: clickgestion/apt_rentals/models.py:96
 #, python-format
 msgid ""
 "Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s"
@@ -45,34 +74,17 @@ msgstr ""
 "Alquiler Apartamento: %(checkin)s - %(checkout)s, %(nights)s noches, "
 "%(price)s"
 
-#: clickgestion/apt_rentals/models.py:108
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:9
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:9
-#: clickgestion/transactions/views.py:23
-msgid "Apartment Rental"
-msgstr "Alquiler Apartamento"
-
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:15
-msgid "Checkin: "
-msgstr "Llegada: "
-
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:16
-msgid "Checkout: "
-msgstr "Salida: "
-
 #: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:17
-msgid "Nights: "
-msgstr "Noches: "
+msgid "Nights"
+msgstr "Noches"
 
 #: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:18
-msgid "Rates per night: "
-msgstr "Precios por noche: "
+msgid "Rates per night"
+msgstr "Precios por noche"
 
 #: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:19
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:45
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:22
-msgid "Total: "
-msgstr "Total: "
+msgid "Total"
+msgstr "Total"
 
 #: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:18
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:91
@@ -87,7 +99,7 @@ msgid "Cancel"
 msgstr "Cancelar"
 
 #: clickgestion/apt_rentals/views.py:22 clickgestion/apt_rentals/views.py:103
-#: clickgestion/transactions/views.py:88 clickgestion/transactions/views.py:202
+#: clickgestion/transactions/views.py:88 clickgestion/transactions/views.py:204
 msgid "Transaction Closed"
 msgstr "Transacción Cerrada"
 
@@ -135,6 +147,8 @@ msgid "Back"
 msgstr "Volver"
 
 #: clickgestion/core/templates/core/delete.html:21
+#: clickgestion/transactions/templates/transactions/concept_listitem.html:19
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:42
 #: clickgestion/transactions/templates/transactions/transaction_listitem.html:32
 msgid "Delete"
 msgstr "Borrar"
@@ -203,31 +217,60 @@ msgstr "Appellidos del cliente"
 msgid "Smith"
 msgstr "Martínez Gomez"
 
-#: clickgestion/transactions/models.py:57
-msgid "Not Set"
-msgstr " "
-
-#: clickgestion/transactions/models.py:65
-#, python-brace-format
-msgid "Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}"
-msgstr "Transacción #:{0} Apt:{1} Cliente: {2} Conceptos: {3} Total: {4}"
-
+#: clickgestion/transactions/models.py:48
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:9
 msgid "Transaction"
 msgstr "Transacción"
 
+#: clickgestion/transactions/models.py:49
+#: clickgestion/transactions/views.py:156
+msgid "Transactions"
+msgstr "Transacciones"
+
+#: clickgestion/transactions/models.py:52
+msgid "Transaction %(code)s"
+msgstr "Transacción %(code)s"
+
+#: clickgestion/transactions/models.py:62
+msgid "Not Set"
+msgstr " "
+
+#: clickgestion/transactions/models.py:70
+#, python-brace-format
+msgid "Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}"
+msgstr "Transacción #:{0} Apt:{1} Cliente: {2} Conceptos: {3} Total: {4}"
+
+#: clickgestion/transactions/models.py:97
+msgid "Abstract Concept"
+msgstr "Concepto Abstracto"
+
+#: clickgestion/transactions/models.py:98
+msgid "Abstract Concepts"
+msgstr "Conceptos Abstractos"
+
+#: clickgestion/transactions/models.py:101
+msgid "Abstract Concept %(id)s"
+msgstr "Concepto Abstracto %(id)s"
+
+#: clickgestion/transactions/models.py:118
+msgid "Concept Data Object"
+msgstr "Objeto De Datos De Concepto"
+
+#: clickgestion/transactions/templates/transactions/concept_listitem.html:16
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:39
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:29
+msgid "Edit"
+msgstr "Editar"
+
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:22
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:12
 msgid "Transaction: #"
 msgstr "Transacción: #"
 
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:25
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:15
 msgid "Apartment: "
 msgstr "Apartamento: "
 
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:28
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:18
 msgid "Client: "
 msgstr "Cliente: "
 
@@ -239,6 +282,11 @@ msgstr "Transacción #"
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:21
 msgid "Select concepts to add below: "
 msgstr "Selecciona conceptos para añadir más abajo"
+
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:45
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:22
+msgid "Total: "
+msgstr "Total: "
 
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:74
 msgid "Click to select a concept to add"
@@ -264,9 +312,13 @@ msgstr "Guardar la transacción como pendiente"
 msgid "Cancel the transaction and delete all data"
 msgstr "Cancelar la transacción y borrar todo"
 
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:29
-msgid "Edit"
-msgstr "Editar"
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:15
+msgid "Apt"
+msgstr "Apt"
+
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:18
+msgid "Client"
+msgstr "Cliente"
 
 #: clickgestion/transactions/templates/transactions/transaction_pay.html:48
 msgid "Confirm and close this transaction"
@@ -292,11 +344,13 @@ msgstr "Cancelar esta transacción y borrar todo"
 msgid "Delete Transaction?"
 msgstr "Borrar la Transacción?"
 
-#: clickgestion/transactions/views.py:137
-msgid "Transactions"
-msgstr "Transacciones"
-
-#: clickgestion/transactions/views.py:255
+#: clickgestion/transactions/views.py:257
 #, python-format
 msgid "Pending transactions by %(employee)s"
 msgstr "Transacciones pendientes de %(employee)s"
+
+#~ msgid "Checkin: "
+#~ msgstr "Llegada: "
+
+#~ msgid "Checkout: "
+#~ msgstr "Salida: "

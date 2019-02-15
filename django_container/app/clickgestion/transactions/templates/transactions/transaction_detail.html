@@ -36,10 +36,10 @@
             <p>{{ transaction.closed_time }}</p>
             {% else %}
             <a href="/transactions/{{ transaction.id }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
-                Edit
+                {% trans 'Edit' %}
             </a>
             <a href="/transactions/{{ transaction.id }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
-                Delete
+                {% trans 'Delete' %}
             </a>
             {% endif %}
         </div>

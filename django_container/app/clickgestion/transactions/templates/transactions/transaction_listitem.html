@@ -9,13 +9,13 @@
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
                     <div class="col-sm-4 text-left">
-                        {% trans 'Transaction: #' %}{{ transaction.id }}
+                        ID: {{ transaction.id }}
                     </div>
                     <div class="col-sm-4 text-center">
-                        {% trans 'Apartment: ' %}{{ transaction.apt_number }}
+                        {% trans 'Apt' %}: {{ transaction.apt_number }}
                     </div>
                     <div class="col-sm-4 text-right">
-                        {% trans 'Client: ' %}{{ transaction.client }}
+                        {% trans 'Client' %}: {{ transaction.client }}
                     </div>
                 </div>
             </a>

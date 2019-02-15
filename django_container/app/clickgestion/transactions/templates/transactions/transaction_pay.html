@@ -48,7 +48,7 @@
                 <button type="submit" class="btn btn-success btn-block" title="{% trans 'Confirm and close this transaction' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back to review the concepts' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back to add concepts' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
             </div>
             <div class="col">
                 <button type="submit" class="btn btn-secondary btn-block" title="{% trans 'Finish this transaction later' %}" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>

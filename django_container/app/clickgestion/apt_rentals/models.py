@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
 from clickgestion.transactions.models import ConceptData
-from django.utils.translation import gettext
+from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class NightRateRange(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
@@ -18,6 +20,13 @@ class NightRateRange(models.Model):
     sunday = models.FloatField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = gettext_lazy('Nightly Rate Range')
+        verbose_name_plural = gettext_lazy('Nightly Rate Ranges')
+
+    def __str__(self):
+        return gettext('Nightly Rate Range %(id)s' % {'id': self.id})
 
 
 def get_night_rate(date):
@@ -49,6 +58,7 @@ def get_night_rate(date):
         return rate.sunday
 
 
+@python_2_unicode_compatible
 class ApartmentRental(ConceptData):
     """
     Transaction Concept
@@ -60,6 +70,13 @@ class ApartmentRental(ConceptData):
     checkout = models.DateField()
     # Ordered list of daily rates
     rates = ArrayField(models.FloatField())
+
+    class Meta:
+        verbose_name = gettext_lazy('Apartment Rental')
+        verbose_name_plural = gettext_lazy('Apartment Rentals')
+
+    def __str__(self):
+        return '{0}-AR{1}'.format(self.transaction.code, self.id)
 
     @property
     def nights(self):

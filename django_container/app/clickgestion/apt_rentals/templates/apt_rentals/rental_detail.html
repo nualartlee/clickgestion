@@ -12,10 +12,10 @@
         {% include 'transactions/transaction_listitem.html' %}
     </ul>
     <p style="margin-top:20px"></p>
-    <p><b>{% trans 'Checkin: ' %}</b>{{ rental.checkin }}</p>
-    <p><b>{% trans 'Checkout: ' %}</b>{{ rental.checkout }}</p>
-    <p><b>{% trans 'Nights: ' %}</b>{{ rental.nights }}</p>
-    <p><b>{% trans 'Rates per night: ' %}</b>{{ rental.rates }}</p>
-    <p><b>{% trans 'Total: ' %}</b>{{ rental.price }}</p>
+    <p><b>{% trans 'Checkin' %}: </b>{{ rental.checkin }}</p>
+    <p><b>{% trans 'Checkout' %}: </b>{{ rental.checkout }}</p>
+    <p><b>{% trans 'Nights' %}: </b>{{ rental.nights }}</p>
+    <p><b>{% trans 'Rates per night' %}: </b>{{ rental.rates }}</p>
+    <p><b>{% trans 'Total' %}: </b>{{ rental.price }}</p>
 </div>
 {% endblock %}
