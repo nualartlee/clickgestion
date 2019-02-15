@@ -1,21 +1,20 @@
 from django import forms
-from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column, Submit
 from clickgestion.apt_rentals.models import ApartmentRental
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext
 
 
 class RentalForm(forms.ModelForm):
     checkin = forms.DateField(
-        label=gettext('Checkin'),
+        label=gettext_lazy('Checkin'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
     )
     checkout = forms.DateField(
-        label=gettext('Checkout'),
+        label=gettext_lazy('Checkout'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
@@ -33,8 +32,8 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkin',
-                        label=gettext('Checkin'),
-                        title=gettext("Arrival date"),
+                        label=gettext_lazy('Checkin'),
+                        title=gettext_lazy("Arrival date"),
                         css_class='col-8',
                     ),
                     css_class='col-6',
@@ -42,8 +41,8 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkout',
-                        label=gettext('Checkout'),
-                        title=gettext("Departure date"),
+                        label=gettext_lazy('Checkout'),
+                        title=gettext_lazy("Departure date"),
                         css_class='col-8',
                     ),
                     css_class='col-6',
@@ -59,7 +58,7 @@ class RentalForm(forms.ModelForm):
             checkout=self.cleaned_data.get('checkout'),
         ).get_rates()
         if 'missing' in rates:
-            error = gettext('Missing prices in selected dates')
+            error = gettext_lazy('Missing prices in selected dates')
             raise ValidationError(error)
 
         return self.cleaned_data

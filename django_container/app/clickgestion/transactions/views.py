@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
-from django.utils.translation import gettext
+from django.utils.translation import gettext, gettext_lazy
 from django.utils import timezone
 from clickgestion.transactions.filters import EmployeeFilter
 from django.views.generic import ListView
@@ -134,7 +134,7 @@ class TransactionList(PaginationMixin, ListView):
     context_object_name = 'transactions'
     paginate_by = 10
     queryset = None
-    header = gettext('Transactions')
+    header = gettext_lazy('Transactions')
     request = None
     filter = None
 
@@ -252,7 +252,7 @@ def transactions_open(request, *args, **kwargs):
     queryset = Transaction.objects.filter(employee=request.user, closed=False)
 
     # Set header
-    header = gettext('Open transactions by %(employee)s' % {'employee': request.user})
+    header = gettext_lazy('Pending transactions by %(employee)s' % {'employee': request.user})
 
     # Return
     listview = TransactionList.as_view(queryset=queryset, header=header)

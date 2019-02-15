@@ -1,4 +1,12 @@
 from clickgestion.core.test import CustomTestCase
+from clickgestion.transactions.models import Transaction, get_new_transaction_code
+
+
+class TestGetNewTransactionID(CustomTestCase):
+
+    def test_get_new_transaction_code(self):
+        code = get_new_transaction_code()
+        assert code
 
 
 class TestTransaction(CustomTestCase):

@@ -2,8 +2,29 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext
+from django.utils import timezone
+import uuid
 
 User = get_user_model()
+
+def get_new_transaction_code():
+    """
+    Generate a transaction id code
+    :return:
+    """
+    params = {
+        'time': timezone.datetime.now().strftime('%m%d'),
+        'uuid': uuid.uuid4().hex[:4],
+    }
+    code = 'T%(time)s%(uuid)s' % params
+    code = code.upper()
+    # Check if already used
+    #try:
+    #    Transaction.objects.get(code=code)
+    #    return get_new_transaction_code()
+    #except Transaction.DoesNotExist:
+    #    return code
+    return code
 
 
 class Transaction(models.Model):
@@ -12,6 +33,7 @@ class Transaction(models.Model):
     a client. The interaction might involve multiple exchanges such as
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
+    #code = models.CharField(max_length=10, unique=True, default=get_new_transaction_code, editable=False)
     employee = models.ForeignKey(User, editable=False)
     client_first_name = models.CharField(max_length=255, blank=True, null=True)
     client_last_name = models.CharField(max_length=255, blank=True, null=True)

@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-13 21:43-0800\n"
+"POT-Creation-Date: 2019-02-15 01:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +16,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: clickgestion/apt_rentals/forms.py:11
+
+#: clickgestion/apt_rentals/forms.py:11 clickgestion/apt_rentals/forms.py:35
 msgid "Checkin"
 msgstr "Llegada"
 
-#: clickgestion/apt_rentals/forms.py:17
+#: clickgestion/apt_rentals/forms.py:17 clickgestion/apt_rentals/forms.py:44
 msgid "Checkout"
 msgstr "Salida"
 
-#: clickgestion/apt_rentals/forms.py:35
+#: clickgestion/apt_rentals/forms.py:36
 msgid "Arrival date"
 msgstr "Fecha de llegada"
 
-#: clickgestion/apt_rentals/forms.py:43
+#: clickgestion/apt_rentals/forms.py:45
 msgid "Departure date"
 msgstr "Fecha de salida"
 
-#: clickgestion/apt_rentals/forms.py:59
+#: clickgestion/apt_rentals/forms.py:61
 msgid "Missing prices in selected dates"
 msgstr "Faltan precios en las fechas seleccionadas"
 
@@ -41,8 +41,9 @@ msgstr "Faltan precios en las fechas seleccionadas"
 #, python-format
 msgid ""
 "Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s"
-msgstr "Alquiler Apartamento: %(checkin)s - %(checkout)s, %(nights)s noches, %(price)s"
-
+msgstr ""
+"Alquiler Apartamento: %(checkin)s - %(checkout)s, %(nights)s noches, "
+"%(price)s"
 
 #: clickgestion/apt_rentals/models.py:108
 #: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:9
@@ -110,9 +111,17 @@ msgstr "contraseña"
 msgid "Password"
 msgstr "Contraseña"
 
-#: clickgestion/core/forms.py:37
+#: clickgestion/core/forms.py:37 clickgestion/core/templates/core/base.html:33
 msgid "Login"
 msgstr "Entrar"
+
+#: clickgestion/core/templates/core/base.html:29
+msgid "Logout"
+msgstr "Salir"
+
+#: clickgestion/core/templates/core/base.html:37
+msgid "Admin"
+msgstr "Admin"
 
 #: clickgestion/core/templates/core/delete.html:18
 #: clickgestion/core/templates/core/message.html:15
@@ -126,6 +135,7 @@ msgid "Back"
 msgstr "Volver"
 
 #: clickgestion/core/templates/core/delete.html:21
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:32
 msgid "Delete"
 msgstr "Borrar"
 
@@ -157,35 +167,47 @@ msgstr "Cerrar Caja"
 msgid "Search by employee"
 msgstr "Buscar por empleado"
 
-#: clickgestion/transactions/forms.py:83
+#: clickgestion/transactions/forms.py:33 clickgestion/transactions/forms.py:85
+msgid "Apartment"
+msgstr "Apartamento"
+
+#: clickgestion/transactions/forms.py:34 clickgestion/transactions/forms.py:86
+msgid "First Name"
+msgstr "Nombre"
+
+#: clickgestion/transactions/forms.py:35 clickgestion/transactions/forms.py:87
+msgid "Last Name"
+msgstr "Apellidos"
+
+#: clickgestion/transactions/forms.py:102
 msgid "The client's apartment number"
 msgstr "El número de apartamento del cliente"
 
-#: clickgestion/transactions/forms.py:84
+#: clickgestion/transactions/forms.py:103
 msgid "101"
 msgstr "101"
 
-#: clickgestion/transactions/forms.py:92
+#: clickgestion/transactions/forms.py:111
 msgid "The client's first name"
 msgstr "El nombre del cliente"
 
-#: clickgestion/transactions/forms.py:93
+#: clickgestion/transactions/forms.py:112
 msgid "John"
 msgstr "Juan"
 
-#: clickgestion/transactions/forms.py:101
+#: clickgestion/transactions/forms.py:120
 msgid "The client's last name"
 msgstr "Appellidos del cliente"
 
-#: clickgestion/transactions/forms.py:102
+#: clickgestion/transactions/forms.py:121
 msgid "Smith"
 msgstr "Martínez Gomez"
 
-#: clickgestion/transactions/models.py:35
+#: clickgestion/transactions/models.py:57
 msgid "Not Set"
 msgstr " "
 
-#: clickgestion/transactions/models.py:43
+#: clickgestion/transactions/models.py:65
 #, python-brace-format
 msgid "Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}"
 msgstr "Transacción #:{0} Apt:{1} Cliente: {2} Conceptos: {3} Total: {4}"
@@ -242,6 +264,10 @@ msgstr "Guardar la transacción como pendiente"
 msgid "Cancel the transaction and delete all data"
 msgstr "Cancelar la transacción y borrar todo"
 
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:29
+msgid "Edit"
+msgstr "Editar"
+
 #: clickgestion/transactions/templates/transactions/transaction_pay.html:48
 msgid "Confirm and close this transaction"
 msgstr "Confirmar y cerrar esta transacción"
@@ -251,8 +277,8 @@ msgid "Confirm"
 msgstr "Confirmar"
 
 #: clickgestion/transactions/templates/transactions/transaction_pay.html:51
-msgid "Go back to review the concepts"
-msgstr "Volver para editar conceptos"
+msgid "Go back to add concepts"
+msgstr "Volver para añadir conceptos"
 
 #: clickgestion/transactions/templates/transactions/transaction_pay.html:54
 msgid "Finish this transaction later"
@@ -272,5 +298,5 @@ msgstr "Transacciones"
 
 #: clickgestion/transactions/views.py:255
 #, python-format
-msgid "Open transactions by %(employee)s"
-msgstr "Transacciones abiertas por %(employee)s"
+msgid "Pending transactions by %(employee)s"
+msgstr "Transacciones pendientes de %(employee)s"

@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.transactions.models import Transaction
@@ -30,9 +30,9 @@ class TransactionEditForm(forms.ModelForm):
             'client_last_name',
         )
         labels = {
-            'apt_number': gettext('Apartment'),
-            'client_first_name': gettext('First Name'),
-            'client_last_name': gettext('Last Name'),
+            'apt_number': gettext_lazy('Apartment'),
+            'client_first_name': gettext_lazy('First Name'),
+            'client_last_name': gettext_lazy('Last Name'),
         }
 
     def __init__(self, *args, **kwargs):
@@ -43,6 +43,9 @@ class TransactionEditForm(forms.ModelForm):
             Field('pay_button', type='hidden'),
             Field('save_button', type='hidden'),
             Field('cancel_button', type='hidden'),
+            Field('apt_number', type='hidden'),
+            Field('client_first_name', type='hidden'),
+            Field('client_last_name', type='hidden'),
         )
 
     def is_valid(self):
@@ -79,9 +82,9 @@ class TransactionPayForm(forms.ModelForm):
             'client_last_name',
         )
         labels = {
-            'apt_number': gettext('Apartment'),
-            'client_first_name': gettext('First Name'),
-            'client_last_name': gettext('Last Name'),
+            'apt_number': gettext_lazy('Apartment'),
+            'client_first_name': gettext_lazy('First Name'),
+            'client_last_name': gettext_lazy('Last Name'),
         }
 
     def __init__(self, *args, **kwargs):
@@ -96,8 +99,8 @@ class TransactionPayForm(forms.ModelForm):
                 Column(
                     Field(
                         'apt_number',
-                        title=gettext("The client's apartment number"),
-                        placeholder=gettext("101"),
+                        title=gettext_lazy("The client's apartment number"),
+                        placeholder=gettext_lazy("101"),
                         css_class='col-12',
                     ),
                     css_class='col-2',
@@ -105,8 +108,8 @@ class TransactionPayForm(forms.ModelForm):
                 Column(
                     Field(
                         'client_first_name',
-                        title=gettext("The client's first name"),
-                        placeholder=gettext("John"),
+                        title=gettext_lazy("The client's first name"),
+                        placeholder=gettext_lazy("John"),
                         css_class='col-12',
                     ),
                     css_class='col-5',
@@ -114,8 +117,8 @@ class TransactionPayForm(forms.ModelForm):
                 Column(
                     Field(
                         'client_last_name',
-                        title=gettext("The client's last name"),
-                        placeholder=gettext("Smith"),
+                        title=gettext_lazy("The client's last name"),
+                        placeholder=gettext_lazy("Smith"),
                         css_class='col-12',
                     ),
                     css_class='col-5',
