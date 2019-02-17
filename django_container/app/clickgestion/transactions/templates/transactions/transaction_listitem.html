@@ -8,7 +8,8 @@
                title="{{ transaction.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
-                    <div class="col-sm-4 text-left d-flex align-items-center">
+                    <!--Transaction Code-->
+                    <div class="col-sm-3 text-left d-flex align-items-center">
                     <div>
                         <div class="row">
                             {{ transaction.code }}
@@ -23,22 +24,27 @@
                         </div>
                     </div>
                     </div>
-                    <div class="col-sm-4 text-center d-flex align-items-center">
+                    <!--Transaction Concepts-->
+                    <div class="col-sm-6 d-flex align-items-center">
                         {% if transaction.concepts.count %}
                         <div>
                         {% for concept in transaction.concepts.all %}
-                        <div class="row">{{ concept.data.type }}</div>
+                            <div class="row d-inline-flex">
+                                <h6 class="mr-2"><small>{{ concept.data.type }}</small></h6>
+                                {% with concept.data.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                            </div>
                         {% endfor %}
                         </div>
                         {% endif %}
                     </div>
-                    <div class="col-sm-4 text-right d-flex align-items-center">
+                    <!--Transaction Totals-->
+                    <div class="col-sm-3 text-right d-flex align-items-center">
                         {% if transaction.totals %}
-                        <div>
                             {% for value in transaction.totals %}
-                            <div class="row">{% include 'transactions/value_small.html' %}</div>
+                            <div class="row">
+                                    {% include 'transactions/value_bold_sm.html' %}
+                            </div>
                             {% endfor %}
-                        </div>
                         {% endif %}
                     </div>
                 </div>

@@ -1,4 +1,0 @@
-{% load i18n humanize %}
-<p class="{% if value.credit %}text-body{% else %}text-danger{% endif %}" >
-    {% if value.currency.symbol %}{{ value.currency.symbol }} {% endif %}{{ value.amount|floatformat:2|intcomma }}
-</p>

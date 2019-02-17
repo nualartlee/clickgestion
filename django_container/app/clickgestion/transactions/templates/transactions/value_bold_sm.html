@@ -1,0 +1,8 @@
+{% load i18n humanize %}
+<h6 class="font-weight-bold {% if value.credit %}text-body{% else %}text-danger{% endif %}" >
+    <small>
+        <strong>
+            {% if not value.credit %}db  {% endif %}{% if value.currency.symbol %}{{ value.currency.symbol }} {% endif %}{{ value.amount|floatformat:2|intcomma }}
+        </strong>
+    </small>
+</h6>
