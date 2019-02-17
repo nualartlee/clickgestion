@@ -1,0 +1,4 @@
+{% load i18n humanize %}
+<b class="{% if value.credit %}text-body{% else %}text-danger{% endif %}" >
+    {% if not value.credit %}db  {% endif %}{% if value.currency.symbol %}{{ value.currency.symbol }} {% endif %}{{ value.amount|floatformat:2|intcomma }}
+</b>

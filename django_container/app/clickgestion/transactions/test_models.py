@@ -26,7 +26,7 @@ class TestTransaction(CustomTestCase):
     def test_description_short(self):
         assert self.transaction.description_short
 
-    def test_total(self):
-        assert self.transaction.total
+    def test_totals(self):
+        assert self.transaction.totals
 
 

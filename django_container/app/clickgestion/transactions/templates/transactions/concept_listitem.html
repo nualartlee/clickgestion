@@ -21,7 +21,9 @@
         </div>
 
         <div class="col-sm-2 align-middle text-right align-self-end">
-            <p>{{ concept.data.price }}</p>
+            {% with concept.data.value as value %}
+            {% include 'transactions/value_small.html' %}
+            {% endwith %}
         </div>
     </div>
 

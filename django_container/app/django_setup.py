@@ -92,6 +92,7 @@ if __name__ == "__main__":
             code_n='978',
             default=True,
             exchange_rate=1,
+            symbol=u'€',
         )
         print('{} currency created'.format(code_a))
     # GBP
@@ -105,6 +106,7 @@ if __name__ == "__main__":
             code_a=code_a,
             code_n='826',
             exchange_rate=1.2,
+            symbol=u'£',
         )
         print('{} currency created'.format(code_a))
     # USD
@@ -118,6 +120,7 @@ if __name__ == "__main__":
             code_a=code_a,
             code_n='840',
             exchange_rate=0.8,
+            symbol=u'$',
         )
         print('{} currency created'.format(code_a))
 

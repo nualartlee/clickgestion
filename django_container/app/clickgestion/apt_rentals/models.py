@@ -123,9 +123,10 @@ class ApartmentRental(ConceptData):
             value.amount = self.price
             value.save()
         except ConceptValue.DoesNotExist:
-            self.value = ConceptValue.objects.create(
+            value = ConceptValue.objects.create(
                 amount=self.price,
             )
+            self.value = value
         super().save(*args, **kwargs)
 
     @property

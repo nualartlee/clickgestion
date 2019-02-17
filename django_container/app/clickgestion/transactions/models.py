@@ -66,6 +66,13 @@ class CashClose(models.Model):
     notes = models.TextField(max_length=1024, verbose_name=gettext_lazy('Notes'), blank=True, null=True)
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
+    class Meta:
+        verbose_name = gettext_lazy('Cash Desk Closure')
+        verbose_name_plural = gettext_lazy('Cash Desk Closures')
+
+    def __str__(self):
+        return self.code
+
 
 class Currency(models.Model):
     """
@@ -77,6 +84,15 @@ class Currency(models.Model):
     enabled = models.BooleanField(default=True, verbose_name=gettext_lazy('Enabled'))
     default = models.BooleanField(default=False, verbose_name=gettext_lazy('Default'))
     exchange_rate = models.FloatField(verbose_name=gettext_lazy('Exchange Rate'), blank=True, null=True)
+    symbol = models.CharField(max_length=3, verbose_name=gettext_lazy('Symbol'), blank=True, null=True)
+
+    class Meta:
+        verbose_name = gettext_lazy('Currency')
+        verbose_name_plural = gettext_lazy('Currencies')
+
+    def __str__(self):
+        items = [self.name, self.code_a, self.symbol, gettext_lazy('Currency')]
+        return next(item for item in items if item is not None)
 
 
 class ConceptValue(models.Model):
@@ -137,19 +153,55 @@ class Transaction(models.Model):
         :return: A short single line description of the concept.
         """
         description = gettext('Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}'.format(
-            self.id, self.apt_number, self.client, self.concepts.all().count(), self.total,
+            self.id, self.apt_number, self.client, self.concepts.all().count(), self.totals,
         ))
         return description
 
     @property
-    def total(self):
+    def totals(self):
         """
         :return: The total amount of all concepts
         """
-        total = 0
+
+        class DummyValue:
+            def __init__(self, amount, credit, currency):
+                self.amount = amount
+                self.credit = credit
+                self.currency = currency
+
+        # A dictionary of currency:value totals to return
+        totals = {}
+
+        # For each concept
         for concept in self.concepts.all():
-            total += concept.data.price
-        return total
+
+            # Get the value
+            value = concept.data.value
+
+            # Update existing currency total
+            if value.currency in totals:
+                # Add if credit
+                if value.credit:
+                    totals[value.currency].amount += value.amount
+                # Subtract if debit
+                else:
+                    totals[value.currency].amount -= value.amount
+
+            # Start new currency total
+            else:
+                totals[value.currency] = DummyValue(
+                    amount=value.amount,
+                    credit=value.credit,
+                    currency=value.currency,
+                )
+
+        # Update totals credit value
+        for _, value in totals.items():
+            if value.amount < 0:
+                value.credit = False
+                value.amount *= -1
+
+        return totals
 
 
 @python_2_unicode_compatible

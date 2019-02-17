@@ -41,15 +41,17 @@
 
                 <div class="row align-items-center">
 
-                    <div class="col-sm-7 text-left">
+                    <div class="col-sm-6 text-left">
                         <b>{% trans 'Total: ' %}</b>
                     </div>
 
                     <div class="col-sm-3 text-center">
                     </div>
 
-                    <div class="col-sm-2 align-middle text-right align-self-end">
-                        <b>{{ transaction.total }}</b>
+                    <div class="col-sm-3 align-middle text-right align-self-end">
+                        {% for currency, value in transaction.totals.items %}
+                        {% include 'transactions/value_total.html' %}
+                        {% endfor %}
                     </div>
                 </div>
 
