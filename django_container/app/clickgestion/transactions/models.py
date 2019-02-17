@@ -8,6 +8,24 @@ from django.utils.encoding import python_2_unicode_compatible
 
 User = get_user_model()
 
+def get_new_cashclose_code():
+    """
+    Generate a cashclose id code
+    :return:
+    """
+    params = {
+        'time': timezone.datetime.now().strftime('%m%d'),
+        'uuid': uuid.uuid4().hex[:6],
+    }
+    code = 'CC%(time)s%(uuid)s' % params
+    code = code.upper()
+    # Check if already used
+    try:
+        CashClose.objects.get(code=code)
+        return get_new_cashclose_code()
+    except CashClose.DoesNotExist:
+        return code
+
 def get_new_transaction_code():
     """
     Generate a transaction id code
@@ -28,21 +46,38 @@ def get_new_transaction_code():
 
 
 @python_2_unicode_compatible
+class CashClose(models.Model):
+    """
+    A cash close records an end of day cash desk close operation.
+    """
+    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_cashclose_code, editable=False)
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    employee = models.ForeignKey(User, verbose_name=gettext_lazy('Employee'), editable=False)
+    notes = models.TextField(max_length=1024, verbose_name=gettext_lazy('Notes'), blank=True, null=True)
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
+
+
+@python_2_unicode_compatible
 class Transaction(models.Model):
     """
     A transaction records a single interaction between the host and
     a client. The interaction might involve multiple exchanges such as
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
-    code = models.CharField(max_length=32, unique=True, default=get_new_transaction_code, editable=False)
-    employee = models.ForeignKey(User, editable=False)
-    client_first_name = models.CharField(max_length=255, blank=True, null=True)
-    client_last_name = models.CharField(max_length=255, blank=True, null=True)
-    apt_number = models.SmallIntegerField(blank=True, null=True)
-    closed = models.BooleanField(default=False)
-    closed_time = models.DateTimeField(blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    apt_number = models.SmallIntegerField(blank=True, verbose_name=gettext_lazy('Apt Number'), null=True)
+    cashclose = models.ForeignKey(CashClose, verbose_name=gettext_lazy('Cash Desk Close'), on_delete=models.SET_NULL, blank=True, null=True, related_name='transactions')
+    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_transaction_code, editable=False)
+    client_address = models.TextField(max_length=1024, verbose_name=gettext_lazy('Address'), blank=True, null=True)
+    client_email = models.EmailField(verbose_name=gettext_lazy('Email'), blank=True, null=True)
+    client_first_name = models.CharField(max_length=255, verbose_name=gettext_lazy('First Name'), blank=True, null=True)
+    client_id = models.CharField(max_length=36, verbose_name=gettext_lazy('Passport/ID'), blank=True, null=True)
+    client_last_name = models.CharField(max_length=255, verbose_name=gettext_lazy('Last Name'), blank=True, null=True)
+    client_phone_number = models.CharField(max_length=14, verbose_name=gettext_lazy('Phone'), blank=True, null=True)
+    closed = models.BooleanField(verbose_name=gettext_lazy('Closed'), default=False)
+    closed_time = models.DateTimeField(verbose_name=gettext_lazy('Close Time'), blank=True, null=True)
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    employee = models.ForeignKey(User, verbose_name=gettext_lazy('Employee'), editable=False)
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
     class Meta:
         verbose_name = gettext_lazy('Transaction')
@@ -56,10 +91,13 @@ class Transaction(models.Model):
         """
         :return: The client's full name if set
         """
-        if self.client_first_name or self.client_last_name:
-            name = '{0} {1}'.format(self.client_first_name, self.client_last_name)
-        else:
-            name = ''
+        name = ''
+        if self.client_first_name:
+            name += self.client_first_name
+            if self.client_last_name:
+                name += ' '
+        if self.client_last_name:
+            name += self.client_last_name
         return name
 
     @property
@@ -83,7 +121,6 @@ class Transaction(models.Model):
         return total
 
 
-
 @python_2_unicode_compatible
 class Concept(models.Model):
     """
@@ -91,7 +128,7 @@ class Concept(models.Model):
     Sale, rent, refund, etc...
     This model is liked one-to-one to concrete concepts that inherit BaseConcept
     """
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='concepts')
+    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
 
     class Meta:
         verbose_name = gettext_lazy('Abstract Concept')
@@ -108,8 +145,8 @@ class ConceptData(models.Model):
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
-    concept = models.OneToOneField(Concept, on_delete=models.CASCADE, related_name='data')
-    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name='baseconcepts')
+    concept = models.OneToOneField(Concept, verbose_name=gettext_lazy('Abstract Concept'), on_delete=models.CASCADE, related_name='data')
+    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='baseconcepts')
 
     class Meta:
         abstract = True

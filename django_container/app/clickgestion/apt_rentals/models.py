@@ -9,17 +9,17 @@ from django.utils.encoding import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class NightRateRange(models.Model):
-    start_date = models.DateField()
-    end_date = models.DateField()
-    monday = models.FloatField()
-    tuesday = models.FloatField()
-    wednesday = models.FloatField()
-    thursday = models.FloatField()
-    friday = models.FloatField()
-    saturday = models.FloatField()
-    sunday = models.FloatField()
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    start_date = models.DateField(verbose_name=gettext_lazy('Start Date'))
+    end_date = models.DateField(verbose_name=gettext_lazy('End Date'))
+    monday = models.FloatField(verbose_name=gettext_lazy('Monday'))
+    tuesday = models.FloatField(verbose_name=gettext_lazy('Tuesday'))
+    wednesday = models.FloatField(verbose_name=gettext_lazy('Wednesday'))
+    thursday = models.FloatField(verbose_name=gettext_lazy('Thursday'))
+    friday = models.FloatField(verbose_name=gettext_lazy('Friday'))
+    saturday = models.FloatField(verbose_name=gettext_lazy('Saturday'))
+    sunday = models.FloatField(verbose_name=gettext_lazy('Sunday'))
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
     class Meta:
         verbose_name = gettext_lazy('Nightly Rate Range')
@@ -65,11 +65,11 @@ class ApartmentRental(ConceptData):
     Apartment rental
     """
     # Arrival date
-    checkin = models.DateField()
+    checkin = models.DateField(verbose_name=gettext_lazy('Check In'))
     # Departure date
-    checkout = models.DateField()
+    checkout = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Ordered list of daily rates
-    rates = ArrayField(models.FloatField())
+    rates = ArrayField(models.FloatField(), verbose_name=gettext_lazy('Array Of Rates'))
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental')
