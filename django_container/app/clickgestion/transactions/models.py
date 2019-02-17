@@ -8,6 +8,16 @@ from django.utils.encoding import python_2_unicode_compatible
 
 User = get_user_model()
 
+def get_default_currency():
+    """
+    Get the default currency
+    :return:
+    """
+    try:
+        return Currency.objects.get(default=True)
+    except Currency.DoesNotExist:
+        return None
+
 def get_new_cashclose_code():
     """
     Generate a cashclose id code
@@ -73,8 +83,8 @@ class ConceptValue(models.Model):
     """
     The amount of a given currency that a concept credits or debits
     """
-    credit = models.BooleanField(verbose_name=gettext_lazy('Credit'))
-    currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), on_delete=models.PROTECT, related_name='values')
+    credit = models.BooleanField(verbose_name=gettext_lazy('Credit'), default=True)
+    currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), default=get_default_currency, on_delete=models.PROTECT, related_name='values')
     amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
 
 

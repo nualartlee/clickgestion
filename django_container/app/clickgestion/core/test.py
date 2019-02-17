@@ -1,7 +1,7 @@
 from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.models import Transaction, Currency
 from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange
 from django.utils import timezone
 
@@ -30,6 +30,15 @@ class CustomTestCase(TestCase):  # pragma: no cover
             employee=cls.normaluser,
         )
 
+        # Create a default currency
+        code_a = 'EUR'
+        Currency.objects.create(
+            name='Euro',
+            code_a=code_a,
+            code_n='978',
+            default=True,
+            exchange_rate=1,
+        )
         #
         # apt_rentals data
         #

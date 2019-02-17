@@ -24,7 +24,7 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         cls.test_get = True
         cls.required_access_level = 1
         cls.url = 'transaction_edit'
-        cls.kwargs = {'transaction_id': cls.transaction.id}
+        cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_edit.html'
 
@@ -48,7 +48,7 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         self.assertTemplateUsed(response, 'core/index.html')
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(Transaction.DoesNotExist):
-            Transaction.objects.get(id=self.transaction.id)
+            Transaction.objects.get(code=self.transaction.code)
 
 
 class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
@@ -59,7 +59,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
         cls.test_get = True
         cls.required_access_level = 1
         cls.url = 'transaction_pay'
-        cls.kwargs = {'transaction_id': cls.transaction.id}
+        cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_pay.html'
 
@@ -99,7 +99,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
         self.assertTemplateUsed(response, 'core/index.html')
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(Transaction.DoesNotExist):
-            Transaction.objects.get(id=self.transaction.id)
+            Transaction.objects.get(code=self.transaction.code)
 
 
 class TestTransactionsOpenView(CustomTestCase, CustomViewTestCase):

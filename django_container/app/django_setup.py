@@ -93,6 +93,7 @@ if __name__ == "__main__":
             default=True,
             exchange_rate=1,
         )
+        print('{} currency created'.format(code_a))
     # GBP
     code_a = 'GBP'
     try:
@@ -105,6 +106,7 @@ if __name__ == "__main__":
             code_n='826',
             exchange_rate=1.2,
         )
+        print('{} currency created'.format(code_a))
     # USD
     code_a = 'USD'
     try:
@@ -117,6 +119,7 @@ if __name__ == "__main__":
             code_n='840',
             exchange_rate=0.8,
         )
+        print('{} currency created'.format(code_a))
 
     # Create a test apartment rental price range
     print('\n')

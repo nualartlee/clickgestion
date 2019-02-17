@@ -118,6 +118,14 @@ class ApartmentRental(ConceptData):
 
     def save(self, *args, **kwargs):
         self.rates = self.get_rates()
+        try:
+            value = self.value
+            value.amount = self.price
+            value.save()
+        except ConceptValue.DoesNotExist:
+            self.value = ConceptValue.objects.create(
+                amount=self.price,
+            )
         super().save(*args, **kwargs)
 
     @property
