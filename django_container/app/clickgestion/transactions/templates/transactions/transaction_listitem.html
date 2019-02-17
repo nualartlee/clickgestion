@@ -4,31 +4,49 @@
     <div class="row align-items-center">
 
         <div class="col-sm-9 text-left">
-            <a class="p text-dark" href="/transactions/{{ transaction.id }}"
+            <a class="p text-dark" href="/transactions/{{ transaction.code }}"
                title="{{ transaction.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
-                    <div class="col-sm-4 text-left">
-                        ID: {{ transaction.id }}
+                    <div class="col-sm-4 text-left d-flex align-items-center">
+                    <div>
+                        <div class="row">
+                            {{ transaction.code }}
+                        </div>
+                        <div class="row">
+                            {% if transaction.apt_number %}
+                            {% trans 'Apt' %}: {{ transaction.apt_number }}
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                           {{ transaction.client }}
+                        </div>
                     </div>
-                    <div class="col-sm-4 text-center">
-                        {% trans 'Apt' %}: {{ transaction.apt_number }}
                     </div>
-                    <div class="col-sm-4 text-right">
-                        {% trans 'Client' %}: {{ transaction.client }}
+                    <div class="col-sm-4 text-center d-flex align-items-center">
+                        {% if transaction.concepts.count %}
+                        <div>
+                        {% for concept in transaction.concepts.all %}
+                        <div class="row">{{ concept.data.type }}</div>
+                        {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-4 text-right d-flex align-items-center">
+                        {{ transaction.total }}
                     </div>
                 </div>
             </a>
         </div>
 
-        <div class="col-sm-3 align-middle text-right align-self-end">
+        <div class="col-sm-3 text-right">
             {% if transaction.closed %}
 
             {% else %}
-            <a href="/transactions/{{ transaction.id }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+            <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
                 {% trans 'Edit' %}
             </a>
-            <a href="/transactions/{{ transaction.id }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+            <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
                 {% trans 'Delete' %}
             </a>
             {% endif %}

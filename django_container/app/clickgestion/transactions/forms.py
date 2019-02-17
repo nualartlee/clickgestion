@@ -48,13 +48,14 @@ class TransactionEditForm(forms.ModelForm):
             Field('client_last_name', type='hidden'),
         )
 
-    def is_valid(self):
+    def clean(self):
         """
         Custom form validation.
         """
-        valid = super().is_valid()
+        super().clean()
         # Should have at least one concept
-        return valid
+        if self.instance.concepts.count() == 0:
+            raise forms.ValidationError(gettext_lazy('No concepts'))
 
 
 class TransactionPayForm(forms.ModelForm):

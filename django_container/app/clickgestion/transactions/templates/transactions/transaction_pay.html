@@ -7,12 +7,28 @@
 <div class="container">
 
     <p style="margin-top:20px"></p>
-    <h4>{% trans 'Transaction #' %}{{ transaction.id }}</h4>
+    <h4>{% trans 'Transaction' %} {{ transaction.code }}</h4>
     <p style="margin-top:20px"></p>
     <form method="post" novalidate>
         <ul class="list-group">
         {% for concept in transaction.concepts.all %}
-            {% include 'transactions/concept_listitem.html' %}
+            <li class="list-group-item">
+                <div class="row align-items-center">
+
+                    <div class="col-sm-7 text-left">
+                        {{ concept.data.description_short }}
+                    </div>
+
+                    <div class="col-sm-3 text-center">
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="text-right">
+                            {{ concept.data.price }}
+                        </div>
+                    </div>
+                </div>
+            </li>
         {% endfor %}
             <li class="list-group-item">
 
@@ -48,7 +64,7 @@
                 <button type="submit" class="btn btn-success btn-block" title="{% trans 'Confirm and close this transaction' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
             </div>
             <div class="col">
-                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back to add concepts' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back to edit concepts' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
             </div>
             <div class="col">
                 <button type="submit" class="btn btn-secondary btn-block" title="{% trans 'Finish this transaction later' %}" onclick="document.getElementById('id_save_button').value = 'True';form.submit();">{% trans 'Save' %}</button>

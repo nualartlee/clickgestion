@@ -21,7 +21,7 @@ def get_available_concepts(employee, transaction):
     concepts = []
     apt_rental = {
         'name': gettext('Apartment Rental'),
-        'url': '/apt-rentals/new/{}'.format(transaction.id),
+        'url': '/apt-rentals/new/{}'.format(transaction.code),
     }
     concepts.append(apt_rental)
     return concepts
@@ -34,8 +34,8 @@ def transaction_delete(request, *args, **kwargs):
         return invalid_permission_redirect(request)
 
     # Get the object
-    transaction_id = kwargs.get('transaction_id', None)
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
 
     # Use default delete view
@@ -64,8 +64,8 @@ def transaction_detail(request, *args, **kwargs):
         return invalid_permission_redirect(request)
 
     # Get the transaction
-    transaction_id = kwargs.get('transaction_id', None)
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
     return render(request, 'transactions/transaction_detail.html', extra_context)
 
@@ -79,8 +79,8 @@ def transaction_edit(request, *args, **kwargs):
         return invalid_permission_redirect(request)
 
     # Get the transaction
-    transaction_id = kwargs.get('transaction_id', None)
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
 
     # Check that the transaction is open
@@ -110,10 +110,10 @@ def transaction_edit(request, *args, **kwargs):
 
             # Finish later
             if form.cleaned_data['save_button']:
-                return redirect('transaction_detail', transaction_id=transaction.id)
+                return redirect('transaction_detail', transaction_code=transaction.code)
 
             # Proceed to pay
-            return redirect('transaction_pay', transaction_id=transaction.id)
+            return redirect('transaction_pay', transaction_code=transaction.code)
 
         else:
             extra_context['form'] = form
@@ -183,7 +183,7 @@ def transaction_new(request, *args, **kwargs):
     extra_context['transaction'] = transaction
 
     # Redirect to edit
-    return redirect('transaction_edit', transaction_id=transaction.id)
+    return redirect('transaction_edit', transaction_code=transaction.code)
 
 
 @login_required
@@ -195,8 +195,8 @@ def transaction_pay(request, *args, **kwargs):
         return invalid_permission_redirect(request)
 
     # Get the transaction
-    transaction_id = kwargs.get('transaction_id', None)
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
 
     # Check that the transaction is open
@@ -224,12 +224,12 @@ def transaction_pay(request, *args, **kwargs):
                 transaction.closed = True
                 transaction.closed_time = timezone.datetime.now()
                 transaction.save()
-                return redirect('transaction_detail', transaction_id=transaction.id)
+                return redirect('transaction_detail', transaction_code=transaction.code)
 
             # Save the transaction
             if form.cleaned_data['save_button']:
                 transaction.save()
-                return redirect('transaction_detail', transaction_id=transaction.id)
+                return redirect('transaction_detail', transaction_code=transaction.code)
 
         else:
             extra_context['form'] = form

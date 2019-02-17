@@ -14,12 +14,12 @@
     <div class="row align-items-center">
 
         <div class="col-sm-9 text-left">
-            <a class="p text-dark" href="/transactions/{{ transaction.id }}"
+            <a class="p text-dark" href="/transactions/{{ transaction.code }}"
                title="{{ transaction.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
                     <div class="col-sm-4 text-left">
-                        {% trans 'Transaction: #' %}{{ transaction.id }}
+                        {% trans 'Transaction: #' %}{{ transaction.code }}
                     </div>
                     <div class="col-sm-4 text-center">
                         {% trans 'Apartment: ' %}{{ transaction.apt_number }}
@@ -35,10 +35,10 @@
             {% if transaction.closed %}
             <p>{{ transaction.closed_time }}</p>
             {% else %}
-            <a href="/transactions/{{ transaction.id }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+            <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
                 {% trans 'Edit' %}
             </a>
-            <a href="/transactions/{{ transaction.id }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+            <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
                 {% trans 'Delete' %}
             </a>
             {% endif %}

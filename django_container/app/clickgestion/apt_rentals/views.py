@@ -13,8 +13,8 @@ def rental_new(request, *args, **kwargs):
     # Check permissions
 
     # Get the transaction
-    transaction_id = kwargs.get('transaction_id', None)
-    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
 
     # Check that the transaction is open
@@ -30,7 +30,7 @@ def rental_new(request, *args, **kwargs):
                 checkin=form.cleaned_data['checkin'],
                 checkout=form.cleaned_data['checkout'],
             ).save()
-            return redirect('transaction_edit', transaction_id=transaction.id)
+            return redirect('transaction_edit', transaction_code=transaction.code)
 
         else:
             extra_context['form'] = form
@@ -63,7 +63,7 @@ def rental_delete(request, *args, **kwargs):
 
     # POST
     if request.method == 'POST':
-        default_next = reverse('transaction_detail', kwargs={'transaction_id': rental.transaction.id})
+        default_next = reverse('transaction_detail', kwargs={'transaction_code': rental.transaction.code})
         rental.delete()
         next_page = request.POST.get('next', default_next)
         return redirect(next_page)
@@ -107,7 +107,7 @@ def rental_edit(request, *args, **kwargs):
         form = RentalForm(request.POST, instance=rental)
         if form.is_valid():
             form.save()
-            return redirect('transaction_edit', transaction_id=rental.transaction.id)
+            return redirect('transaction_edit', transaction_code=rental.transaction.code)
 
         else:
             extra_context['form'] = form
