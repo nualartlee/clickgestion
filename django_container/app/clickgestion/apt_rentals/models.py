@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import ConceptData
+from clickgestion.transactions.models import ConceptData,ConceptValue, Currency
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 from django.utils import timezone
@@ -102,12 +102,12 @@ class ApartmentRental(ConceptData):
 
     def get_rates(self):
         """
-        :return: The list of daily rates
+        :return: The list of nightly rates
         """
-        daily_rates = []
+        nightly_rates = []
         for i in range(self.nights):
-            daily_rates.append(get_night_rate(self.checkin + timezone.timedelta(days=i)))
-        return daily_rates
+            nightly_rates.append(get_night_rate(self.checkin + timezone.timedelta(days=i)))
+        return nightly_rates
 
     @property
     def price(self):

@@ -57,6 +57,27 @@ class CashClose(models.Model):
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
 
+class Currency(models.Model):
+    """
+    Available currencies
+    """
+    name = models.CharField(max_length=256, verbose_name=gettext_lazy('Name'), blank=True, null=True)
+    code_a = models.CharField(max_length=3, verbose_name=gettext_lazy('Alphabetic Code'), blank=True, null=True)
+    code_n = models.CharField(max_length=3, verbose_name=gettext_lazy('Numeric Code'), blank=True, null=True)
+    enabled = models.BooleanField(default=True, verbose_name=gettext_lazy('Enabled'))
+    default = models.BooleanField(default=False, verbose_name=gettext_lazy('Default'))
+    exchange_rate = models.FloatField(verbose_name=gettext_lazy('Exchange Rate'), blank=True, null=True)
+
+
+class ConceptValue(models.Model):
+    """
+    The amount of a given currency that a concept credits or debits
+    """
+    credit = models.BooleanField(verbose_name=gettext_lazy('Credit'))
+    currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), on_delete=models.PROTECT, related_name='values')
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
+
+
 @python_2_unicode_compatible
 class Transaction(models.Model):
     """
@@ -147,6 +168,7 @@ class ConceptData(models.Model):
     """
     concept = models.OneToOneField(Concept, verbose_name=gettext_lazy('Abstract Concept'), on_delete=models.CASCADE, related_name='data')
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='baseconcepts')
+    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='value')
 
     class Meta:
         abstract = True
@@ -190,16 +212,3 @@ class ConceptData(models.Model):
         super().save(*args, **kwargs)
 
 
-class Currency(models.Model):
-    short_name = models.CharField(max_length=32, blank=True, null=True)
-    long_name = models.CharField(max_length=256, blank=True, null=True)
-    enabled = models.BooleanField(default=True)
-    default = models.BooleanField(default=False)
-    exchange_rate = models.FloatField()
-
-
-class ConceptValue(models.Model):
-    credit = models.BooleanField()
-    concept = models.ForeignKey(Concept, on_delete=models.CASCADE)
-    currency = models.ForeignKey(Currency, on_delete=models.PROTECT)
-    amount = models.FloatField()

@@ -76,6 +76,48 @@ if __name__ == "__main__":
         User.objects.create_user(user_name, user_email, user_pass)
         print("{} testuser created".format(user_name))
 
+    # Create currencies
+    print('\n')
+    print("Creating currencies")
+    from clickgestion.transactions.models import Currency
+    # EUR
+    code_a = 'EUR'
+    try:
+        Currency.objects.get(code_a=code_a)
+        print('{} currency already exists'.format(code_a))
+    except:
+        Currency.objects.create(
+            name='Euro',
+            code_a=code_a,
+            code_n='978',
+            default=True,
+            exchange_rate=1,
+        )
+    # GBP
+    code_a = 'GBP'
+    try:
+        Currency.objects.get(code_a=code_a)
+        print('{} currency already exists'.format(code_a))
+    except:
+        Currency.objects.create(
+            name='Pound Sterling',
+            code_a=code_a,
+            code_n='826',
+            exchange_rate=1.2,
+        )
+    # USD
+    code_a = 'USD'
+    try:
+        Currency.objects.get(code_a=code_a)
+        print('{} currency already exists'.format(code_a))
+    except:
+        Currency.objects.create(
+            name='US Dollar',
+            code_a=code_a,
+            code_n='840',
+            exchange_rate=0.8,
+        )
+
     # Create a test apartment rental price range
     print('\n')
     print("Creating test apartment price range")
@@ -83,7 +125,7 @@ if __name__ == "__main__":
     from clickgestion.apt_rentals.models import NightRateRange
     if NightRateRange.objects.all().count() == 0:
         NightRateRange.objects.create(
-            start_date=timezone.datetime.today(),
+            start_date=timezone.datetime.today() - timezone.timedelta(days=365),
             end_date=timezone.datetime.today() + timezone.timedelta(days=365),
             monday=10,
             tuesday=20,
