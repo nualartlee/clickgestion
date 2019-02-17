@@ -29,5 +29,19 @@
         <div class="col-4">
         </div>
     </div>
+
+    {% if user.is_superuser %}
+    <p style="margin-top:20px"></p>
+    <div class="row">
+        <div class="col-4">
+        </div>
+        <div class="col-6">
+            <a class="btn btn-outline-danger btn-large btn-block m-2" href="/admin">{% trans 'Administration' %}</a>
+
+        </div>
+        <div class="col-4">
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from clickgestion.core.forms import CoreAuthenticationForm
+from clickgestion.core.utilities import invalid_permission_redirect
 
 
 def badrequest(request, exception):  # pragma: no cover

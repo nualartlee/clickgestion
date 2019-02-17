@@ -1,47 +1,17 @@
-{% load i18n %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title>ClickGestion</title>
-        {% load static %}
         {% block meta %}
         {% endblock %}
         <link rel="shortcut icon" type="image/png" href="{% static 'core/img/logo-40x40.png' %}"/>
         <link rel="stylesheet" href="{% static 'core/js/bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
-        {% comment %}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        {% endcomment %}
     </head>
     <body style="overflow-y:scroll;">
-        <header>
-            <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                      <a class="navbar-brand" href="/"><div class="img"><img src="{% static 'core/img/logo-name-280x45.png' %}" width="180" height="30" alt="ClickGestion"></div></a>
-                    </div>
-                    <ul class="navbar-nav">
-                        {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">{{ user.username }} <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li class="nav-item"><a class="nav-link" href="/logout">{% trans 'Logout' %}</a></li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li class="nav-item"><a class="nav-link" href="/login">{% trans 'Login' %}</a></li>
-                        {% endif %}
 
-                        {% if user.is_superuser %}
-                        <li class="nav-item"><a class="nav-link" href="/admin">{% trans 'Admin' %}</a></li>
-                        {% endif %}
-
-                        {% include 'core/languageselect.html' %}
-
-                    </ul>
-                </div>
-            </nav>
-        </header>
+        {% include 'core/header.html' %}
 
         <main role="main" class="container" style="padding-top:60px;padding-bottom:60px;">
             <div class="app-content content">
@@ -54,20 +24,10 @@
             </div>
         </main>
 
-        <footer class="footer fixed-bottom bg-light">
-            <div class="container">
-                <!-- Copyright -->
-                <div class="footer-copyright text-center py-3">© 2019 Javier Nualart Lee </div>
-                <!-- Copyright -->
-            </div>
-        </footer>
+        {% include 'core/footer.html' %}
+
         <script src="{% static 'core/js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'core/js/popper-1.14.4.js' %}"></script>
         <script src="{% static 'core/js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
-        {% comment %}
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        {% endcomment %}
     </body>
 </html>

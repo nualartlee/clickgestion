@@ -1,0 +1,24 @@
+{% load i18n static %}
+<header>
+    <nav class="navbar navbar-expand-sm bg-light navbar-light fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><div class="img"><img src="{% static 'core/img/logo-name-280x45.png' %}" width="180" height="30" alt="ClickGestion"></div></a>
+            </div>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">{% firstof user.get_short_name user.get_username %} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="nav-item"><a class="nav-link" href="/logout">{% trans 'Logout' %}</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                {% endif %}
+
+                {% include 'core/languageselect.html' %}
+
+            </ul>
+        </div>
+    </nav>
+</header>
