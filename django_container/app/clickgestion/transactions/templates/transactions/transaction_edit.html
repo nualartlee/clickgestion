@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="col-sm-3 align-middle text-right align-self-end">
-                        {% for currency, value in transaction.totals.items %}
+                        {% for value in transaction.totals %}
                         {% include 'transactions/value_total.html' %}
                         {% endfor %}
                     </div>

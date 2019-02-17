@@ -27,9 +27,6 @@ class TestTransaction(CustomTestCase):
         assert self.transaction.description_short
 
     def test_totals(self):
-        tt = self.transaction.totals
-        print(tt)
-        import pdb;pdb.set_trace()
         assert self.transaction.totals
 
 

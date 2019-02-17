@@ -103,6 +103,14 @@ class ConceptValue(models.Model):
     currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), default=get_default_currency, on_delete=models.PROTECT, related_name='values')
     amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
 
+    class Meta:
+        verbose_name = gettext_lazy('Concept Value')
+        verbose_name_plural = gettext_lazy('Concept Values')
+
+    def __str__(self):
+        items = [self.name, self.code_a, self.symbol, gettext_lazy('Currency')]
+        return next(item for item in items if item is not None)
+
 
 @python_2_unicode_compatible
 class Transaction(models.Model):
@@ -190,8 +198,8 @@ class Transaction(models.Model):
             # Start new currency total
             else:
                 totals[value.currency] = DummyValue(
-                    amount=value.amount,
-                    credit=value.credit,
+                    amount=value.amount if value.credit else value.amount*(-1),
+                    credit=True,
                     currency=value.currency,
                 )
 
@@ -201,7 +209,8 @@ class Transaction(models.Model):
                 value.credit = False
                 value.amount *= -1
 
-        return totals
+        # Return as ordered list of dummy values
+        return [totals[k] for k in sorted(totals, key=totals.get)]
 
 
 @python_2_unicode_compatible

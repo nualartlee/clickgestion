@@ -33,7 +33,13 @@
                         {% endif %}
                     </div>
                     <div class="col-sm-4 text-right d-flex align-items-center">
-                        {{ transaction.total }}
+                        {% if transaction.totals %}
+                        <div>
+                            {% for value in transaction.totals %}
+                            <div class="row">{% include 'transactions/value_small.html' %}</div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </a>
