@@ -154,6 +154,18 @@ class TransactionPayForm(forms.ModelForm):
                     css_class='col-4',
                 ),
             ),
+            Row(
+                Column(
+                    Field(
+                        'client_address',
+                        title=gettext_lazy("The client's address"),
+                        placeholder="10 First Ave",
+                        css_class='col-12',
+                    ),
+                    css_class='col-12',
+                ),
+
+            ),
         )
 
     def set_required_fields(self, *args, **kwargs):

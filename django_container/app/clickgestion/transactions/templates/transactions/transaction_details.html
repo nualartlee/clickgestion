@@ -1,0 +1,54 @@
+{% load i18n %}
+<div class="container">
+
+    <!--Header-->
+    <h3>{% trans 'Invoice' %}</h3>
+
+    <!--First Data Row-->
+    <div class="row">
+        <div class="col">
+            <strong>
+                {{ transaction.client }}
+            </strong>
+
+        </div>
+        <div class="row justify-content-end">
+            <div class="col text-right">
+                <h6><strong>{{ transaction.code }}</strong></h6>
+                <h6><strong>{{ transaction.closed_date }}</strong></h6>
+            </div>
+        </div>
+    </div>
+    <!--Second Data Row-->
+    <div class="row">
+        <div class="col">
+            {{ transaction.client_address|linebreaks }}
+        </div>
+        <div class="row justify-content-end">
+            <div class="col text-right">
+            </div>
+        </div>
+    </div>
+
+    <!--Concept Table-->
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th>{% trans 'Concepts' %}</th>
+            <th>{% trans 'Total' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for concept in transaction.concepts.all %}
+        <tr>
+            <td>{{ concept.data.description_short }}</td>
+            <td>
+                {% with concept.data.value as value %}
+                {% include 'transactions/value_md.html' %}
+                {% endwith %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

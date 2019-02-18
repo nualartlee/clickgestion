@@ -5,48 +5,7 @@
 
 {% block content %}
 <div class="container">
-<p style="margin-top:20px"></p>
-<h4>{% trans 'Transaction' %}</h4>
-<p style="margin-top:20px"></p>
-<ul>
-<li class="list-group-item">
-
-    <div class="row align-items-center">
-
-        <div class="col-sm-9 text-left">
-            <a class="p text-dark" href="/transactions/{{ transaction.code }}"
-               title="{{ transaction.description_long }}"
-               data-toggle="popover" data-trigger="hover">
-                <div class="row">
-                    <div class="col-sm-4 text-left">
-                        {% trans 'Transaction: #' %}{{ transaction.code }}
-                    </div>
-                    <div class="col-sm-4 text-center">
-                        {% trans 'Apartment: ' %}{{ transaction.apt_number }}
-                    </div>
-                    <div class="col-sm-4 text-right">
-                        {% trans 'Client: ' %}{{ transaction.client }}
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-sm-3 align-middle text-right align-self-end">
-            {% if transaction.closed %}
-            <p>{{ transaction.closed_time }}</p>
-            {% else %}
-            <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
-                {% trans 'Edit' %}
-            </a>
-            <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
-                {% trans 'Delete' %}
-            </a>
-            {% endif %}
-        </div>
-
-    </div>
-
-</li>
-</ul>
+    <p class="mb-4"></p>
+    {% include 'transactions/transaction_details.html' %}
 </div>
 {% endblock %}
