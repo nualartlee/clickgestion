@@ -79,17 +79,17 @@ class TransactionPayForm(forms.ModelForm):
         model = Transaction
         fields = (
             'apt_number',
+            'client_address',
+            'client_email',
             'client_first_name',
+            'client_id',
             'client_last_name',
+            'client_phone_number',
         )
-        labels = {
-            'apt_number': gettext_lazy('Apartment'),
-            'client_first_name': gettext_lazy('First Name'),
-            'client_last_name': gettext_lazy('Last Name'),
-        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.set_required_fields()
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
@@ -125,6 +125,50 @@ class TransactionPayForm(forms.ModelForm):
                     css_class='col-5',
                 ),
             ),
+            Row(
+                Column(
+                    Field(
+                        'client_id',
+                        title=gettext_lazy("The client's ID/Passport number"),
+                        placeholder="AA99999999",
+                        css_class='col-12',
+                    ),
+                    css_class='col-3',
+                ),
+                Column(
+                    Field(
+                        'client_email',
+                        title=gettext_lazy("The client's email address"),
+                        placeholder="client@gmail.com",
+                        css_class='col-12',
+                    ),
+                    css_class='col-5',
+                ),
+                Column(
+                    Field(
+                        'client_phone_number',
+                        title=gettext_lazy("The client's phone number"),
+                        placeholder="+44 141 546 3333",
+                        css_class='col-12',
+                    ),
+                    css_class='col-4',
+                ),
+            ),
         )
+
+    def set_required_fields(self, *args, **kwargs):
+        """
+        Sets which form fields are required according to the included concepts
+        """
+        # Get the required fields
+        required_fields = set()
+        transaction = self.instance
+        for concept in transaction.concepts.all():
+            required_fields.update(concept.data.required_transaction_fields)
+        # Apply
+        for field in required_fields:
+            self.fields[field].required = True
+
+
 
 

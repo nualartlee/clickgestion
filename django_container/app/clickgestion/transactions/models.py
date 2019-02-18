@@ -108,8 +108,7 @@ class ConceptValue(models.Model):
         verbose_name_plural = gettext_lazy('Concept Values')
 
     def __str__(self):
-        items = [self.name, self.code_a, self.symbol, gettext_lazy('Currency')]
-        return next(item for item in items if item is not None)
+        return '{0} {1} {2}'.format(self.concept.code, self.currency.symbol, self.amount)
 
 
 @python_2_unicode_compatible
@@ -247,12 +246,19 @@ class ConceptData(models.Model):
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
+    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
     concept = models.OneToOneField(Concept, verbose_name=gettext_lazy('Abstract Concept'), on_delete=models.CASCADE, related_name='data')
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='baseconcepts')
-    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='value')
+    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
 
     class Meta:
         abstract = True
+
+    def code_initials(self):
+        """
+        :return: An acronym for code construction
+        """
+        raise NotImplementedError
 
     def delete(self, *args, **kwargs):
         #super().delete(*args, **kwargs)
@@ -270,6 +276,12 @@ class ConceptData(models.Model):
         """
         raise NotImplementedError
 
+    def required_transaction_fields(self):
+        """
+        :return: A list of the required transaction fields for this concept
+        """
+        raise NotImplementedError
+
     def type(self):
         """
         :return: The type of concept, e.g.: Apartment Rental
@@ -283,6 +295,9 @@ class ConceptData(models.Model):
         raise NotImplementedError
 
     def save(self, *args, **kwargs):
+        # Create the code
+        self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.id)
+        # Create the link concept if it does not exist
         try:
            assert self.concept
            self.concept.save()

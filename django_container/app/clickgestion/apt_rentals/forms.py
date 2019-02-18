@@ -8,20 +8,19 @@ from django.core.exceptions import ValidationError
 
 class RentalForm(forms.ModelForm):
     checkin = forms.DateField(
-        label=gettext_lazy('Checkin'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
     )
     checkout = forms.DateField(
-        label=gettext_lazy('Checkout'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
     )
+
     class Meta:
         model = ApartmentRental
-        fields = ('checkin', 'checkout')
+        fields = ('adults', 'checkin', 'checkout', 'children')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,7 +31,6 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkin',
-                        label=gettext_lazy('Checkin'),
                         title=gettext_lazy("Arrival date"),
                         css_class='col-8',
                     ),
@@ -41,8 +39,25 @@ class RentalForm(forms.ModelForm):
                 Column(
                     Field(
                         'checkout',
-                        label=gettext_lazy('Checkout'),
                         title=gettext_lazy("Departure date"),
+                        css_class='col-8',
+                    ),
+                    css_class='col-6',
+                ),
+            ),
+            Row(
+                Column(
+                    Field(
+                        'adults',
+                        title=gettext_lazy("Number of adults"),
+                        css_class='col-8',
+                    ),
+                    css_class='col-6',
+                ),
+                Column(
+                    Field(
+                        'children',
+                        title=gettext_lazy("Number of children"),
                         css_class='col-8',
                     ),
                     css_class='col-6',

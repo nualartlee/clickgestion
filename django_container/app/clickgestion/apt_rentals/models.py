@@ -64,10 +64,14 @@ class ApartmentRental(ConceptData):
     Transaction Concept
     Apartment rental
     """
+    # Number of adults
+    adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
     # Arrival date
     checkin = models.DateField(verbose_name=gettext_lazy('Check In'))
     # Departure date
     checkout = models.DateField(verbose_name=gettext_lazy('Check Out'))
+    # Number of children
+    children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
     # Ordered list of daily rates
     rates = ArrayField(models.FloatField(), verbose_name=gettext_lazy('Array Of Rates'))
 
@@ -76,7 +80,15 @@ class ApartmentRental(ConceptData):
         verbose_name_plural = gettext_lazy('Apartment Rentals')
 
     def __str__(self):
-        return '{0}-AR{1}'.format(self.transaction.code, self.id)
+        #return '{0}-AR{1}'.format(self.transaction.code, self.id)
+        return self.code
+
+    @property
+    def code_initials(self):
+        """
+        :return: AR for apartment rental
+        """
+        return 'AR'
 
     @property
     def nights(self):
@@ -128,6 +140,15 @@ class ApartmentRental(ConceptData):
             )
             self.value = value
         super().save(*args, **kwargs)
+
+    @property
+    def required_transaction_fields(self):
+        required = [
+            'client_first_name',
+            'client_last_name',
+            'client_id',
+        ]
+        return required
 
     @property
     def type(self):
