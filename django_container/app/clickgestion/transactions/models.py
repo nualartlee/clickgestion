@@ -160,9 +160,19 @@ class Transaction(models.Model):
         """
         :return: A short single line description of the concept.
         """
-        description = gettext('Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}'.format(
-            self.id, self.apt_number, self.client, self.concepts.all().count(), self.totals,
-        ))
+        description = self.code
+        if self.apt_number:
+            description += ' '
+            description += gettext_lazy('Apt') + ': {}'.format(self.apt_number)
+        if self.client:
+            description += ' '
+            description += gettext_lazy('Client') + ': {}'.format(self.client)
+        description += ' '
+        description += gettext_lazy('Total') + ':'
+        for value in self.totals:
+            if not value.credit:
+                description += 'db '
+            description += ' {0} {1}'.format(value.currency.symbol, value.amount)
         return description
 
     @property

@@ -8,43 +8,57 @@
                title="{{ transaction.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
-                    <!--Transaction Code-->
+                    <!--Transaction -->
                     <div class="col-sm-3 text-left d-flex align-items-center">
-                    <div>
-                        <div class="row">
-                            {{ transaction.code }}
+                        <div class="container">
+                            <div class="row">
+                                {{ transaction.code }}
+                            </div>
+                            <div class="row">
+                                <h6>
+                                   <small>
+                                       {% if transaction.apt_number %}
+                                       {% trans 'Apt' %}: {{ transaction.apt_number }}
+                                       {% endif %}
+                                   </small>
+                                </h6>
+                            </div>
+                            <div class="row">
+                                <h6>
+                                    <small>
+                                        {{ transaction.client }}
+                                    </small>
+                                </h6>
+                            </div>
                         </div>
-                        <div class="row">
-                            {% if transaction.apt_number %}
-                            {% trans 'Apt' %}: {{ transaction.apt_number }}
-                            {% endif %}
-                        </div>
-                        <div class="row">
-                           {{ transaction.client }}
-                        </div>
-                    </div>
                     </div>
                     <!--Transaction Concepts-->
                     <div class="col-sm-6 d-flex align-items-center">
                         {% if transaction.concepts.count %}
-                        <div>
+                        <div class="container">
                         {% for concept in transaction.concepts.all %}
-                            <div class="row d-inline-flex">
-                                <h6 class="mr-2"><small>{{ concept.data.type }}</small></h6>
-                                {% with concept.data.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                            <div class="row">
+                                <div class="col justify-content-start">
+                                    <h6 class="mr-2"><small>{{ concept.data.type }}</small></h6>
+                                </div>
+                                <div class="col text-right justify-content-end">
+                                    {% with concept.data.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                                </div>
                             </div>
                         {% endfor %}
                         </div>
                         {% endif %}
                     </div>
                     <!--Transaction Totals-->
-                    <div class="col-sm-3 text-right d-flex align-items-center">
+                    <div class="col-sm-3 d-flex align-items-center">
                         {% if transaction.totals %}
+                        <div class="container">
                             {% for value in transaction.totals %}
-                            <div class="row">
-                                    {% include 'transactions/value_bold_sm.html' %}
+                            <div class="row justify-content-end">
+                                {% include 'transactions/value_bold_sm.html' %}
                             </div>
                             {% endfor %}
+                        </div>
                         {% endif %}
                     </div>
                 </div>

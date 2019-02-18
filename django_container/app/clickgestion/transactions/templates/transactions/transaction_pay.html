@@ -15,16 +15,15 @@
             <li class="list-group-item">
                 <div class="row align-items-center">
 
-                    <div class="col-sm-7 text-left">
+                    <div class="col-sm-8 text-left">
                         {{ concept.data.description_short }}
                     </div>
 
-                    <div class="col-sm-3 text-center">
-                    </div>
-
-                    <div class="col-sm-2">
+                    <div class="col-sm-4">
                         <div class="text-right">
-                            {{ concept.data.price }}
+                            {% with concept.data.value as value %}
+                            {% include 'transactions/value_md.html' %}
+                            {% endwith %}
                         </div>
                     </div>
                 </div>
@@ -34,15 +33,18 @@
 
                 <div class="row align-items-center">
 
-                    <div class="col-sm-7 text-left">
+                    <div class="col-sm-8 text-left">
                         <b>{% trans 'Total: ' %}</b>
                     </div>
 
-                    <div class="col-sm-3 text-center">
-                    </div>
-
-                    <div class="col-sm-2 align-middle text-right align-self-end">
-                        <b>{{ transaction.total }}</b>
+                    <div class="col-sm-4 align-middle text-right align-self-end">
+                        <div class="container">
+                            {% for value in transaction.totals %}
+                            <div class="row justify-content-end">
+                                {% include 'transactions/value_bold_md.html' %}
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
 
