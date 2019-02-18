@@ -1,5 +1,5 @@
 from django.contrib import admin
-from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange
+from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange, AptRentalSettings
 
 
 class ApartmentRentalAdmin(admin.ModelAdmin):
@@ -8,3 +8,4 @@ class ApartmentRentalAdmin(admin.ModelAdmin):
 
 admin.site.register(ApartmentRental, ApartmentRentalAdmin)
 admin.site.register(NightRateRange)
+admin.site.register(AptRentalSettings)

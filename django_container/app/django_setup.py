@@ -124,6 +124,17 @@ if __name__ == "__main__":
         )
         print('{} currency created'.format(code_a))
 
+    # Set apartment rental settings
+    print('\n')
+    print("Creating apartment rental settings")
+    from clickgestion.apt_rentals.models import AptRentalSettings
+    settings = AptRentalSettings(
+        vat_percent=10,
+        client_first_name=True,
+        client_last_name=True,
+        client_id=True,
+    ).save()
+
     # Create a test apartment rental price range
     print('\n')
     print("Creating test apartment price range")

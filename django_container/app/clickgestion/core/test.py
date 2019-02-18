@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from clickgestion.transactions.models import Transaction, Currency
-from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange
+from clickgestion.apt_rentals.models import ApartmentRental, AptRentalSettings, NightRateRange
 from django.utils import timezone
 
 
@@ -42,6 +42,14 @@ class CustomTestCase(TestCase):  # pragma: no cover
         #
         # apt_rentals data
         #
+
+        # Create settings
+        settings = AptRentalSettings(
+            vat_percent=10,
+            client_first_name=True,
+            client_last_name=True,
+            client_id=True,
+        ).save()
 
         # Create a price range for the next year
         cls.night_rate_range = NightRateRange.objects.create(

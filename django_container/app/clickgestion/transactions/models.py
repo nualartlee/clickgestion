@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext, gettext_lazy, ugettext, ugettext_lazy
+from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import uuid
 from django.utils.encoding import python_2_unicode_compatible
+from django.contrib.postgres.fields import JSONField
 
 User = get_user_model()
 
@@ -53,6 +54,49 @@ def get_new_transaction_code():
         return get_new_transaction_code()
     except Transaction.DoesNotExist:
         return code
+
+def get_value_totals(values):
+    """
+    :return: The totals per currency for the given values
+    """
+
+    class DummyValue:
+        def __init__(self, amount, credit, currency):
+            self.amount = amount
+            self.credit = credit
+            self.currency = currency
+
+    # A dictionary of currency:value totals to return
+    totals = {}
+
+    # For each concept
+    for value in values:
+
+        # Update existing currency total
+        if value.currency in totals:
+            # Add if credit
+            if value.credit:
+                totals[value.currency].amount += value.amount
+            # Subtract if debit
+            else:
+                totals[value.currency].amount -= value.amount
+
+        # Start new currency total
+        else:
+            totals[value.currency] = DummyValue(
+                amount=value.amount if value.credit else value.amount*(-1),
+                credit=True,
+                currency=value.currency,
+            )
+
+    # Update totals credit value
+    for _, value in totals.items():
+        if value.amount < 0:
+            value.credit = False
+            value.amount *= -1
+
+    # Return as ordered list of dummy values
+    return [totals[k] for k in sorted(totals, key=totals.get)]
 
 
 @python_2_unicode_compatible
@@ -179,47 +223,7 @@ class Transaction(models.Model):
         """
         :return: The total amount of all concepts
         """
-
-        class DummyValue:
-            def __init__(self, amount, credit, currency):
-                self.amount = amount
-                self.credit = credit
-                self.currency = currency
-
-        # A dictionary of currency:value totals to return
-        totals = {}
-
-        # For each concept
-        for concept in self.concepts.all():
-
-            # Get the value
-            value = concept.data.value
-
-            # Update existing currency total
-            if value.currency in totals:
-                # Add if credit
-                if value.credit:
-                    totals[value.currency].amount += value.amount
-                # Subtract if debit
-                else:
-                    totals[value.currency].amount -= value.amount
-
-            # Start new currency total
-            else:
-                totals[value.currency] = DummyValue(
-                    amount=value.amount if value.credit else value.amount*(-1),
-                    credit=True,
-                    currency=value.currency,
-                )
-
-        # Update totals credit value
-        for _, value in totals.items():
-            if value.amount < 0:
-                value.credit = False
-                value.amount *= -1
-
-        # Return as ordered list of dummy values
-        return [totals[k] for k in sorted(totals, key=totals.get)]
+        return get_value_totals([concept.data.value for concept in self.concepts.all()])
 
 
 @python_2_unicode_compatible
@@ -229,6 +233,7 @@ class Concept(models.Model):
     Sale, rent, refund, etc...
     This model is liked one-to-one to concrete concepts that inherit BaseConcept
     """
+    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
 
     class Meta:
@@ -236,7 +241,7 @@ class Concept(models.Model):
         verbose_name_plural = gettext_lazy('Abstract Concepts')
 
     def __str__(self):
-        return '{0}-C{1}'.format(self.transaction.code, self.id)
+        return self.code
 
 
 @python_2_unicode_compatible
@@ -276,9 +281,24 @@ class ConceptData(models.Model):
         """
         raise NotImplementedError
 
-    def required_transaction_fields(self):
+    def save(self, *args, **kwargs):
+        # Create the code if empty
+        if not self.code:
+            self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.transaction.concepts.count() + 1)
+        # Create the link concept if it does not exist
+        try:
+           assert self.concept
+           self.concept.save()
+        except Concept.DoesNotExist:
+            self.concept = Concept.objects.create(
+                code='{0}-C{1}'.format(self.transaction.code, self.transaction.concepts.count() + 1),
+                transaction=self.transaction,
+            )
+        super().save(*args, **kwargs)
+
+    def settings(self):
         """
-        :return: A list of the required transaction fields for this concept
+        :return: The concept type settings
         """
         raise NotImplementedError
 
@@ -294,17 +314,52 @@ class ConceptData(models.Model):
         """
         raise NotImplementedError
 
+
+class SingletonModel(models.Model):
+    """Singleton Django Model"""
+
+    class Meta:
+        abstract = True
+
     def save(self, *args, **kwargs):
-        # Create the code
-        self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.id)
-        # Create the link concept if it does not exist
+        """
+        Save object to the database. Removes all other entries if there
+        are any.
+        """
+        self.__class__.objects.exclude(id=self.id).delete()
+        super(SingletonModel, self).save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        """
+        Load object from the database. Failing that, create a new empty
+        (default) instance of the object and return it (without saving it
+        to the database).
+        """
+
         try:
-           assert self.concept
-           self.concept.save()
-        except Concept.DoesNotExist:
-            self.concept = Concept.objects.create(
-                transaction=self.transaction,
-            )
-        super().save(*args, **kwargs)
+            return cls.objects.get()
+        except cls.DoesNotExist:
+            return cls()
+
+
+@python_2_unicode_compatible
+class ConceptSettings(SingletonModel):
+    """
+    Settings applicable to all transaction concept types
+    """
+    # VAT percent
+    vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'), default=0)
+    # Required transaction fields when this type of concept is included
+    apt_number = models.BooleanField(default=False, verbose_name=gettext_lazy('Apt Number Required'))
+    client_address = models.BooleanField(default=False, verbose_name=gettext_lazy('Address Required'))
+    client_email = models.BooleanField(default=False, verbose_name=gettext_lazy('Email Required'))
+    client_first_name = models.BooleanField(default=False, verbose_name=gettext_lazy('First Name Required'))
+    client_id = models.BooleanField(default=False, verbose_name=gettext_lazy('Passport/ID Required'))
+    client_last_name = models.BooleanField(default=False, verbose_name=gettext_lazy('Last Name Required'))
+    client_phone_number = models.BooleanField(default=False, verbose_name=gettext_lazy('Phone Required'))
+
+    class Meta:
+        abstract = True
 
 

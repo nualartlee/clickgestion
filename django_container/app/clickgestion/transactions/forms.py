@@ -160,14 +160,13 @@ class TransactionPayForm(forms.ModelForm):
         """
         Sets which form fields are required according to the included concepts
         """
-        # Get the required fields
-        required_fields = set()
+        # Get the transaction object
         transaction = self.instance
-        for concept in transaction.concepts.all():
-            required_fields.update(concept.data.required_transaction_fields)
-        # Apply
-        for field in required_fields:
-            self.fields[field].required = True
+        # Iterate over the fields, set as required if any of the concepts call it
+        for field in self.fields:
+            for concept in transaction.concepts.all():
+                if getattr(concept.data.settings, field, False):
+                    self.fields[field].required = True
 
 
 

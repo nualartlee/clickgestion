@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import ConceptData,ConceptValue, Currency
+from clickgestion.transactions.models import ConceptData,ConceptValue, ConceptSettings
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 from django.utils import timezone
@@ -80,7 +80,6 @@ class ApartmentRental(ConceptData):
         verbose_name_plural = gettext_lazy('Apartment Rentals')
 
     def __str__(self):
-        #return '{0}-AR{1}'.format(self.transaction.code, self.id)
         return self.code
 
     @property
@@ -129,7 +128,9 @@ class ApartmentRental(ConceptData):
         return sum(self.rates)
 
     def save(self, *args, **kwargs):
+        # Get the rates
         self.rates = self.get_rates()
+        # Set or create the value
         try:
             value = self.value
             value.amount = self.price
@@ -139,16 +140,12 @@ class ApartmentRental(ConceptData):
                 amount=self.price,
             )
             self.value = value
+        # save
         super().save(*args, **kwargs)
 
     @property
-    def required_transaction_fields(self):
-        required = [
-            'client_first_name',
-            'client_last_name',
-            'client_id',
-        ]
-        return required
+    def settings(self):
+        return AptRentalSettings.objects.get_or_create()[0]
 
     @property
     def type(self):
@@ -159,8 +156,10 @@ class ApartmentRental(ConceptData):
        return '/apt-rentals/{}'.format(self.id)
 
 
-
-
-
-
-
+class AptRentalSettings(ConceptSettings):
+    """
+    Apartment Rental Concept Settings
+    """
+    class Meta:
+        verbose_name = gettext_lazy('Apartment Rental Settings')
+        verbose_name_plural = gettext_lazy('Apartment Rental Settings')

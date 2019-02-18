@@ -30,9 +30,13 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
 
     def test_post_pay_button(self):
         self.log_admin_in()
+        post_data = {
+            'pay_button': True,
+            'cancel_button': False,
+        }
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
-            {'pay_button': True, 'cancel_button': False},
+            post_data,
             follow=True,
         )
         self.assertTemplateUsed(response, 'transactions/transaction_pay.html')
@@ -65,9 +69,17 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
 
     def test_post_confirm_button(self):
         self.log_admin_in()
+        post_data = {
+            'save_button': True,
+            'cancel_button': False,
+            'client_apt_number': '1605',
+            'client_first_name': 'Donna',
+            'client_last_name': 'Kavanagh',
+            'client_id': 'AATEST'
+        }
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
-            {'confirm_button': True, 'cancel_button': False},
+            post_data,
             follow=True,
         )
         self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
@@ -75,15 +87,17 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
 
     def test_post_save_button(self):
         self.log_admin_in()
+        post_data = {
+            'save_button': True,
+            'cancel_button': False,
+            'client_apt_number': '1605',
+            'client_first_name': 'Donna',
+            'client_last_name': 'Kavanagh',
+            'client_id': 'AATEST'
+        }
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
-            {
-                'save_button': True,
-                'cancel_button': False,
-                'client_apt_number': '1605',
-                'client_first_name': 'Donna',
-                'client_last_name': 'Kavanagh',
-            },
+            post_data,
             follow=True,
         )
         self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
