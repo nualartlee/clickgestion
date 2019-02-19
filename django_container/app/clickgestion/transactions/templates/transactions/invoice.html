@@ -16,7 +16,7 @@
     <p></p>
 
     <!--First Data Row-->
-    <div class="row">
+    <div class="row my-4">
 
         <!--Left-->
         <div class="col">
@@ -51,7 +51,7 @@
     <p></p>
 
     <!--Concept Table-->
-    <div class="row">
+    <div class="row my-4">
     <table class="table table-bordered">
         <thead class="thead-light">
         <tr>
@@ -76,16 +76,27 @@
             </td>
         </tr>
         {% endfor %}
+        <thead class="thead-light">
+        <tr>
+            <th colspan="7">{% trans 'Totals' %}</th>
+        </tr>
+        </thead>
         {% for value in transaction.totals %}
         <tr>
-            <td>{% trans 'Total' %} {{ value.currency.name }}</td>
-            <td>
+            <td colspan="3"></td>
+            <td colspan="2">{% trans 'Total' %} {{ value.currency.name }}</td>
+            <td colspan="2">
                 {% include 'transactions/value_bold_md.html' %}
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
+    </div>
+
+    <!--Thank you-->
+    <div class="row justify-content-center my-5">
+        <h5>{% trans 'Thank You' %}</h5>
     </div>
 </div>
 </div>
