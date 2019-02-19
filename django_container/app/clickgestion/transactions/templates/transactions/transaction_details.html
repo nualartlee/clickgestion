@@ -1,37 +1,51 @@
 {% load i18n %}
-<div class="container">
+<div class="border p-4">
+<div class="container-fluid">
 
     <!--Header-->
-    <h3>{% trans 'Invoice' %}</h3>
+    <div class="row">
+        <h3><strong>{% trans 'Invoice' %}</strong></h3>
+    </div>
+    <p></p>
 
     <!--First Data Row-->
     <div class="row">
-        <div class="col">
-            <strong>
-                {{ transaction.client }}
-            </strong>
 
+        <!--Left-->
+        <div class="col">
+            <div class="row">
+                <strong>
+                    {{ transaction.client }}
+                </strong>
+            </div>
+            <div class="row">
+                {{ transaction.client_email }}
+            </div>
+            <div class="row">
+                {{ transaction.client_phone_number }}
+            </div>
+            <div class="row">
+                {{ transaction.client_address|linebreaks }}
+            </div>
+            <div class="row">
+            </div>
         </div>
+
+        <!--Right-->
         <div class="row justify-content-end">
             <div class="col text-right">
                 <h6><strong>{{ transaction.code }}</strong></h6>
-                <h6><strong>{{ transaction.closed_date }}</strong></h6>
-            </div>
-        </div>
-    </div>
-    <!--Second Data Row-->
-    <div class="row">
-        <div class="col">
-            {{ transaction.client_address|linebreaks }}
-        </div>
-        <div class="row justify-content-end">
-            <div class="col text-right">
+                <h6>{{ transaction.closed_date }}</h6>
+                <h6>{{ transaction.employee.get_full_name }}</h6>
             </div>
         </div>
     </div>
 
+    <p></p>
+
     <!--Concept Table-->
-    <table class="table">
+    <div class="row">
+    <table class="table table-bordered">
         <thead class="thead-light">
         <tr>
             <th>{% trans 'Concepts' %}</th>
@@ -49,6 +63,23 @@
             </td>
         </tr>
         {% endfor %}
+        {% for value in transaction.totals %}
+        <tr>
+            <td>{% trans 'Total' %} {{ value.currency.name }}</td>
+            <td>
+                {% include 'transactions/value_bold_md.html' %}
+            </td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
+        <table class="table border">
+            <thead class="thead-light">
+            <tr>
+                <th>Subtotal</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 </div>
