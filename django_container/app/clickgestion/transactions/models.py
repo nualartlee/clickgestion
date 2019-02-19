@@ -302,6 +302,20 @@ class ConceptData(models.Model):
         """
         raise NotImplementedError
 
+    @property
+    def tax_amount(self):
+        """
+        The tax portion of the total
+        """
+        return self.value.amount - self.taxable_amount
+
+    @property
+    def taxable_amount(self):
+        """
+        The taxable amount according to vat percent rate in settings
+        """
+        return (self.value.amount * self.settings.vat_percent) / (self.settings.vat_percent + 1)
+
     def type(self):
         """
         :return: The type of concept, e.g.: Apartment Rental
