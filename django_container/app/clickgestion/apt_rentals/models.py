@@ -163,3 +163,6 @@ class AptRentalSettings(ConceptSettings):
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Settings')
         verbose_name_plural = gettext_lazy('Apartment Rental Settings')
+
+
+

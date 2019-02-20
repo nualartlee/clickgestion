@@ -255,6 +255,8 @@ class ConceptData(models.Model):
     concept = models.OneToOneField(Concept, verbose_name=gettext_lazy('Abstract Concept'), on_delete=models.CASCADE, related_name='data')
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='baseconcepts')
     value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
+    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editingconcept', on_delete=models.SET_NULL, blank=True, null=True)
+    edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editedconcept', on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
         abstract = True
