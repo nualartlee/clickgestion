@@ -59,7 +59,7 @@ def get_night_rate(date):
 
 
 @python_2_unicode_compatible
-class ApartmentRental(BaseConcept):
+class AptRental(BaseConcept):
     """
     Transaction Concept
     Apartment rental
@@ -84,7 +84,7 @@ class ApartmentRental(BaseConcept):
         self._url = '/apt-rentals/'
         self._settings_class = AptRentalSettings
         self._code_initials = 'AR'
-        self._concept_class = 'apartmentrental'
+        self._concept_class = 'aptrental'
         super().__init__(*args, **kwargs)
 
     def __str__(self):
@@ -156,7 +156,7 @@ class AptRentalDepositSettings(ConceptSettings):
         verbose_name_plural = gettext_lazy('Apartment Rental Deposit Settings')
 
 
-class AptRentalDepositCharge(BaseConcept):
+class AptRentalDeposit(BaseConcept):
     """
     Transaction Concept
     Apartment rental deposit charge
@@ -169,8 +169,8 @@ class AptRentalDepositCharge(BaseConcept):
     nights = models.SmallIntegerField(verbose_name=gettext_lazy('Nights'), default=7)
 
     class Meta:
-        verbose_name = gettext_lazy('Apartment Rental Deposit Charge')
-        verbose_name_plural = gettext_lazy('Apartment Rental Deposit Charges')
+        verbose_name = gettext_lazy('Apartment Rental Deposit')
+        verbose_name_plural = gettext_lazy('Apartment Rental Deposit')
 
     def __init__(self, *args, **kwargs):
         #BaseConcept settings

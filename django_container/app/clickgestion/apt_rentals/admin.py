@@ -1,11 +1,12 @@
 from django.contrib import admin
-from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange, AptRentalSettings
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, NightRateRange, AptRentalSettings
 
 
-class ApartmentRentalAdmin(admin.ModelAdmin):
+class AptRentalAdmin(admin.ModelAdmin):
     list_filter = ('checkin', 'checkout')
 
 
-admin.site.register(ApartmentRental, ApartmentRentalAdmin)
+admin.site.register(AptRental, AptRentalAdmin)
+admin.site.register(AptRentalDeposit)
 admin.site.register(NightRateRange)
 admin.site.register(AptRentalSettings)

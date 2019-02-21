@@ -19,11 +19,16 @@ def get_available_concepts(employee, transaction):
     :return: A list of dictionaries.
     """
     concepts = []
-    apt_rental = {
+    concept = {
         'name': gettext('Apartment Rental'),
         'url': '/apt-rentals/new/{}'.format(transaction.code),
     }
-    concepts.append(apt_rental)
+    concepts.append(concept)
+    concept = {
+        'name': gettext('Apartment Rental Deposit'),
+        'url': '/apt-rental-deposits/new/{}'.format(transaction.code),
+    }
+    concepts.append(concept)
     return concepts
 
 def transaction_delete(request, *args, **kwargs):

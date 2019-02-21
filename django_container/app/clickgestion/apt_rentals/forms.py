@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column, Submit
-from clickgestion.apt_rentals.models import ApartmentRental
+from clickgestion.apt_rentals.models import AptRental
 from django.core.exceptions import ValidationError
 
 
@@ -19,7 +19,7 @@ class RentalForm(forms.ModelForm):
     )
 
     class Meta:
-        model = ApartmentRental
+        model = AptRental
         fields = ('adults', 'checkin', 'checkout', 'children')
 
     def __init__(self, *args, **kwargs):
@@ -68,7 +68,7 @@ class RentalForm(forms.ModelForm):
     def clean(self):
 
         # Assert that all nightly prices are set
-        rates = ApartmentRental(
+        rates = AptRental(
             checkin=self.cleaned_data.get('checkin'),
             checkout=self.cleaned_data.get('checkout'),
         ).get_current_rates()

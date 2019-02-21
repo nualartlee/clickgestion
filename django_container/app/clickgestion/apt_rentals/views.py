@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from clickgestion.transactions.models import Transaction
-from clickgestion.apt_rentals.models import ApartmentRental
+from clickgestion.apt_rentals.models import AptRental
 from clickgestion.apt_rentals.forms import RentalForm
 from django.utils.translation import gettext
 
@@ -25,7 +25,7 @@ def rental_new(request, *args, **kwargs):
     if request.method == 'POST':
         form = RentalForm(request.POST)
         if form.is_valid():
-            ApartmentRental(
+            AptRental(
                 transaction=transaction,
                 checkin=form.cleaned_data['checkin'],
                 checkout=form.cleaned_data['checkout'],
@@ -52,7 +52,7 @@ def rental_delete(request, *args, **kwargs):
 
     # Get the rental
     rental_id = kwargs.get('rental_id', None)
-    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    rental = get_object_or_404(AptRental, id=rental_id)
     extra_context['rental'] = rental
     extra_context['transaction'] = rental.transaction
 
@@ -80,7 +80,7 @@ def rental_detail(request, *args, **kwargs):
 
     # Get the rental
     rental_id = kwargs.get('rental_id', None)
-    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    rental = get_object_or_404(AptRental, id=rental_id)
     extra_context['rental'] = rental
     extra_context['transaction'] = rental.transaction
     return render(request, 'apt_rentals/rental_detail.html', extra_context)
@@ -94,7 +94,7 @@ def rental_edit(request, *args, **kwargs):
 
     # Get the rental
     rental_id = kwargs.get('rental_id', None)
-    rental = get_object_or_404(ApartmentRental, id=rental_id)
+    rental = get_object_or_404(AptRental, id=rental_id)
     extra_context['rental'] = rental
     extra_context['transaction'] = rental.transaction
 

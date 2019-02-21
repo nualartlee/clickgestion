@@ -6,9 +6,6 @@ from django.utils import timezone
 import uuid
 from django.utils.encoding import python_2_unicode_compatible
 
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.contrib.contenttypes.models import ContentType
-
 User = get_user_model()
 
 def get_default_currency():
@@ -228,24 +225,6 @@ class ConceptValue(models.Model):
         return '{0} {1} {2}'.format(self.concept.code, self.currency.symbol, self.amount)
 
 
-#@python_2_unicode_compatible
-#class Concept(models.Model):
-#    """
-#    A transaction concept records the type of exchange:
-#    Sale, rent, refund, etc...
-#    This model is liked one-to-one to concrete concepts that inherit BaseConcept
-#    """
-#    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
-#    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
-#
-#    class Meta:
-#        verbose_name = gettext_lazy('Abstract Concept')
-#        verbose_name_plural = gettext_lazy('Abstract Concepts')
-#
-#    def __str__(self):
-#        return self.code
-
-
 @python_2_unicode_compatible
 class BaseConcept(models.Model):
     """
@@ -253,13 +232,18 @@ class BaseConcept(models.Model):
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
+    # Human identification code
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
     # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
-    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
-    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
-    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editedconcept', on_delete=models.SET_NULL, blank=True, null=True)
+    # The concept that this one is editing
     edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editingconcept', on_delete=models.CASCADE, blank=True, null=True)
+    # The concept that is editing this one
+    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editedconcept', on_delete=models.SET_NULL, blank=True, null=True)
+    # The transaction this concept belongs to
+    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
+    # The value of this concept
+    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
 
     @property
     def child(self):

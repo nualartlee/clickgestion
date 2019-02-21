@@ -1,4 +1,4 @@
-from clickgestion.apt_rentals.models import ApartmentRental, NightRateRange, get_night_rate
+from clickgestion.apt_rentals.models import AptRental, NightRateRange, get_night_rate
 from clickgestion.core.test import CustomTestCase
 from django.utils import timezone
 
@@ -12,7 +12,7 @@ class TestNightRateRange(CustomTestCase):
         assert get_night_rate(timezone.datetime.today())
 
 
-class TestApartmentRental(CustomTestCase):
+class TestAptRental(CustomTestCase):
 
     def test_nights(self):
         self.assertEqual(self.apartment_rental.nights, 7)
