@@ -71,7 +71,7 @@ class RentalForm(forms.ModelForm):
         rates = ApartmentRental(
             checkin=self.cleaned_data.get('checkin'),
             checkout=self.cleaned_data.get('checkout'),
-        ).get_rates()
+        ).get_current_rates()
         if 'missing' in rates:
             error = gettext_lazy('Missing prices in selected dates')
             raise ValidationError(error)

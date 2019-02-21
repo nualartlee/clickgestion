@@ -177,7 +177,7 @@ class TransactionPayForm(forms.ModelForm):
         # Iterate over the fields, set as required if any of the concepts call it
         for field in self.fields:
             for concept in transaction.concepts.all():
-                if getattr(concept.data.settings, field, False):
+                if getattr(concept.settings, field, False):
                     self.fields[field].required = True
 
 

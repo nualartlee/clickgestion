@@ -26,6 +26,11 @@ echo delete migrations
 find ./django_container/app -path "*/migrations/*.py" -not -name "__init__.py" -delete
 find ./django_container/app -path "*/migrations/*.pyc"  -delete
 
+# Stop pgadmin4
+echo
+echo stop pgadmin4
+sudo docker-compose stop pgadmin4
+
 # Drop the database
 echo
 echo drop database
@@ -35,3 +40,8 @@ sudo docker-compose exec --user postgres postgres dropdb clickgestion
 echo
 echo recreate database
 sudo docker-compose exec --user postgres postgres createdb clickgestion
+
+# Start pgadmin4
+echo
+echo start pgadmin4
+sudo docker-compose start pgadmin4

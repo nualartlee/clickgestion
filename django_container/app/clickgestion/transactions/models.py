@@ -5,7 +5,9 @@ from django.utils.translation import gettext_lazy
 from django.utils import timezone
 import uuid
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.postgres.fields import JSONField
+
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 
 User = get_user_model()
 
@@ -118,43 +120,6 @@ class CashClose(models.Model):
         return self.code
 
 
-class Currency(models.Model):
-    """
-    Available currencies
-    """
-    name = models.CharField(max_length=256, verbose_name=gettext_lazy('Name'), blank=True, null=True)
-    code_a = models.CharField(max_length=3, verbose_name=gettext_lazy('Alphabetic Code'), blank=True, null=True)
-    code_n = models.CharField(max_length=3, verbose_name=gettext_lazy('Numeric Code'), blank=True, null=True)
-    enabled = models.BooleanField(default=True, verbose_name=gettext_lazy('Enabled'))
-    default = models.BooleanField(default=False, verbose_name=gettext_lazy('Default'))
-    exchange_rate = models.FloatField(verbose_name=gettext_lazy('Exchange Rate'), blank=True, null=True)
-    symbol = models.CharField(max_length=3, verbose_name=gettext_lazy('Symbol'), blank=True, null=True)
-
-    class Meta:
-        verbose_name = gettext_lazy('Currency')
-        verbose_name_plural = gettext_lazy('Currencies')
-
-    def __str__(self):
-        items = [self.name, self.code_a, self.symbol, gettext_lazy('Currency')]
-        return next(item for item in items if item is not None)
-
-
-class ConceptValue(models.Model):
-    """
-    The amount of a given currency that a concept credits or debits
-    """
-    credit = models.BooleanField(verbose_name=gettext_lazy('Credit'), default=True)
-    currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), default=get_default_currency, on_delete=models.PROTECT, related_name='values')
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
-
-    class Meta:
-        verbose_name = gettext_lazy('Concept Value')
-        verbose_name_plural = gettext_lazy('Concept Values')
-
-    def __str__(self):
-        return '{0} {1} {2}'.format(self.concept.code, self.currency.symbol, self.amount)
-
-
 @python_2_unicode_compatible
 class Transaction(models.Model):
     """
@@ -223,25 +188,62 @@ class Transaction(models.Model):
         """
         :return: The total amount of all concepts
         """
-        return get_value_totals([concept.data.value for concept in self.concepts.all()])
+        return get_value_totals([concept.value for concept in self.concepts.all()])
 
 
-@python_2_unicode_compatible
-class Concept(models.Model):
+class Currency(models.Model):
     """
-    A transaction concept records the type of exchange:
-    Sale, rent, refund, etc...
-    This model is liked one-to-one to concrete concepts that inherit BaseConcept
+    Available currencies
     """
-    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
-    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
+    name = models.CharField(max_length=256, verbose_name=gettext_lazy('Name'), blank=True, null=True)
+    code_a = models.CharField(max_length=3, verbose_name=gettext_lazy('Alphabetic Code'), blank=True, null=True)
+    code_n = models.CharField(max_length=3, verbose_name=gettext_lazy('Numeric Code'), blank=True, null=True)
+    enabled = models.BooleanField(default=True, verbose_name=gettext_lazy('Enabled'))
+    default = models.BooleanField(default=False, verbose_name=gettext_lazy('Default'))
+    exchange_rate = models.FloatField(verbose_name=gettext_lazy('Exchange Rate'), blank=True, null=True)
+    symbol = models.CharField(max_length=3, verbose_name=gettext_lazy('Symbol'), blank=True, null=True)
 
     class Meta:
-        verbose_name = gettext_lazy('Abstract Concept')
-        verbose_name_plural = gettext_lazy('Abstract Concepts')
+        verbose_name = gettext_lazy('Currency')
+        verbose_name_plural = gettext_lazy('Currencies')
 
     def __str__(self):
-        return self.code
+        items = [self.name, self.code_a, self.symbol, gettext_lazy('Currency')]
+        return next(item for item in items if item is not None)
+
+
+class ConceptValue(models.Model):
+    """
+    The amount of a given currency that a concept credits or debits
+    """
+    credit = models.BooleanField(verbose_name=gettext_lazy('Credit'), default=True)
+    currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), default=get_default_currency, on_delete=models.PROTECT, related_name='values')
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
+
+    class Meta:
+        verbose_name = gettext_lazy('Concept Value')
+        verbose_name_plural = gettext_lazy('Concept Values')
+
+    def __str__(self):
+        return '{0} {1} {2}'.format(self.concept.code, self.currency.symbol, self.amount)
+
+
+#@python_2_unicode_compatible
+#class Concept(models.Model):
+#    """
+#    A transaction concept records the type of exchange:
+#    Sale, rent, refund, etc...
+#    This model is liked one-to-one to concrete concepts that inherit BaseConcept
+#    """
+#    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
+#    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
+#
+#    class Meta:
+#        verbose_name = gettext_lazy('Abstract Concept')
+#        verbose_name_plural = gettext_lazy('Abstract Concepts')
+#
+#    def __str__(self):
+#        return self.code
 
 
 @python_2_unicode_compatible
@@ -252,23 +254,42 @@ class ConceptData(models.Model):
     This model is to be inherited by the required concept types
     """
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
-    concept = models.OneToOneField(Concept, verbose_name=gettext_lazy('Abstract Concept'), on_delete=models.CASCADE, related_name='data')
-    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='baseconcepts')
-    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
+    concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
+    transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
+    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE,)
     editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editingconcept', on_delete=models.SET_NULL, blank=True, null=True)
     edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editedconcept', on_delete=models.CASCADE, blank=True, null=True)
 
-    class Meta:
-        abstract = True
+    @property
+    def child_concept(self):
+        if self.__class__ == ConceptData:
+            if self.concept_class:
+                return getattr(self, self.concept_class)
 
+
+    @property
     def code_initials(self):
         """
         :return: An acronym for code construction
         """
-        raise NotImplementedError
+        return self._code_initials
+
+    @property
+    def class_type(self):
+        """
+        :return: The child class type
+        """
+        return self._class_type
+
+    @property
+    def concept_type(self):
+        """
+        :return: The type of concept, e.g.: Apartment Rental
+        """
+        return self._meta.verbose_name
 
     def delete(self, *args, **kwargs):
-        #super().delete(*args, **kwargs)
+        # Deleting the base concept will cascade this one
         self.concept.delete()
 
     def description_short(self):
@@ -281,28 +302,50 @@ class ConceptData(models.Model):
         """
         :return: A detailed (multiline if required) description of the concept.
         """
+        return self.description_short()
+
+    def price(self):
+        """
+        :return: the price
+        """
         raise NotImplementedError
 
     def save(self, *args, **kwargs):
+
+        # Save the concept class
+        self.concept_class = self._concept_class
+
         # Create the code if empty
         if not self.code:
             self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.transaction.concepts.count() + 1)
-        # Create the link concept if it does not exist
+
+        ## Create the link concept if empty
+        #try:
+        #   assert self.concept
+        #   self.concept.save()
+        #except Concept.DoesNotExist:
+        #    self.concept = Concept.objects.create(
+        #        code='{0}-C{1}'.format(self.transaction.code, self.transaction.concepts.count() + 1),
+        #        transaction=self.transaction,
+        #    )
+
+        # Create the value if empty
         try:
-           assert self.concept
-           self.concept.save()
-        except Concept.DoesNotExist:
-            self.concept = Concept.objects.create(
-                code='{0}-C{1}'.format(self.transaction.code, self.transaction.concepts.count() + 1),
-                transaction=self.transaction,
+            value = self.value
+            value.save()
+        except ConceptValue.DoesNotExist:
+            value = ConceptValue.objects.create(
+                amount=abs(self.price),
+                credit=self.price >= 0
             )
+            self.value = value
+
+        # save
         super().save(*args, **kwargs)
 
+    @property
     def settings(self):
-        """
-        :return: The concept type settings
-        """
-        raise NotImplementedError
+        return self.child_concept._settings_class.objects.get_or_create()[0]
 
     @property
     def tax_amount(self):
@@ -318,17 +361,12 @@ class ConceptData(models.Model):
         """
         return (self.value.amount * self.settings.vat_percent) / (self.settings.vat_percent + 1)
 
-    def type(self):
-        """
-        :return: The type of concept, e.g.: Apartment Rental
-        """
-        raise NotImplementedError
-
+    @property
     def url(self):
         """
         :return: The concept's base url
         """
-        raise NotImplementedError
+        return self._url
 
 
 class SingletonModel(models.Model):

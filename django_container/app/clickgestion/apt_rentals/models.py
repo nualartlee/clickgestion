@@ -79,15 +79,16 @@ class ApartmentRental(ConceptData):
         verbose_name = gettext_lazy('Apartment Rental')
         verbose_name_plural = gettext_lazy('Apartment Rentals')
 
+    def __init__(self, *args, **kwargs):
+        #ConceptData settings
+        self._url = '/apt-rentals/'
+        self._settings_class = AptRentalSettings
+        self._code_initials = 'AR'
+        self._concept_class = 'apartmentrental'
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
         return self.code
-
-    @property
-    def code_initials(self):
-        """
-        :return: AR for apartment rental
-        """
-        return 'AR'
 
     @property
     def nights(self):
@@ -107,11 +108,7 @@ class ApartmentRental(ConceptData):
         desc = gettext('Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s') % dict
         return desc
 
-    @property
-    def description_long(self):
-        return self.description_short
-
-    def get_rates(self):
+    def get_current_rates(self):
         """
         :return: The list of nightly rates
         """
@@ -125,35 +122,10 @@ class ApartmentRental(ConceptData):
         """
         :return: Total price for the stay
         """
+        # Rates are recorded on first save only
+        if not self.rates:
+            self.rates = self.get_current_rates()
         return sum(self.rates)
-
-    def save(self, *args, **kwargs):
-        # Get the rates
-        self.rates = self.get_rates()
-        # Set or create the value
-        try:
-            value = self.value
-            value.amount = self.price
-            value.save()
-        except ConceptValue.DoesNotExist:
-            value = ConceptValue.objects.create(
-                amount=self.price,
-            )
-            self.value = value
-        # save
-        super().save(*args, **kwargs)
-
-    @property
-    def settings(self):
-        return AptRentalSettings.objects.get_or_create()[0]
-
-    @property
-    def type(self):
-        return gettext('Apartment Rental')
-
-    @property
-    def url(self):
-       return '/apt-rentals/{}'.format(self.id)
 
 
 class AptRentalSettings(ConceptSettings):
@@ -195,22 +167,20 @@ class AptRentalDepositCharge(ConceptData):
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
     # Number of nights
     nights = models.SmallIntegerField(verbose_name=gettext_lazy('Nights'), default=7)
-    # Amount when saved
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=0)
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit Charge')
         verbose_name_plural = gettext_lazy('Apartment Rental Deposit Charges')
 
+    def __init__(self, *args, **kwargs):
+        #ConceptData settings
+        self._url = '/apt-rental-deposits/{}'.format(self.id)
+        self._settings_class = AptRentalDepositSettings
+        self._code_initials = 'ARD'
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
         return self.code
-
-    @property
-    def code_initials(self):
-        """
-        :return: ARD for apartment rental deposit
-        """
-        return 'ARD'
 
     @property
     def description_short(self):
@@ -219,10 +189,6 @@ class AptRentalDepositCharge(ConceptData):
         desc += gettext_lazy('Children') + ': {}, '.format(self.children)
         desc += gettext_lazy('Nights') + ': {}'.format(self.nights)
         return desc
-
-    @property
-    def description_long(self):
-        return self.description_short
 
     @property
     def price(self):
@@ -235,31 +201,5 @@ class AptRentalDepositCharge(ConceptData):
         if total < self.settings.min:
             return self.settings.min
         return total
-
-    def save(self, *args, **kwargs):
-        # Set or create the value
-        try:
-            value = self.value
-            value.amount = self.price
-            value.save()
-        except ConceptValue.DoesNotExist:
-            value = ConceptValue.objects.create(
-                amount=self.price,
-            )
-            self.value = value
-        # save
-        super().save(*args, **kwargs)
-
-    @property
-    def settings(self):
-        return AptRentalDepositSettings.objects.get_or_create()[0]
-
-    @property
-    def type(self):
-        return gettext('Apartment Rental Deposit')
-
-    @property
-    def url(self):
-        return '/apt-rental-deposits/{}'.format(self.id)
 
 
