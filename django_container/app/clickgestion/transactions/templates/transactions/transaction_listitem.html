@@ -39,10 +39,10 @@
                         {% for concept in transaction.concepts.all %}
                             <div class="row">
                                 <div class="col justify-content-start">
-                                    <h6 class="mr-2"><small>{{ concept.data.type }}</small></h6>
+                                    <h6 class="mr-2"><small>{{ concept.type }}</small></h6>
                                 </div>
                                 <div class="col text-right justify-content-end">
-                                    {% with concept.data.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                                    {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
                                 </div>
                             </div>
                         {% endfor %}

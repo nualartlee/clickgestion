@@ -23,8 +23,11 @@ class TestApartmentRental(CustomTestCase):
     def test_description_long(self):
         assert self.apartment_rental.description_long
 
-    def test_type(self):
-        assert self.apartment_rental.type
+    def test_class_type(self):
+        assert self.apartment_rental.concept_type
+
+    def test_concept_type(self):
+        assert self.apartment_rental.concept_type
 
     def test_url(self):
         assert self.apartment_rental.url

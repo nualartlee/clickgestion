@@ -65,12 +65,12 @@
         <tbody>
         {% for concept in transaction.concepts.all %}
         <tr>
-            <td colspan="3">{{ concept.data.description_short }}</td>
-            <td>{{ concept.data.taxable_amount|floatformat:2|intcomma }}</td>
-            <td>{{ concept.data.settings.vat_percent }}%</td>
-            <td>{{ concept.data.tax_amount|floatformat:2|intcomma }}</td>
+            <td colspan="3">{{ concept.description_short }}</td>
+            <td>{{ concept.taxable_amount|floatformat:2|intcomma }}</td>
+            <td>{{ concept.settings.vat_percent }}%</td>
+            <td>{{ concept.tax_amount|floatformat:2|intcomma }}</td>
             <td>
-                {% with concept.data.value as value %}
+                {% with concept.value as value %}
                 {% include 'transactions/value_md.html' %}
                 {% endwith %}
             </td>

@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import ConceptData,ConceptValue, ConceptSettings
+from clickgestion.transactions.models import BaseConcept, ConceptValue, ConceptSettings
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 from django.utils import timezone
@@ -59,7 +59,7 @@ def get_night_rate(date):
 
 
 @python_2_unicode_compatible
-class ApartmentRental(ConceptData):
+class ApartmentRental(BaseConcept):
     """
     Transaction Concept
     Apartment rental
@@ -80,7 +80,7 @@ class ApartmentRental(ConceptData):
         verbose_name_plural = gettext_lazy('Apartment Rentals')
 
     def __init__(self, *args, **kwargs):
-        #ConceptData settings
+        #BaseConcept settings
         self._url = '/apt-rentals/'
         self._settings_class = AptRentalSettings
         self._code_initials = 'AR'
@@ -156,7 +156,7 @@ class AptRentalDepositSettings(ConceptSettings):
         verbose_name_plural = gettext_lazy('Apartment Rental Deposit Settings')
 
 
-class AptRentalDepositCharge(ConceptData):
+class AptRentalDepositCharge(BaseConcept):
     """
     Transaction Concept
     Apartment rental deposit charge
@@ -173,7 +173,7 @@ class AptRentalDepositCharge(ConceptData):
         verbose_name_plural = gettext_lazy('Apartment Rental Deposit Charges')
 
     def __init__(self, *args, **kwargs):
-        #ConceptData settings
+        #BaseConcept settings
         self._url = '/apt-rental-deposits/{}'.format(self.id)
         self._settings_class = AptRentalDepositSettings
         self._code_initials = 'ARD'

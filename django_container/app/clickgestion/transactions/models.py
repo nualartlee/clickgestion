@@ -247,13 +247,14 @@ class ConceptValue(models.Model):
 
 
 @python_2_unicode_compatible
-class ConceptData(models.Model):
+class BaseConcept(models.Model):
     """
     A transaction concept records the type of exchange:
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
+    # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
     value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE,)
@@ -261,54 +262,54 @@ class ConceptData(models.Model):
     edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editedconcept', on_delete=models.CASCADE, blank=True, null=True)
 
     @property
-    def child_concept(self):
-        if self.__class__ == ConceptData:
+    def child(self):
+        """
+        Get the instance of the child class inheriting from BaseConcept
+        :return:
+        """
+        if self.__class__ == BaseConcept:
             if self.concept_class:
                 return getattr(self, self.concept_class)
-
+        return self
 
     @property
     def code_initials(self):
         """
         :return: An acronym for code construction
         """
-        return self._code_initials
+        return self.child._code_initials
 
     @property
     def class_type(self):
         """
         :return: The child class type
         """
-        return self._class_type
+        return self.child.class_type
 
     @property
     def concept_type(self):
         """
         :return: The type of concept, e.g.: Apartment Rental
         """
-        return self._meta.verbose_name
-
-    def delete(self, *args, **kwargs):
-        # Deleting the base concept will cascade this one
-        self.concept.delete()
+        return self.child._meta.verbose_name
 
     def description_short(self):
         """
         :return: A short single line description of the concept.
         """
-        raise NotImplementedError
+        return self.child.description_short
 
     def description_long(self):
         """
         :return: A detailed (multiline if required) description of the concept.
         """
-        return self.description_short()
+        return self.child.description_long
 
     def price(self):
         """
         :return: the price
         """
-        raise NotImplementedError
+        return self.child.price
 
     def save(self, *args, **kwargs):
 
@@ -318,16 +319,6 @@ class ConceptData(models.Model):
         # Create the code if empty
         if not self.code:
             self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.transaction.concepts.count() + 1)
-
-        ## Create the link concept if empty
-        #try:
-        #   assert self.concept
-        #   self.concept.save()
-        #except Concept.DoesNotExist:
-        #    self.concept = Concept.objects.create(
-        #        code='{0}-C{1}'.format(self.transaction.code, self.transaction.concepts.count() + 1),
-        #        transaction=self.transaction,
-        #    )
 
         # Create the value if empty
         try:
@@ -345,7 +336,7 @@ class ConceptData(models.Model):
 
     @property
     def settings(self):
-        return self.child_concept._settings_class.objects.get_or_create()[0]
+        return self.child._settings_class.objects.get_or_create()[0]
 
     @property
     def tax_amount(self):
@@ -366,7 +357,7 @@ class ConceptData(models.Model):
         """
         :return: The concept's base url
         """
-        return self._url
+        return self.child._url
 
 
 class SingletonModel(models.Model):

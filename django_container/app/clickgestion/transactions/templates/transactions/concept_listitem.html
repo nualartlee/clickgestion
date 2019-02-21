@@ -4,24 +4,24 @@
     <div class="row align-items-center">
 
         <div class="col-sm-7 text-left">
-            <a class="p text-dark" href="{{ concept.data.url }}"
-               title="{{ concept.data.description_long }}"
+            <a class="p text-dark" href="{{ concept.url }}"
+               title="{{ concept.description_long }}"
                data-toggle="popover" data-trigger="hover">
-                {{ concept.data.description_short }}
+                {{ concept.description_short }}
             </a>
         </div>
 
         <div class="col-sm-3 text-center">
-                <a href="{{ concept.data.url }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+                <a href="{{ concept.url }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
                     {% trans 'Edit' %}
                 </a>
-                <a href="{{ concept.data.url }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+                <a href="{{ concept.url }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
                     {% trans 'Delete' %}
                 </a>
         </div>
 
         <div class="col-sm-2 align-middle text-right align-self-end">
-            {% with concept.data.value as value %}
+            {% with concept.value as value %}
             {% include 'transactions/value_md.html' %}
             {% endwith %}
         </div>
