@@ -257,9 +257,9 @@ class BaseConcept(models.Model):
     # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
-    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE,)
-    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editingconcept', on_delete=models.SET_NULL, blank=True, null=True)
-    edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editedconcept', on_delete=models.CASCADE, blank=True, null=True)
+    value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
+    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editedconcept', on_delete=models.SET_NULL, blank=True, null=True)
+    edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editingconcept', on_delete=models.CASCADE, blank=True, null=True)
 
     @property
     def child(self):
