@@ -81,7 +81,7 @@ class AptRental(BaseConcept):
 
     def __init__(self, *args, **kwargs):
         #BaseConcept settings
-        self._url = '/apt-rentals/'
+        self._url = '/apt-rentals/{}'
         self._settings_class = AptRentalSettings
         self._code_initials = 'AR'
         self._concept_class = 'aptrental'
@@ -174,7 +174,7 @@ class AptRentalDeposit(BaseConcept):
 
     def __init__(self, *args, **kwargs):
         #BaseConcept settings
-        self._url = '/apt-rental-deposits/{}'.format(self.id)
+        self._url = '/apt-rentals/deposits/{}'
         self._settings_class = AptRentalDepositSettings
         self._code_initials = 'ARD'
         super().__init__(*args, **kwargs)

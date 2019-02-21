@@ -10,6 +10,48 @@ from pure_pagination.mixins import PaginationMixin
 from clickgestion.core.utilities import invalid_permission_redirect
 
 
+@login_required()
+def concept_new(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+    extra_context['transaction'] = transaction
+
+    # Check that the transaction is open
+    if transaction.closed:
+        return redirect('message', message=gettext('Transaction Closed'))
+
+    # Get the concept
+    concept_type = kwargs.get('concept_type', None)
+    extra_context['concept_type'] = concept_type
+
+    # Get the concept form
+    concept_form = kwargs.get('concept_form', None)
+
+    # POST
+    if request.method == 'POST':
+        form = concept_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('transaction_edit', transaction_code=transaction.code)
+
+        else:
+            extra_context['form'] = form
+            return render(request, 'transactions/concept_new.html', extra_context)
+
+    # GET
+    else:
+
+        # Get the form
+        form = concept_form()
+        extra_context['form'] = form
+        return render(request, 'transactions/concept_new.html', extra_context)
+
+
 def get_available_concepts(employee, transaction):
     """
     Get a list of the available concepts that can be added to the given transaction.
@@ -26,7 +68,7 @@ def get_available_concepts(employee, transaction):
     concepts.append(concept)
     concept = {
         'name': gettext('Apartment Rental Deposit'),
-        'url': '/apt-rental-deposits/new/{}'.format(transaction.code),
+        'url': '/apt-rentals/deposits/new/{}'.format(transaction.code),
     }
     concepts.append(concept)
     return concepts

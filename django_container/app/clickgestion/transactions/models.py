@@ -251,7 +251,7 @@ class BaseConcept(models.Model):
         Get the instance of the child class inheriting from BaseConcept
         :return:
         """
-        if self.__class__ == BaseConcept:
+        if not self.is_child:
             if self.concept_class:
                 return getattr(self, self.concept_class)
         return self
@@ -261,6 +261,8 @@ class BaseConcept(models.Model):
         """
         :return: An acronym for code construction
         """
+        if self.is_child:
+            return self._code_initials
         return self.child._code_initials
 
     @property
@@ -268,6 +270,8 @@ class BaseConcept(models.Model):
         """
         :return: The child class type
         """
+        if self.is_child:
+            return self.class_type
         return self.child.class_type
 
     @property
@@ -275,24 +279,30 @@ class BaseConcept(models.Model):
         """
         :return: The type of concept, e.g.: Apartment Rental
         """
+        if self.is_child:
+            return self._meta.verbose_name
         return self.child._meta.verbose_name
 
+    @property
     def description_short(self):
         """
         :return: A short single line description of the concept.
         """
+        if self.is_child:
+            return self.description_short
         return self.child.description_short
 
-    def description_long(self):
-        """
-        :return: A detailed (multiline if required) description of the concept.
-        """
-        return self.child.description_long
+    @property
+    def is_child(self):
+        return self.__class__ != BaseConcept
 
+    @property
     def price(self):
         """
         :return: the price
         """
+        if self.is_child:
+            return self.price
         return self.child.price
 
     def save(self, *args, **kwargs):
@@ -320,6 +330,8 @@ class BaseConcept(models.Model):
 
     @property
     def settings(self):
+        if self.is_child:
+            return self._settings_class.objects.get_or_create()[0]
         return self.child._settings_class.objects.get_or_create()[0]
 
     @property
@@ -341,7 +353,9 @@ class BaseConcept(models.Model):
         """
         :return: The concept's base url
         """
-        return self.child._url
+        if self.is_child:
+            return self._url.format(self.child.id)
+        return self.child._url.format(self.child.id)
 
 
 class SingletonModel(models.Model):

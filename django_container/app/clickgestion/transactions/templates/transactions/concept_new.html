@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags i18n humanize %}
+
+
+{% block content %}
+<div class="container">
+    <p style="margin-top:20px"></p>
+    <h4>{{ concept_type }}</h4>
+    <p style="margin-top:20px"></p>
+    <div class="container">
+        <div class="row">
+            <h6>{% trans 'Transaction' %} {{ transaction.code }} {% trans 'opened' %} {{ transaction.created|naturaltime }}</h6>
+        </div>
+    </div>
+    <p style="margin-top:20px"></p>
+    <form method="post">
+    {% crispy form %}
+    <p style="margin-top:50px"></p>
+    <input type="submit" value="{% trans 'Save' %}" class="btn btn-secondary col-2"/>
+    <a class="btn btn-danger col-2" href="{% url 'transaction_edit' transaction_code=transaction.code %}">{% trans 'Cancel' %}</a>
+    </form>
+</div>
+{% endblock %}
