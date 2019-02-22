@@ -127,7 +127,7 @@ def rental_edit(request, *args, **kwargs):
 def deposit_new(request, *args, **kwargs):
 
     # Set the concept
-    kwargs['concept_type'] = AptRentalDeposit().class_type
+    kwargs['concept_type'] = AptRentalDeposit().concept_type
     # Set the form
     kwargs['concept_form'] = RentalForm
     # Return the default view
