@@ -4,7 +4,7 @@ from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from clickgestion.apt_rentals.forms import RentalForm, DepositForm
 from django.utils.translation import gettext
-from clickgestion.transactions.views import concept_delete, concept_new
+from clickgestion.transactions.views import concept_delete
 
 
 @login_required()

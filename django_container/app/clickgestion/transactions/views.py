@@ -17,13 +17,14 @@ def concept_delete(request, *args, **kwargs):
     # Check permissions
 
     # Get the concept
-    concept = kwargs.get('concept', None)
+    concept = get_concept_from_kwargs(**kwargs)
     extra_context['concept'] = concept
 
-    # Check that the transaction is open
-    if concept.transaction.closed:
+    # Get the transaction
+    transaction = concept.transaction
+    if transaction.closed:
         return redirect('message', message=gettext('Transaction Closed'))
-
+    extra_context['transaction'] = transaction
 
     # Use default delete view
     extra_context['header'] = gettext('Delete {}?'.format(concept.concept_type))
@@ -41,38 +42,36 @@ def concept_delete(request, *args, **kwargs):
     else:
         return render(request, 'core/delete.html', extra_context)
 
+
 @login_required()
-def concept_new(request, *args, **kwargs):
+def concept_edit(request, *args, **kwargs):
     extra_context = {}
 
     # Check permissions
 
-    # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
-    extra_context['transaction'] = transaction
-
-    # Check that the transaction is open
-    if transaction.closed:
-        return redirect('message', message=gettext('Transaction Closed'))
-
     # Get the concept
-    concept = kwargs.get('concept', None)
+    concept = get_concept_from_kwargs(**kwargs)
     extra_context['concept'] = concept
 
+    # Get the transaction
+    transaction = concept.transaction
+    if transaction.closed:
+        return redirect('message', message=gettext('Transaction Closed'))
+    extra_context['transaction'] = transaction
+
     # Get the concept form
-    concept_form = kwargs.get('concept_form', None)
+    concept_form = concept.form
 
     # POST
     if request.method == 'POST':
         form = concept_form(request.POST, instance=concept)
         if form.is_valid():
-            form.save(transaction=transaction)
+            form.save()
             return redirect('transaction_edit', transaction_code=transaction.code)
 
         else:
             extra_context['form'] = form
-            return render(request, 'transactions/concept_new.html', extra_context)
+            return render(request, 'transactions/concept_edit.html', extra_context)
 
     # GET
     else:
@@ -80,7 +79,7 @@ def concept_new(request, *args, **kwargs):
         # Get the form
         form = concept_form(instance=concept)
         extra_context['form'] = form
-        return render(request, 'transactions/concept_new.html', extra_context)
+        return render(request, 'transactions/concept_edit.html', extra_context)
 
 
 def get_available_concepts(employee, transaction):
@@ -103,6 +102,31 @@ def get_available_concepts(employee, transaction):
     }
     concepts.append(concept)
     return concepts
+
+
+def get_transaction_from_kwargs(**kwargs):
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+    return transaction
+
+
+def get_concept_from_kwargs(**kwargs):
+
+    # Get the concept class
+    concept_class = kwargs.get('concept_class', None)
+
+    # If a transaction code is provided, this is a new concept
+    transaction_code = kwargs.get('transaction_code', None)
+    if transaction_code:
+        transaction = get_transaction_from_kwargs(**kwargs)
+        return concept_class(transaction=transaction)
+
+    # Get the existing concept
+    concept_code = kwargs.get('concept_code', None)
+    concept = get_object_or_404(concept_class, code=concept_code)
+    return concept
+
 
 def transaction_delete(request, *args, **kwargs):
     extra_context = {}

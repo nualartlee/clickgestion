@@ -354,8 +354,8 @@ class BaseConcept(models.Model):
         :return: The concept's base url
         """
         if self.is_child:
-            return self._url.format(self.child.id)
-        return self.child._url.format(self.child.id)
+            return self._url.format(self.child.code)
+        return self.child._url.format(self.child.code)
 
 
 class SingletonModel(models.Model):
