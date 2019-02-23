@@ -6,7 +6,7 @@ from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from django.core.exceptions import ValidationError
 
 
-class RentalForm(forms.ModelForm):
+class AptRentalForm(forms.ModelForm):
     checkin = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date'},
@@ -79,7 +79,7 @@ class RentalForm(forms.ModelForm):
         return self.cleaned_data
 
 
-class DepositForm(forms.ModelForm):
+class AptRentalDepositForm(forms.ModelForm):
 
     class Meta:
         model = AptRentalDeposit
@@ -89,11 +89,6 @@ class DepositForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-
-    def save(self, *args, **kwargs):
-        transaction = kwargs.pop('transaction')
-        self.instance.transaction = transaction
-        super().save(*args, **kwargs)
 
 
 
