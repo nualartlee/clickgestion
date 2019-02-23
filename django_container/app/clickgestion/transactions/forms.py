@@ -161,6 +161,7 @@ class TransactionPayForm(forms.ModelForm):
                         title=gettext_lazy("The client's address"),
                         placeholder="10 First Ave",
                         css_class='col-12',
+                        rows='5',
                     ),
                     css_class='col-12',
                 ),

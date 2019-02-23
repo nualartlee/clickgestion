@@ -3,15 +3,24 @@
 
     <div class="row align-items-center">
 
-        <div class="col-sm-7 text-left">
+        <div class="col-sm-7">
+        {% if concept.transaction.closed %}
             <a class="p text-dark" href="{{ concept.url }}"
                title="{{ concept.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 {{ concept.description_short }}
             </a>
+
+        {% else %}
+            <p class="p text-dark"
+               title="{{ concept.description_long }}"
+               data-toggle="popover" data-trigger="hover">
+                {{ concept.description_short }}
+            </p>
+        {% endif %}
         </div>
 
-        <div class="col-sm-3 text-center">
+        <div class="col-sm-3 text-right">
                 <a href="{{ concept.url }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
                     {% trans 'Edit' %}
                 </a>
@@ -20,7 +29,7 @@
                 </a>
         </div>
 
-        <div class="col-sm-2 align-middle text-right align-self-end">
+        <div class="col-sm-2 text-right align-self-end">
             {% with concept.value as value %}
             {% include 'transactions/value_md.html' %}
             {% endwith %}

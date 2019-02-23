@@ -4,7 +4,8 @@
     <div class="row align-items-center">
 
         <div class="col-sm-9 text-left">
-            <a class="p text-dark" href="/transactions/{{ transaction.code }}"
+
+            <p class="p text-dark"
                title="{{ transaction.description_long }}"
                data-toggle="popover" data-trigger="hover">
                 <div class="row">
@@ -62,11 +63,14 @@
                         {% endif %}
                     </div>
                 </div>
-            </a>
+            </p>
         </div>
 
         <div class="col-sm-3 text-right">
             {% if transaction.closed %}
+            <a href="/transactions/{{ transaction.code }}" class="btn btn-outline-secondary btn-sm" role="button">
+                {% trans 'View' %}
+            </a>
 
             {% else %}
             <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
