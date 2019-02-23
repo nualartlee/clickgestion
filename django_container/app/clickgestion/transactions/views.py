@@ -26,17 +26,17 @@ def concept_new(request, *args, **kwargs):
         return redirect('message', message=gettext('Transaction Closed'))
 
     # Get the concept
-    concept_type = kwargs.get('concept_type', None)
-    extra_context['concept_type'] = concept_type
+    concept = kwargs.get('concept', None)
+    extra_context['concept'] = concept
 
     # Get the concept form
     concept_form = kwargs.get('concept_form', None)
 
     # POST
     if request.method == 'POST':
-        form = concept_form(request.POST)
+        form = concept_form(request.POST, instance=concept)
         if form.is_valid():
-            form.save()
+            form.save(transaction=transaction)
             return redirect('transaction_edit', transaction_code=transaction.code)
 
         else:
@@ -47,7 +47,7 @@ def concept_new(request, *args, **kwargs):
     else:
 
         # Get the form
-        form = concept_form()
+        form = concept_form(instance=concept)
         extra_context['form'] = form
         return render(request, 'transactions/concept_new.html', extra_context)
 

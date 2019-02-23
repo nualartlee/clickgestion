@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column, Submit
-from clickgestion.apt_rentals.models import AptRental
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from django.core.exceptions import ValidationError
 
 
@@ -78,6 +78,22 @@ class RentalForm(forms.ModelForm):
 
         return self.cleaned_data
 
+
+class DepositForm(forms.ModelForm):
+
+    class Meta:
+        model = AptRentalDeposit
+        fields = ('adults', 'children', 'nights')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+    def save(self, *args, **kwargs):
+        transaction = kwargs.pop('transaction')
+        self.instance.transaction = transaction
+        super().save(*args, **kwargs)
 
 
 

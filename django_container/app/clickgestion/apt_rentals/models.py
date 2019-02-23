@@ -177,6 +177,7 @@ class AptRentalDeposit(BaseConcept):
         self._url = '/apt-rentals/deposits/{}'
         self._settings_class = AptRentalDepositSettings
         self._code_initials = 'ARD'
+        self._concept_class = 'aptrentaldeposit'
         super().__init__(*args, **kwargs)
 
     def __str__(self):

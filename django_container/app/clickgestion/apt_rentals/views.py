@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
-from clickgestion.apt_rentals.forms import RentalForm
+from clickgestion.apt_rentals.forms import RentalForm, DepositForm
 from django.utils.translation import gettext
 from clickgestion.transactions.views import concept_new
 
@@ -127,9 +127,9 @@ def rental_edit(request, *args, **kwargs):
 def deposit_new(request, *args, **kwargs):
 
     # Set the concept
-    kwargs['concept_type'] = AptRentalDeposit().concept_type
+    kwargs['concept'] = AptRentalDeposit()
     # Set the form
-    kwargs['concept_form'] = RentalForm
+    kwargs['concept_form'] = DepositForm
     # Return the default view
     return concept_new(request, *args, **kwargs)
 
