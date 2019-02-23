@@ -4,7 +4,7 @@ from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from clickgestion.apt_rentals.forms import RentalForm, DepositForm
 from django.utils.translation import gettext
-from clickgestion.transactions.views import concept_new
+from clickgestion.transactions.views import concept_delete, concept_new
 
 
 @login_required()
@@ -135,31 +135,11 @@ def deposit_new(request, *args, **kwargs):
 
 
 def deposit_delete(request, *args, **kwargs):
-    extra_context = {}
 
-    # Check permissions
-
-    # Get the rental
-    rental_id = kwargs.get('rental_id', None)
-    rental = get_object_or_404(AptRental, id=rental_id)
-    extra_context['rental'] = rental
-    extra_context['transaction'] = rental.transaction
-
-    # Use default delete view
-    extra_context['header'] = gettext('Delete {}?'.format(rental.type))
-    extra_context['message'] = rental.description_short
-    extra_context['next'] = request.META['HTTP_REFERER']
-
-    # POST
-    if request.method == 'POST':
-        default_next = reverse('transaction_detail', kwargs={'transaction_code': rental.transaction.code})
-        rental.delete()
-        next_page = request.POST.get('next', default_next)
-        return redirect(next_page)
-
-    # GET
-    else:
-        return render(request, 'core/delete.html', extra_context)
+    # Set the concept
+    kwargs['concept'] = AptRentalDeposit()
+    # Return the default view
+    return concept_delete(request, *args, **kwargs)
 
 
 def deposit_detail(request, *args, **kwargs):

@@ -11,6 +11,37 @@ from clickgestion.core.utilities import invalid_permission_redirect
 
 
 @login_required()
+def concept_delete(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the concept
+    concept = kwargs.get('concept', None)
+    extra_context['concept'] = concept
+
+    # Check that the transaction is open
+    if concept.transaction.closed:
+        return redirect('message', message=gettext('Transaction Closed'))
+
+
+    # Use default delete view
+    extra_context['header'] = gettext('Delete {}?'.format(concept.concept_type))
+    extra_context['message'] = concept.description_short
+    extra_context['next'] = request.META['HTTP_REFERER']
+
+    # POST
+    if request.method == 'POST':
+        default_next = reverse('transaction_detail', kwargs={'transaction_code': concept.transaction.code})
+        concept.delete()
+        next_page = request.POST.get('next', default_next)
+        return redirect(next_page)
+
+    # GET
+    else:
+        return render(request, 'core/delete.html', extra_context)
+
+@login_required()
 def concept_new(request, *args, **kwargs):
     extra_context = {}
 
