@@ -367,7 +367,7 @@ def transaction_pay(request, *args, **kwargs):
             # Close the transaction
             if form.cleaned_data['confirm_button']:
                 transaction.closed = True
-                transaction.closed_time = timezone.datetime.now()
+                transaction.closed_date = timezone.datetime.now()
                 transaction.save()
                 return redirect('transaction_detail', transaction_code=transaction.code)
 
