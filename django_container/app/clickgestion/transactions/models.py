@@ -8,6 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 User = get_user_model()
 
+
 def get_default_currency():
     """
     Get the default currency
@@ -17,6 +18,7 @@ def get_default_currency():
         return Currency.objects.get(default=True)
     except Currency.DoesNotExist:
         return None
+
 
 def get_new_cashclose_code():
     """
@@ -36,6 +38,7 @@ def get_new_cashclose_code():
     except CashClose.DoesNotExist:
         return code
 
+
 def get_new_transaction_code():
     """
     Generate a transaction id code
@@ -53,6 +56,41 @@ def get_new_transaction_code():
         return get_new_transaction_code()
     except Transaction.DoesNotExist:
         return code
+
+
+def get_breakdown_by_concept_type(transaction_set):
+    """
+
+    :param transaction_set: A set of transactions
+    :return: A list of objects with the breakdown
+    """
+    class BreakdownType:
+        def __init__(self, values, concept_count, totals, type):
+            self.values = values
+            self.concept_count = concept_count
+            self.totals = totals
+            self.type = type
+
+    # Get breakdown by concept type
+    breakdown = {}
+    all_concepts = BaseConcept.objects.filter(transaction__in=transaction_set)
+    for concept in all_concepts:
+
+        # Update existing concept type total
+        if concept.concept_type in breakdown:
+            # Add value
+            breakdown[concept.concept_type].values.append(concept.value)
+            breakdown[concept.concept_type].concept_count += 1
+
+        # Start new concept type total
+        else:
+            breakdown[concept.concept_type] = BreakdownType([concept.value], 1, None, concept.concept_type)
+
+    for concept_type in breakdown:
+        breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
+
+    return [ value for _, value in breakdown.items() ]
+
 
 def get_value_totals(values):
     """

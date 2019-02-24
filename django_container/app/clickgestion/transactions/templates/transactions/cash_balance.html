@@ -6,17 +6,25 @@
 {% block content %}
 <div class="container">
     <p style="margin-top:20px"></p>
+    <h4>{% trans 'Cash Balance' %}</h4>
+    <ul>
+        {% for value in totals %}
+        {% include 'transactions/value_total.html' %}
+        {% endfor %}
+    </ul>
+    {% for group in breakdown %}
+    <h5>{{ group.type }}: {{ group.concept_count }}</h5>
+    <ul>
+        {% for value in group.totals %}
+        {% include 'transactions/value_total.html' %}
+        {% endfor %}
+    </ul>
+    {% endfor %}
     <h4>{{ header }}</h4>
     <p style="margin-top:20px"></p>
     <ul>
         {% for transaction in transactions %}
         {% include 'transactions/transaction_listitem.html' %}
-        {% endfor %}
-    </ul>
-    <h4>{% trans 'Cash Balance' %}</h4>
-    <ul>
-        {% for value in totals %}
-        {% include 'transactions/value_total.html' %}
         {% endfor %}
     </ul>
     {% if is_paginated %}

@@ -16,6 +16,19 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
         cls.get_template = 'transactions/transaction_list.html'
 
 
+class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'cash_balance'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/cash_balance.html'
+
+
 class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
 
     @classmethod

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from clickgestion.transactions.models import Transaction, get_value_totals
+from clickgestion.transactions.models import BaseConcept, Transaction, get_breakdown_by_concept_type, get_value_totals
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 from django.utils.translation import gettext, gettext_lazy
 from django.utils import timezone
@@ -18,12 +18,14 @@ def cash_balance(request, *args, **kwargs):
     transactions = Transaction.objects.filter(closed=True, cashclose=None)
     extra_context['transactions'] = transactions
 
-    # Add the transaction values
+    # Get breakdown by concept type
+    breakdown = get_breakdown_by_concept_type(transactions)
+    extra_context['breakdown'] = breakdown
+
+    # Get the totals
     values = []
     for transaction in transactions:
         values += transaction.totals
-
-    # Get the totals
     totals = get_value_totals(values)
     extra_context['totals'] = totals
 
