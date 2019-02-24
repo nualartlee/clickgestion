@@ -84,7 +84,7 @@ def get_breakdown_by_concept_type(transaction_set):
 
         # Start new concept type total
         else:
-            breakdown[concept.concept_type] = BreakdownType([concept.value], 1, None, concept.concept_type)
+            breakdown[concept.concept_type] = BreakdownType([concept.value], 1, None, concept.child._meta.verbose_name_plural)
 
     for concept_type in breakdown:
         breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
