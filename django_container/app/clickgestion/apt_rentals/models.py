@@ -170,7 +170,7 @@ class AptRentalDeposit(BaseConcept):
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit')
-        verbose_name_plural = gettext_lazy('Apartment Rental Deposit')
+        verbose_name_plural = gettext_lazy('Apartment Rental Deposits')
 
     def __init__(self, *args, **kwargs):
         #BaseConcept settings

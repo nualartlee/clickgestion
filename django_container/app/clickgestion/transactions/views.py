@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.models import Transaction, get_value_totals
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 from django.utils.translation import gettext, gettext_lazy
 from django.utils import timezone
@@ -8,6 +8,30 @@ from clickgestion.transactions.filters import EmployeeFilter
 from django.views.generic import ListView
 from pure_pagination.mixins import PaginationMixin
 from clickgestion.core.utilities import invalid_permission_redirect
+
+
+@login_required()
+def cash_balance(request, *args, **kwargs):
+    extra_context = {}
+
+    # Get closed transactions
+    transactions = Transaction.objects.filter(closed=True, cashclose=None)
+    extra_context['transactions'] = transactions
+
+    # Add the transaction values
+    values = []
+    for transaction in transactions:
+        values += transaction.totals
+
+    # Get the totals
+    totals = get_value_totals(values)
+    extra_context['totals'] = totals
+
+    # Render
+    return render(request, 'transactions/cash_balance.html', extra_context)
+
+
+
 
 
 @login_required()

@@ -222,7 +222,7 @@ class ConceptValue(models.Model):
         verbose_name_plural = gettext_lazy('Concept Values')
 
     def __str__(self):
-        return '{0} {1} {2}'.format(self.concept.code, self.currency.symbol, self.amount)
+        return '{0} {1}'.format(self.currency.symbol, self.amount)
 
 
 @python_2_unicode_compatible
