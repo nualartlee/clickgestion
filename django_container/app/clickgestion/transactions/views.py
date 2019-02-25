@@ -141,6 +141,16 @@ def get_available_concepts(employee, transaction):
         'url': '/apt-rentals/deposits/new/{}'.format(transaction.code),
     }
     concepts.append(concept)
+    concept = {
+        'name': gettext('Cash Float Deposit'),
+        'url': '/cash-float/deposits/new/{}'.format(transaction.code),
+    }
+    concepts.append(concept)
+    concept = {
+        'name': gettext('Cash Float Withdrawal'),
+        'url': '/cash-float/withdrawals/new/{}'.format(transaction.code),
+    }
+    concepts.append(concept)
     return concepts
 
 

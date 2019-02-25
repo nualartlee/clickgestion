@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'clickgestion.core',
     'clickgestion.transactions',
     'clickgestion.apt_rentals',
+    'clickgestion.cash_float',
 ]
 
 MIDDLEWARE = [

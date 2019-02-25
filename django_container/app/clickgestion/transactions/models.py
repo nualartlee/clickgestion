@@ -133,7 +133,8 @@ def get_value_totals(values):
             value.amount *= -1
 
     # Return as ordered list of dummy values
-    return [totals[k] for k in sorted(totals, key=totals.get)]
+    #return [totals[k] for k in sorted(totals, key=totals.get)]
+    return [v for v in totals.values()]
 
 
 @python_2_unicode_compatible
