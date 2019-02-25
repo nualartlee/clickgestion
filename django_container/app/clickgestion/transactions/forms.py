@@ -175,11 +175,15 @@ class TransactionPayForm(forms.ModelForm):
         """
         # Get the transaction object
         transaction = self.instance
-        # Iterate over the fields, set as required if any of the concepts call it
+        # Iterate over the fields, set as required/visible per settings
         for field in self.fields:
             for concept in transaction.concepts.all():
-                if getattr(concept.settings, field, False):
+                self.fields[field].hidden = True
+                if getattr(concept.settings, field + '_visible', False):
+                    self.fields[field].hidden = False
+                if getattr(concept.settings, field + '_required', False):
                     self.fields[field].required = True
+                    self.fields[field].hidden = False
 
 
 class ConceptValueForm(forms.ModelForm):
