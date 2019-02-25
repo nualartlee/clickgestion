@@ -5,129 +5,64 @@
 
 {% block content %}
 <div class="container">
+
     <p style="margin-top:40px"></p>
-    <ul>
-        <li class="list-group-item">
-            <div class="row align-items-center">
-                <div class="col-sm-9 text-left">
-                    <h4>{% trans 'Cash Balance' %}</h4>
-                </div>
 
-                <div class="col-sm-3 text-right">
-                    <table class="table table-striped table-bordered">
-                        {% for value in totals %}
-                        <tr>
-                          <td scope="col">
-                              {% include 'transactions/value_total.html' %}
-                          </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
+    <!--Cash Balance-->
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th colspan="4" scope="col">{% trans 'Cash Balance' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for value in totals %}
+        <tr>
+          <th scope="row">{{ value.currency.name }}</th>
+            <td></td>
+            <td></td>
+          <td>
+              {% include 'transactions/value_total.html' %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
 
-            </div>
-        </li>
-
-    </ul>
-
-    <p style="margin-top:20px"></p>
-
-
-    <ul>
-        <li class="list-group-item">
-            <div class="row align-items-center">
-                <div class="col-sm-9 text-left">
-                    <h5>{% trans 'Breakdown' %}</h5>
-                </div>
-                <div class="col-sm-3 text-right">
-                </div>
-            </div>
-        </li>
-
-        {% for group in breakdown %}
-        <li class="list-group-item">
-            <div class="row align-items-center">
-                <div class="col-sm-9 text-left">
-                    <h6>{{ group.type }}: {{ group.concept_count }}</h6>
-                </div>
-
-                <div class="col-sm-3 text-right">
-                    <table class="table table-striped table-bordered">
-                        {% for value in group.totals %}
-                        <tr>
-                            <td scope="col">
-                                {% include 'transactions/value_total.html' %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-
-            </div>
-        </li>
+    <!--Breakdown by concept type-->
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th colspan="4" scope="col">{% trans 'Breakdown By Concept Type' %}</th>
+        </tr>
+      </thead>
+    </table>
+    {% for group in breakdown %}
+    <table class="table table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th colspan="4" scope="col">{{ group.type }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th rowspan="{{ group.totals|length }}" scope="row"></th>
+            <td>{{ group.concept_count }}</td>
+            <td></td>
+        </tr>
+        {% for value in group.totals %}
+          <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                  {% include 'transactions/value_total.html' %}
+              </td>
+          </tr>
         {% endfor %}
-    </ul>
-
-
-
-    <table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th colspan=4 scope="col">Cash Balance</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
+      </tbody>
+    </table>
+    {% endfor %}
 
 
 
