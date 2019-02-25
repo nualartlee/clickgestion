@@ -21,24 +21,20 @@
           <th scope="row">{{ value.currency.name }}</th>
             <td></td>
             <td></td>
-          <td>
+          <td class="text-right">
               {% include 'transactions/value_total.html' %}
           </td>
         </tr>
       {% endfor %}
       </tbody>
-    </table>
 
     <!--Breakdown by concept type-->
-    <table class="table table-hover">
       <thead class="thead-dark">
         <tr>
           <th colspan="4" scope="col">{% trans 'Breakdown By Concept Type' %}</th>
         </tr>
       </thead>
-    </table>
     {% for group in breakdown %}
-    <table class="table table-hover">
         <thead class="thead-light">
         <tr>
             <th colspan="4" scope="col">{{ group.type }}</th>
@@ -46,24 +42,26 @@
         </thead>
         <tbody>
         <tr>
-          <th rowspan="{{ group.totals|length }}" scope="row"></th>
-            <td>{{ group.concept_count }}</td>
             <td></td>
+            <td>{% trans 'Number of concepts' %}</td>
+            <td></td>
+            <td class="text-right">
+                {{ group.concept_count }}
+            </td>
         </tr>
         {% for value in group.totals %}
           <tr>
               <td></td>
+              <td>{{ value.currency.name }}</td>
               <td></td>
-              <td></td>
-              <td>
+              <td class="text-right">
                   {% include 'transactions/value_total.html' %}
               </td>
           </tr>
         {% endfor %}
       </tbody>
-    </table>
     {% endfor %}
-
+    </table>
 
 
 
