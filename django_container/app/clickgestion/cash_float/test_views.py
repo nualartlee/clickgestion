@@ -8,10 +8,10 @@ class TestCashFloatDepositNewView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = True
         cls.required_access_level = 1
-        cls.url = 'cash_float_deposit_new'
+        cls.url = 'cashfloat_deposit_new'
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
-        cls.get_template = 'transactions/concept_new.html'
+        cls.get_template = 'transactions/concept_edit.html'
 
 
 

@@ -85,6 +85,7 @@ class TransactionPayForm(forms.ModelForm):
             'client_id',
             'client_last_name',
             'client_phone_number',
+            'notes',
         )
 
     def __init__(self, *args, **kwargs):
@@ -159,9 +160,22 @@ class TransactionPayForm(forms.ModelForm):
                     Field(
                         'client_address',
                         title=gettext_lazy("The client's address"),
-                        placeholder="10 First Ave",
+                        placeholder=gettext_lazy("10 First Ave"),
                         css_class='col-12',
                         rows='5',
+                    ),
+                    css_class='col-12',
+                ),
+
+            ),
+            Row(
+                Column(
+                    Field(
+                        'notes',
+                        title=gettext_lazy("Additional notes"),
+                        placeholder=gettext_lazy("Add a note..."),
+                        css_class='col-12',
+                        rows='2',
                     ),
                     css_class='col-12',
                 ),
@@ -178,12 +192,13 @@ class TransactionPayForm(forms.ModelForm):
         # Iterate over the fields, set as required/visible per settings
         for field in self.fields:
             for concept in transaction.concepts.all():
-                self.fields[field].hidden = True
+                default_widget = self.fields[field].widget
+                self.fields[field].widget = forms.HiddenInput()
                 if getattr(concept.settings, field + '_visible', False):
-                    self.fields[field].hidden = False
+                    self.fields[field].widget = default_widget
                 if getattr(concept.settings, field + '_required', False):
                     self.fields[field].required = True
-                    self.fields[field].hidden = False
+                    self.fields[field].widget = default_widget
 
 
 class ConceptValueForm(forms.ModelForm):

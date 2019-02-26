@@ -29,5 +29,8 @@ if __name__ == "__main__":
     execute_from_command_line(['manage.py', 'collectstatic', '--noinput'])
 
     # Create default models
-    from django_setup_models import create_default_models
+    from clickgestion.core.model_creation import create_default_models, create_test_models
+    from django.conf import settings
     create_default_models()
+    if settings.DEBUG:
+        create_test_models()

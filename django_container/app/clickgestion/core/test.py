@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from clickgestion.transactions.models import Transaction, Currency
 from clickgestion.apt_rentals.models import AptRental, AptRentalSettings, NightRateRange
 from django.utils import timezone
+from clickgestion.core import model_creation
 
 
 class CustomTestCase(TestCase):  # pragma: no cover
@@ -16,53 +17,22 @@ class CustomTestCase(TestCase):  # pragma: no cover
     def setUpTestData(cls):
         User = get_user_model()
         # Create admin user
-        user_name = 'admin'
-        user_email = 'admin@here.com'
-        user_pass = 'admin'
-        cls.admin = User.objects.create_superuser(user_name, user_email, user_pass)
+        cls.admin = model_creation.create_test_admin()
         # Create normal user
-        user_name = 'test'
-        user_email = 'test@here.com'
-        user_pass = 'test'
-        cls.normaluser = User.objects.create_user(user_name, user_email, user_pass)
+        cls.normaluser = model_creation.create_test_user()
         # Create transaction
         cls.transaction = Transaction.objects.create(
             employee=cls.normaluser,
         )
 
         # Create a default currency
-        code_a = 'EUR'
-        Currency.objects.create(
-            name='Euro',
-            code_a=code_a,
-            code_n='978',
-            default=True,
-            exchange_rate=1,
-        )
-        #
-        # apt_rentals data
-        #
+        cls.currency = model_creation.create_euros()
+        model_creation.create_pounds()
+        model_creation.create_dollars()
 
-        # Create settings
-        settings = AptRentalSettings(
-            vat_percent=10,
-            client_first_name=True,
-            client_last_name=True,
-            client_id=True,
-        ).save()
-
-        # Create a price range for the next year
-        cls.night_rate_range = NightRateRange.objects.create(
-            start_date=timezone.datetime.today(),
-            end_date=timezone.datetime.today() + timezone.timedelta(days=730),
-            monday=10,
-            tuesday=20,
-            wednesday=30,
-            thursday=40,
-            friday=50,
-            saturday=60,
-            sunday=70,
-        )
+        # Create aptrentalsettings
+        model_creation.create_aptrentalsettings()
+        cls.night_rate_range = model_creation.create_nightraterange()
 
         # Create an apartment rental
         cls.apartment_rental = AptRental(
