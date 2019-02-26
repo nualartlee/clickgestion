@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
+from itertools import chain
 from django.contrib.auth.decorators import login_required
-from clickgestion.transactions.models import BaseConcept, Transaction, get_breakdown_by_concept_type, get_value_totals
+from clickgestion.transactions.models import Transaction, get_breakdown_by_concept_type, get_value_totals
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 from django.utils.translation import gettext, gettext_lazy
 from django.utils import timezone
@@ -8,6 +9,7 @@ from clickgestion.transactions.filters import EmployeeFilter
 from django.views.generic import ListView
 from pure_pagination.mixins import PaginationMixin
 from clickgestion.core.utilities import invalid_permission_redirect
+from django.contrib.auth.models import Group, Permission
 
 
 @login_required()
@@ -151,6 +153,17 @@ def get_available_concepts(employee, transaction):
         'url': '/cash-float/withdrawals/new/{}'.format(transaction.code),
     }
     concepts.append(concept)
+
+    # get permissions from current transaction concepts
+    concepts = transaction.concepts.all()
+    concept_groups = list(
+        chain(concept.settings.permission_group for concept in concepts)
+    )
+    concept_groups = Group.objects.filter()
+    concept_permissions = Permission.objects.filter(group__in=concept_groups)
+    #perms = Permission.objects.all()
+    #import pdb;pdb.set_trace()
+
     return concepts
 
 

@@ -1,10 +1,10 @@
 from __future__ import unicode_literals
-from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
+from django.contrib.auth.models import Group
+from django.db import models
 from django.utils import timezone
 import uuid
-from django.utils.encoding import python_2_unicode_compatible
 
 User = get_user_model()
 
@@ -137,7 +137,6 @@ def get_value_totals(values):
     return [v for v in totals.values()]
 
 
-@python_2_unicode_compatible
 class CashClose(models.Model):
     """
     A cash close records an end of day cash desk close operation.
@@ -156,7 +155,6 @@ class CashClose(models.Model):
         return self.code
 
 
-@python_2_unicode_compatible
 class Transaction(models.Model):
     """
     A transaction records a single interaction between the host and
@@ -265,7 +263,6 @@ class ConceptValue(models.Model):
         return '{0} {1}'.format(self.currency.symbol, self.amount)
 
 
-@python_2_unicode_compatible
 class BaseConcept(models.Model):
     """
     A transaction concept records the type of exchange:
@@ -426,30 +423,31 @@ class SingletonModel(models.Model):
             return cls()
 
 
-@python_2_unicode_compatible
 class ConceptSettings(SingletonModel):
     """
     Settings applicable to all transaction concept types
     """
+    # Required/visible transaction fields when this type of concept is included
+    apt_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Apt Number Required'))
+    apt_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Apt Number Visible'))
+    client_address_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Address Required'))
+    client_address_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Address Visible'))
+    client_email_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Email Required'))
+    client_email_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Email Visible'))
+    client_first_name_required = models.BooleanField(default=False, verbose_name=gettext_lazy('First Name Required'))
+    client_first_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('First Name Visible'))
+    client_id_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Passport/ID Required'))
+    client_id_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Passport/ID Visible'))
+    client_last_name_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Last Name Required'))
+    client_last_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Last Name Visible'))
+    client_phone_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Phone Required'))
+    client_phone_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Phone Visible'))
+    notes_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Notes Required'))
+    notes_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Notes Visible'))
+    # Permission group this concept belongs to. Only concepts of the same group are allowed in a single transaction
+    permission_group = models.ForeignKey(Group, verbose_name=gettext_lazy('Permission Group'), on_delete=models.SET_NULL, blank=True, null=True)
     # VAT percent
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'), default=0)
-    # Required transaction fields when this type of concept is included
-    apt_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Apt Number Required'))
-    client_address_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Address Required'))
-    client_email_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Email Required'))
-    client_first_name_required = models.BooleanField(default=False, verbose_name=gettext_lazy('First Name Required'))
-    client_id_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Passport/ID Required'))
-    client_last_name_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Last Name Required'))
-    client_phone_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Phone Required'))
-    notes_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Notes Required'))
-    apt_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Apt Number Visible'))
-    client_address_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Address Visible'))
-    client_email_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Email Visible'))
-    client_first_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('First Name Visible'))
-    client_id_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Passport/ID Visible'))
-    client_last_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Last Name Visible'))
-    client_phone_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Phone Visible'))
-    notes_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Notes Visible'))
 
     class Meta:
         abstract = True

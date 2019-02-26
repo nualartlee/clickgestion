@@ -2,8 +2,10 @@
 import os
 import sys
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group, Permission
 from clickgestion.transactions.models import Currency
-from clickgestion.apt_rentals.models import AptRentalSettings
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings
+from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
 User = get_user_model()
 
 """
@@ -12,20 +14,55 @@ Create default models
 
 
 def create_default_models():
+    print('\n')
     print('Creating default models:')
+    print('\n')
+    print('Creating admin')
     create_admin()
+    print('Creating sales group')
+    create_sales_group()
+    print('Creating cash group')
+    create_cash_group()
+    print('Creating dollars')
     create_dollars()
+    print('Creating euros')
     create_euros()
+    print('Creating pounds')
     create_pounds()
+    print('Creating aptrentalsettings')
     create_aptrentalsettings()
+    print('Creating nightraterange')
     create_nightraterange()
+    print('Creating cashfloatdepositsettings')
     create_cashfloatdepositsettings()
+    print('Creating cashfloatwithdrawalsettings')
     create_cashfloatwithdrawalsettings()
 
 
 def create_test_models():
     create_test_admin()
     create_test_user()
+
+
+def create_group(name, permissions):
+    try:
+        group = Group.objects.get(name=name)
+    except Group.DoesNotExist:
+        group = Group.objects.create(name=name)
+        # Add permissions
+        for permission in get_permissions_for_models([CashFloatDeposit, CashFloatWithdrawal]):
+            if not permission in group.permissions.all():
+                group.permissions.add(permission)
+        group.save()
+    return group
+
+
+def create_cash_group():
+    return create_group('cash', [CashFloatDeposit, CashFloatWithdrawal])
+
+
+def create_sales_group():
+    return create_group('sales', [AptRental, AptRentalDeposit])
 
 
 def create_admin():
@@ -117,23 +154,24 @@ def create_aptrentalsettings():
         model = AptRentalSettings.objects.get()
     except:
         model = AptRentalSettings(
-            vat_percent=10,
             apt_number_required=False,
-            client_address_required=False,
-            client_email_required=False,
-            client_first_name_required=True,
-            client_id_required=True,
-            client_last_name_required=True,
-            client_phone_number_required=False,
-            notes_required=False,
             apt_number_visible=True,
+            client_address_required=False,
             client_address_visible=True,
+            client_email_required=False,
             client_email_visible=True,
+            client_first_name_required=True,
             client_first_name_visible=True,
+            client_id_required=True,
             client_id_visible=True,
+            client_last_name_required=True,
             client_last_name_visible=True,
+            client_phone_number_required=False,
             client_phone_number_visible=True,
+            notes_required=False,
             notes_visible=True,
+            vat_percent=10,
+            permission_group=Group.objects.get(name='sales'),
         ).save()
     return model
 
@@ -164,23 +202,24 @@ def create_cashfloatdepositsettings():
         model = CashFloatDepositSettings.objects.get()
     except:
         model = CashFloatDepositSettings(
-            vat_percent=0,
             apt_number_required=False,
-            client_address_required=False,
-            client_email_required=False,
-            client_first_name_required=False,
-            client_id_required=False,
-            client_last_name_required=False,
-            client_phone_number_required=False,
-            notes_required=False,
             apt_number_visible=False,
+            client_address_required=False,
             client_address_visible=False,
+            client_email_required=False,
             client_email_visible=False,
+            client_first_name_required=False,
             client_first_name_visible=False,
+            client_id_required=False,
             client_id_visible=False,
+            client_last_name_required=False,
             client_last_name_visible=False,
+            client_phone_number_required=False,
             client_phone_number_visible=False,
+            notes_required=False,
             notes_visible=True,
+            permission_group=Group.objects.get(name='sales'),
+            vat_percent=0,
         ).save()
     return model
 
@@ -191,25 +230,36 @@ def create_cashfloatwithdrawalsettings():
         model = CashFloatWithdrawalSettings.objects.get()
     except:
         model = CashFloatWithdrawalSettings(
-            vat_percent=0,
             apt_number_required=False,
-            client_address_required=False,
-            client_email_required=False,
-            client_first_name_required=False,
-            client_id_required=False,
-            client_last_name_required=False,
-            client_phone_number_required=False,
-            notes_required=False,
             apt_number_visible=False,
+            client_address_required=False,
             client_address_visible=False,
+            client_email_required=False,
             client_email_visible=False,
+            client_first_name_required=False,
             client_first_name_visible=False,
+            client_id_required=False,
             client_id_visible=False,
+            client_last_name_required=False,
             client_last_name_visible=False,
+            client_phone_number_required=False,
             client_phone_number_visible=False,
+            notes_required=False,
             notes_visible=True,
+            permission_group=Group.objects.get(name='sales'),
+            vat_percent=0,
         ).save()
     return model
+
+
+def get_permissions_for_models(models):
+    """
+    Return a queryset of Permissions given a list of model classes
+    :param models: A list of model classes
+    :return: Queryset of Permissions
+    """
+    names = ['Can add {}'.format(model._meta.verbose_name) for model in models]
+    return Permission.objects.filter(name__in=names)
 
 
 
