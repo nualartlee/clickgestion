@@ -191,13 +191,14 @@ class TransactionPayForm(forms.ModelForm):
         transaction = self.instance
         # Iterate over the fields, set as required/visible per settings
         for field in self.fields:
+            default_widget = self.fields[field].widget
+            self.fields[field].widget = forms.HiddenInput()
             for concept in transaction.concepts.all():
-                default_widget = self.fields[field].widget
-                self.fields[field].widget = forms.HiddenInput()
                 if getattr(concept.settings, field + '_visible', False):
                     self.fields[field].widget = default_widget
                 if getattr(concept.settings, field + '_required', False):
                     self.fields[field].required = True
+                if self.fields[field].required:
                     self.fields[field].widget = default_widget
 
 
