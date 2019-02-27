@@ -132,39 +132,43 @@ def get_available_concepts(employee, transaction):
     :param transaction: The open transaction
     :return: A list of dictionaries.
     """
-    concepts = []
-    concept = {
-        'name': gettext('Apartment Rental'),
-        'url': '/apt-rentals/new/{}'.format(transaction.code),
-    }
-    concepts.append(concept)
-    concept = {
-        'name': gettext('Apartment Rental Deposit'),
-        'url': '/apt-rentals/deposits/new/{}'.format(transaction.code),
-    }
-    concepts.append(concept)
-    concept = {
-        'name': gettext('Cash Float Deposit'),
-        'url': '/cash-float/deposits/new/{}'.format(transaction.code),
-    }
-    concepts.append(concept)
-    concept = {
-        'name': gettext('Cash Float Withdrawal'),
-        'url': '/cash-float/withdrawals/new/{}'.format(transaction.code),
-    }
-    concepts.append(concept)
+    from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
+    from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
+    all_concepts = [AptRental, AptRentalDeposit, CashFloatDeposit, CashFloatWithdrawal]
 
-    # get permissions from current transaction concepts
+
+    # get current transaction concepts
     concepts = transaction.concepts.all()
-    concept_groups = list(
-        chain(concept.settings.permission_group for concept in concepts)
-    )
-    concept_groups = Group.objects.filter()
-    concept_permissions = Permission.objects.filter(group__in=concept_groups)
-    #perms = Permission.objects.all()
-    #import pdb;pdb.set_trace()
+    if concepts.count() > 0:
+        # get permission groups from current concepts
+        concept_groups = list(
+            chain(concept.settings.permission_group for concept in concepts)
+        )
+        # get all permissions from current concepts
+        concept_permissions = Permission.objects.filter(group__in=concept_groups)
+        # get permissions as a list of model classes
+        concept_permission_models = list(chain(permission.content_type.model_class() for permission in concept_permissions))
+    else:
+        concept_permission_models = all_concepts
 
-    return concepts
+    concept_list = []
+    for concept in all_concepts:
+        # set default values
+        disabled = False
+        url = concept._url.format('new/{}'.format(transaction.code))
+        # filter by selected concepts
+        if not concept in concept_permission_models:
+            disabled = True
+            url = '#'
+        concept_list.append(
+            {
+                'name': concept._meta.verbose_name,
+                'url': url,
+                'disabled': disabled,
+            }
+        )
+
+    return concept_list
 
 
 def get_transaction_from_kwargs(**kwargs):

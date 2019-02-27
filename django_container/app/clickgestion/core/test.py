@@ -15,6 +15,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
 
     @classmethod
     def setUpTestData(cls):
+        model_creation.create_default_models()
         User = get_user_model()
         # Create admin user
         cls.admin = model_creation.create_test_admin()

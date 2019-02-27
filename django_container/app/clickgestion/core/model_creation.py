@@ -4,7 +4,7 @@ import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from clickgestion.transactions.models import Currency
-from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
 User = get_user_model()
 
@@ -14,28 +14,16 @@ Create default models
 
 
 def create_default_models():
-    print('\n')
-    print('Creating default models:')
-    print('\n')
-    print('Creating admin')
     create_admin()
-    print('Creating sales group')
     create_sales_group()
-    print('Creating cash group')
     create_cash_group()
-    print('Creating dollars')
     create_dollars()
-    print('Creating euros')
     create_euros()
-    print('Creating pounds')
     create_pounds()
-    print('Creating aptrentalsettings')
     create_aptrentalsettings()
-    print('Creating nightraterange')
+    create_aptrentaldepositsettings()
     create_nightraterange()
-    print('Creating cashfloatdepositsettings')
     create_cashfloatdepositsettings()
-    print('Creating cashfloatwithdrawalsettings')
     create_cashfloatwithdrawalsettings()
 
 
@@ -176,6 +164,33 @@ def create_aptrentalsettings():
     return model
 
 
+def create_aptrentaldepositsettings():
+    try:
+        model = AptRentalDepositSettings.objects.get()
+    except:
+        model = AptRentalDepositSettings(
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=10,
+            permission_group=Group.objects.get(name='sales'),
+        ).save()
+    return model
+
+
 def create_nightraterange():
     from django.utils import timezone
     from clickgestion.apt_rentals.models import NightRateRange
@@ -218,7 +233,7 @@ def create_cashfloatdepositsettings():
             client_phone_number_visible=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='sales'),
+            permission_group=Group.objects.get(name='cash'),
             vat_percent=0,
         ).save()
     return model
@@ -246,7 +261,7 @@ def create_cashfloatwithdrawalsettings():
             client_phone_number_visible=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='sales'),
+            permission_group=Group.objects.get(name='cash'),
             vat_percent=0,
         ).save()
     return model

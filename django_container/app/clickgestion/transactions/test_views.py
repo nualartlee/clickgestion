@@ -1,7 +1,13 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.views import get_available_concepts
 
+
+class TestGetAvailableConcepts(CustomTestCase):
+
+    def test_ok(self):
+        assert get_available_concepts(self.admin, self.transaction)
 
 class TestTransactionListView(CustomTestCase, CustomViewTestCase):
 

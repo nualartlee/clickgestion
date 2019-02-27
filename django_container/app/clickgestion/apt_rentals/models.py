@@ -58,7 +58,15 @@ def get_night_rate(date):
         return rate.sunday
 
 
-@python_2_unicode_compatible
+class AptRentalSettings(ConceptSettings):
+    """
+    Apartment Rental Concept Settings
+    """
+    class Meta:
+        verbose_name = gettext_lazy('Apartment Rental Settings')
+        verbose_name_plural = gettext_lazy('Apartment Rental Settings')
+
+
 class AptRental(BaseConcept):
     """
     Transaction Concept
@@ -75,17 +83,15 @@ class AptRental(BaseConcept):
     # Ordered list of daily rates
     rates = ArrayField(models.FloatField(), verbose_name=gettext_lazy('Array Of Rates'))
 
+    #BaseConcept settings
+    _url = '/apt-rentals/{}'
+    _code_initials = 'AR'
+    _concept_class = 'aptrental'
+    _settings_class = AptRentalSettings
+
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental')
         verbose_name_plural = gettext_lazy('Apartment Rentals')
-
-    def __init__(self, *args, **kwargs):
-        #BaseConcept settings
-        self._url = '/apt-rentals/{}'
-        self._settings_class = AptRentalSettings
-        self._code_initials = 'AR'
-        self._concept_class = 'aptrental'
-        super().__init__(*args, **kwargs)
 
     def __str__(self):
         return self.code
@@ -128,15 +134,6 @@ class AptRental(BaseConcept):
         return sum(self.rates)
 
 
-class AptRentalSettings(ConceptSettings):
-    """
-    Apartment Rental Concept Settings
-    """
-    class Meta:
-        verbose_name = gettext_lazy('Apartment Rental Settings')
-        verbose_name_plural = gettext_lazy('Apartment Rental Settings')
-
-
 class AptRentalDepositSettings(ConceptSettings):
     """
     Apartment Rental Deposit Settings
@@ -168,17 +165,15 @@ class AptRentalDeposit(BaseConcept):
     # Number of nights
     nights = models.SmallIntegerField(verbose_name=gettext_lazy('Nights'), default=7)
 
+    #BaseConcept settings
+    _url = '/apt-rentals/deposits/{}'
+    _settings_class = AptRentalDepositSettings
+    _code_initials = 'ARD'
+    _concept_class = 'aptrentaldeposit'
+
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit')
         verbose_name_plural = gettext_lazy('Apartment Rental Deposits')
-
-    def __init__(self, *args, **kwargs):
-        #BaseConcept settings
-        self._url = '/apt-rentals/deposits/{}'
-        self._settings_class = AptRentalDepositSettings
-        self._code_initials = 'ARD'
-        self._concept_class = 'aptrentaldeposit'
-        super().__init__(*args, **kwargs)
 
     def __str__(self):
         return self.code

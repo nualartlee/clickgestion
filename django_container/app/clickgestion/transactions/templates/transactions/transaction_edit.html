@@ -78,7 +78,11 @@
               </a>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                   {% for concept in available_concepts %}
-                    <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
+                  {% if concept.disabled %}
+                  <p class="dropdown-item disabled">{{ concept.name }}</p>
+                  {% else %}
+                  <a class="dropdown-item" href="{{ concept.url }}">{{ concept.name }}</a>
+                  {% endif %}
                   {% endfor %}
               </div>
             </div>
