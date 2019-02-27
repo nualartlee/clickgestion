@@ -1,15 +1,15 @@
-from django.shortcuts import render, redirect, reverse, get_object_or_404
-from itertools import chain
-from django.contrib.auth.decorators import login_required
-from clickgestion.transactions.models import Transaction, get_breakdown_by_concept_type, get_value_totals
-from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
+from django.apps import apps
+from clickgestion.transactions.models import get_breakdown_by_concept_type, get_value_totals, Transaction
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
-from django.utils import timezone
 from clickgestion.transactions.filters import EmployeeFilter
-from django.views.generic import ListView
-from pure_pagination.mixins import PaginationMixin
 from clickgestion.core.utilities import invalid_permission_redirect
-from django.contrib.auth.models import Group, Permission
+from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
+from pure_pagination.mixins import PaginationMixin
+from django.conf import settings
+from django.utils import timezone
+from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 
 
 @login_required()
@@ -132,43 +132,42 @@ def get_available_concepts(employee, transaction):
     :param transaction: The open transaction
     :return: A list of dictionaries.
     """
-    from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
-    from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
-    all_concepts = [AptRental, AptRentalDeposit, CashFloatDeposit, CashFloatWithdrawal]
 
+    # get permissions according to transaction
+    concepts_permitted_by_transaction = transaction.get_all_permissions()
 
-    # get current transaction concepts
-    concepts = transaction.concepts.all()
-    if concepts.count() > 0:
-        # get permission groups from current concepts
-        concept_groups = list(
-            chain(concept.settings.permission_group for concept in concepts)
-        )
-        # get all permissions from current concepts
-        concept_permissions = Permission.objects.filter(group__in=concept_groups)
-        # get permissions as a list of model classes
-        concept_permission_models = list(chain(permission.content_type.model_class() for permission in concept_permissions))
-    else:
-        concept_permission_models = all_concepts
+    # get permissions according to employee
+    concepts_permitted_by_employee = employee.get_all_permissions()
 
-    concept_list = []
-    for concept in all_concepts:
+    # create the list of permitted concepts
+    available_concepts = []
+    for concept in settings.CONCEPTS:
+        permission = concept.replace('.','.add_')
+        concept_model = apps.get_model(concept)
+
+        # Skip this concept if not permitted by the user
+        if not permission in concepts_permitted_by_employee:
+            continue
+
         # set default values
         disabled = False
-        url = concept._url.format('new/{}'.format(transaction.code))
-        # filter by selected concepts
-        if not concept in concept_permission_models:
+        url = concept_model._url.format('new/{}'.format(transaction.code))
+
+        # disable this concept if not permitted by the transaction
+        if not permission in concepts_permitted_by_transaction:
             disabled = True
             url = '#'
-        concept_list.append(
+
+        # add to the list
+        available_concepts.append(
             {
-                'name': concept._meta.verbose_name,
+                'name': concept_model._meta.verbose_name,
                 'url': url,
                 'disabled': disabled,
             }
         )
 
-    return concept_list
+    return available_concepts
 
 
 def get_transaction_from_kwargs(**kwargs):

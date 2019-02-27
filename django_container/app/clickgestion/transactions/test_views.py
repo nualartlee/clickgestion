@@ -9,6 +9,13 @@ class TestGetAvailableConcepts(CustomTestCase):
     def test_ok(self):
         assert get_available_concepts(self.admin, self.transaction)
 
+    def test_empty_transaction(self):
+        transaction = Transaction()
+        cn = get_available_concepts(self.admin, transaction)
+        self.assertGreater(len(cn), 0)
+        for c in cn:
+            self.assertEqual(c['disabled'], False)
+
 class TestTransactionListView(CustomTestCase, CustomViewTestCase):
 
     @classmethod

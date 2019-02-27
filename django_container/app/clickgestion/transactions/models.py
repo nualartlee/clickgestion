@@ -1,8 +1,10 @@
 from __future__ import unicode_literals
+from itertools import chain
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import Group
 from django.db import models
+from django.contrib.auth.models import Permission
 from django.utils import timezone
 import uuid
 
@@ -218,6 +220,23 @@ class Transaction(models.Model):
             description += ' {0} {1}'.format(value.currency.symbol, value.amount)
         return description
 
+    def get_all_permissions(self):
+        """
+        :return: The permissions for this transaction according to included concepts
+        """
+        # Get all permissions
+        perms = Permission.objects.all().values_list('content_type__app_label', 'codename').order_by()
+        perms = set("%s.%s" % (ct, name) for ct, name in perms)
+
+        # Filter by selected concepts
+        if self.concepts.all().exists():
+            for concept in self.concepts.all():
+                # Get common permissions (set intersection)
+                perms = perms & concept.get_all_permissions()
+
+        # Return the set
+        return perms
+
     @property
     def totals(self):
         """
@@ -328,6 +347,18 @@ class BaseConcept(models.Model):
         if self.is_child:
             return self.description_short
         return self.child.description_short
+
+    def get_all_permissions(self):
+        """
+        :return: The permissions for this concept
+        """
+        # get permission groups
+        concept_group = self.settings.permission_group
+        # get all permissions from groups
+        perms = Permission.objects.filter(
+            group=concept_group).values_list('content_type__app_label', 'codename').order_by()
+        # return as a set
+        return set("%s.%s" % (ct, name) for ct, name in perms)
 
     @property
     def is_child(self):
@@ -445,7 +476,8 @@ class ConceptSettings(SingletonModel):
     notes_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Notes Required'))
     notes_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Notes Visible'))
     # Permission group this concept belongs to. Only concepts of the same group are allowed in a single transaction
-    permission_group = models.ForeignKey(Group, verbose_name=gettext_lazy('Permission Group'), on_delete=models.SET_NULL, blank=True, null=True)
+    permission_group = models.ForeignKey(
+        Group, verbose_name=gettext_lazy('Permission Group'), on_delete=models.SET_NULL, blank=True, null=True)
     # VAT percent
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'), default=0)
 

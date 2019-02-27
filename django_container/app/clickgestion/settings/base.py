@@ -169,3 +169,11 @@ PAGINATION_SETTINGS = {
 
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
+
+# available concepts
+CONCEPTS = [
+    'apt_rentals.aptrental',
+    'apt_rentals.aptrentaldeposit',
+    'cash_float.cashfloatdeposit',
+    'cash_float.cashfloatwithdrawal',
+]
