@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^', include('clickgestion.core.urls')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
     url(r'^apt-rentals/', include('clickgestion.apt_rentals.urls')),
-    url(r'^cash-float/', include('clickgestion.cash_float.urls')),
+    url(r'^cash-desk/', include('clickgestion.cash_desk.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
 

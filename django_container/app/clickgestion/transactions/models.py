@@ -21,25 +21,6 @@ def get_default_currency():
         return None
 
 
-def get_new_cashclose_code():
-    """
-    Generate a cashclose id code
-    :return:
-    """
-    params = {
-        'time': timezone.datetime.now().strftime('%m%d'),
-        'uuid': uuid.uuid4().hex[:6],
-    }
-    code = 'CC%(time)s%(uuid)s' % params
-    code = code.upper()
-    # Check if already used
-    try:
-        CashClose.objects.get(code=code)
-        return get_new_cashclose_code()
-    except CashClose.DoesNotExist:
-        return code
-
-
 def get_new_transaction_code():
     """
     Generate a transaction id code
@@ -57,40 +38,6 @@ def get_new_transaction_code():
         return get_new_transaction_code()
     except Transaction.DoesNotExist:
         return code
-
-
-def get_breakdown_by_concept_type(transaction_set):
-    """
-
-    :param transaction_set: A set of transactions
-    :return: A list of objects with the breakdown
-    """
-    class BreakdownType:
-        def __init__(self, values, concept_count, totals, type):
-            self.values = values
-            self.concept_count = concept_count
-            self.totals = totals
-            self.type = type
-
-    # Get breakdown by concept type
-    breakdown = {}
-    all_concepts = BaseConcept.objects.filter(transaction__in=transaction_set)
-    for concept in all_concepts:
-
-        # Update existing concept type total
-        if concept.concept_type in breakdown:
-            # Add value
-            breakdown[concept.concept_type].values.append(concept.value)
-            breakdown[concept.concept_type].concept_count += 1
-
-        # Start new concept type total
-        else:
-            breakdown[concept.concept_type] = BreakdownType([concept.value], 1, None, concept.child._meta.verbose_name_plural)
-
-    for concept_type in breakdown:
-        breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
-
-    return [ value for _, value in breakdown.items() ]
 
 
 def get_value_totals(values):
@@ -137,24 +84,6 @@ def get_value_totals(values):
     return [v for v in totals.values()]
 
 
-class CashClose(models.Model):
-    """
-    A cash close records an end of day cash desk close operation.
-    """
-    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_cashclose_code, editable=False)
-    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
-    employee = models.ForeignKey(User, verbose_name=gettext_lazy('Employee'), editable=False)
-    notes = models.TextField(max_length=1024, verbose_name=gettext_lazy('Notes'), blank=True, null=True)
-    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
-
-    class Meta:
-        verbose_name = gettext_lazy('Cash Desk Closure')
-        verbose_name_plural = gettext_lazy('Cash Desk Closures')
-
-    def __str__(self):
-        return self.code
-
-
 class Transaction(models.Model):
     """
     A transaction records a single interaction between the host and
@@ -162,7 +91,7 @@ class Transaction(models.Model):
     as renting, buying, reimbursing, deposit charge/return, etc.
     """
     apt_number = models.SmallIntegerField(blank=True, verbose_name=gettext_lazy('Apt Number'), null=True)
-    cashclose = models.ForeignKey(CashClose, verbose_name=gettext_lazy('Cash Desk Close'), on_delete=models.SET_NULL, blank=True, null=True, related_name='transactions')
+    cashclose = models.ForeignKey('cash_desk.cashclose', verbose_name=gettext_lazy('Cash Desk Close'), on_delete=models.SET_NULL, blank=True, null=True, related_name='transactions')
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_transaction_code, editable=False)
     client_address = models.TextField(max_length=512, verbose_name=gettext_lazy('Address'), blank=True, null=True)
     client_email = models.EmailField(verbose_name=gettext_lazy('Email'), blank=True, null=True)

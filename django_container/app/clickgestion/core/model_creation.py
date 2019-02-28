@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from clickgestion.transactions.models import Currency
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
-from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
+from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatWithdrawal
 User = get_user_model()
 
 """
@@ -212,7 +212,7 @@ def create_nightraterange():
 
 
 def create_cashfloatdepositsettings():
-    from clickgestion.cash_float.models import CashFloatDepositSettings
+    from clickgestion.cash_desk.models import CashFloatDepositSettings
     try:
         model = CashFloatDepositSettings.objects.get()
     except:
@@ -240,7 +240,7 @@ def create_cashfloatdepositsettings():
 
 
 def create_cashfloatwithdrawalsettings():
-    from clickgestion.cash_float.models import CashFloatWithdrawalSettings
+    from clickgestion.cash_desk.models import CashFloatWithdrawalSettings
     try:
         model = CashFloatWithdrawalSettings.objects.get()
     except:
