@@ -3,7 +3,7 @@ from clickgestion.transactions.forms import TransactionEditForm, TransactionPayF
 from clickgestion.transactions.models import Transaction
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
-from clickgestion.transactions.filters import EmployeeFilter
+from clickgestion.transactions.filters import TransactionFilter
 from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -312,7 +312,7 @@ class TransactionList(PaginationMixin, ListView):
         if not self.queryset:
             self.queryset = Transaction.objects.all()
         # Filter
-        self.filter = EmployeeFilter(self.request.GET, queryset=self.queryset)
+        self.filter = TransactionFilter(self.request.GET, queryset=self.queryset)
         self.queryset = self.filter.qs
         return self.queryset
 

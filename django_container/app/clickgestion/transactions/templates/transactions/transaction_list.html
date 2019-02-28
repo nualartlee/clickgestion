@@ -4,25 +4,55 @@
 
 
 {% block content %}
-<div class="container">
-    <p style="margin-top:20px"></p>
-    <h4>{{ header }}</h4>
-    <p style="margin-top:20px"></p>
-    <ul>
-        {% for transaction in transactions %}
-        {% include 'transactions/transaction_listitem.html' %}
-        {% endfor %}
-    </ul>
-    {% if is_paginated %}
-    <div class="row">
-        <div class="col">
+
+<h4>{% trans 'Transactions' %}</h4>
+
+<div class="row">
+
+    <!--Table-->
+    <div class="col col-md-9">
+        <table class="table table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th>{% trans 'Reference' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Apt' %}</th>
+                <th>{% trans 'Client' %}</th>
+                <th>{% trans 'Concepts' %}</th>
+                <th>{% trans 'Totals' %}</th>
+                <th>{% trans 'View/Edit' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                {% include 'transactions/transaction_rowitem.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="margin-top:20px"></p>
+
+        {% if is_paginated %}
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+            {% include 'core/pagination.html' %}
+            </div>
+            <div class="col">
+            </div>
         </div>
-        <div class="col">
-        {% include 'core/pagination.html' %}
-        </div>
-        <div class="col">
-        </div>
+        {% endif %}
     </div>
-    {% endif %}
+
+    <!--Filter-->
+    <div class="col col-md-3">
+
+        <form method="get">
+            {{ filter.form|crispy }}
+            <button type="submit">Search</button>
+        </form>
+
+    </div>
 </div>
 {% endblock %}
