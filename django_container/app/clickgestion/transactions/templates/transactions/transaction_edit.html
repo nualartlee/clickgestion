@@ -45,14 +45,19 @@
                         <b>{% trans 'Total: ' %}</b>
                     </div>
 
-                    <div class="col-sm-3 text-center">
+                    <div class="col-sm-2 text-center">
                     </div>
 
-                    <div class="col-sm-3 align-middle text-right align-self-end">
-                        {% for value in transaction.totals %}
-                        {% include 'transactions/value_total.html' %}
-                        {% endfor %}
+                    <div class="col-sm-4 align-middle text-right align-self-end">
+                        <div class="container">
+                            {% for value in transaction.totals %}
+                            <div class="row justify-content-end">
+                                {% include 'transactions/value_bold_md.html' %}
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
+
                 </div>
 
             </li>

@@ -135,7 +135,6 @@ def get_value_totals(values):
             value.amount *= -1
 
     # Return as ordered list of dummy values
-    #return [totals[k] for k in sorted(totals, key=totals.get)]
     return [v for v in totals.values()]
 
 
@@ -407,6 +406,8 @@ class BaseConcept(models.Model):
         """
         The tax portion of the total
         """
+        if self.taxable_amount == 0:
+            return 0
         return self.value.amount - self.taxable_amount
 
     @property

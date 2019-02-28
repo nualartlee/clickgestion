@@ -2,7 +2,34 @@ from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
-from clickgestion.transactions.models import Transaction, ConceptValue
+from clickgestion.transactions.models import CashClose, Transaction, ConceptValue
+
+
+class CashCloseForm(forms.ModelForm):
+
+    class Meta:
+        model = CashClose
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    Field(
+                        'notes',
+                        title=gettext_lazy("Additional notes"),
+                        placeholder=gettext_lazy("Add a note..."),
+                        css_class='col-12',
+                        rows='3',
+                    ),
+                    css_class='col-12',
+                ),
+
+            ),
+        )
 
 
 class TransactionEditForm(forms.ModelForm):

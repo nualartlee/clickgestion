@@ -22,17 +22,17 @@
         <div class="col">
             <div class="row">
                 <strong>
-                    {{ transaction.client }}
+                    {{ transaction.client|default_if_none:"&nbsp;" }}
                 </strong>
             </div>
             <div class="row">
-                {{ transaction.client_email }}
+                {{ transaction.client_email|default_if_none:"&nbsp;" }}
             </div>
             <div class="row">
-                {{ transaction.client_phone_number }}
+                {{ transaction.client_phone_number|default_if_none:"&nbsp;" }}
             </div>
             <div class="row">
-                {{ transaction.client_address|linebreaks }}
+                {{ transaction.client_address|linebreaks|default_if_none:"&nbsp;"}}
             </div>
             <div class="row">
             </div>
@@ -85,7 +85,7 @@
         <tr>
             <td colspan="3"></td>
             <td colspan="2">{% trans 'Total' %} {{ value.currency.name }}</td>
-            <td colspan="2">
+            <td colspan="2" class="text-right">
                 {% include 'transactions/value_bold_md.html' %}
             </td>
         </tr>

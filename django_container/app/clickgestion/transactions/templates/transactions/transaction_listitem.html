@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <!--Transaction Concepts-->
-                    <div class="col-sm-6 d-flex align-items-center">
+                    <div class="col-sm-7 d-flex align-items-center">
                         {% if transaction.concepts.count %}
                         <div class="container">
                         {% for concept in transaction.concepts.all %}
@@ -51,7 +51,7 @@
                         {% endif %}
                     </div>
                     <!--Transaction Totals-->
-                    <div class="col-sm-3 d-flex align-items-center">
+                    <div class="col-sm-2 d-flex align-items-center">
                         {% if transaction.totals %}
                         <div class="container">
                             {% for value in transaction.totals %}

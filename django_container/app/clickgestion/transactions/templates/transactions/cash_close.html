@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+
+    <!--Cash Balance-->
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th colspan="4" scope="col">{% trans 'Cash Balance' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for value in totals %}
+        <tr>
+            <th scope="row">{{ value.currency.name }}</th>
+            <td></td>
+            <td></td>
+            <td class="text-right">
+                {% include 'transactions/value_total.html' %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p class="mt-4"></p>
+    <p class="mt-4"></p>
+    <p class="mt-4"></p>
+    <form>
+
+        {% crispy form %}
+
+    <p class="mt-4"></p>
+    <p class="mt-4"></p>
+    <p class="mt-4"></p>
+
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-success btn-block" title="{% trans 'Confirm and close cash desk' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

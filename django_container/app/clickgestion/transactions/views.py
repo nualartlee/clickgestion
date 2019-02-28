@@ -1,4 +1,5 @@
 from django.apps import apps
+from clickgestion.transactions.forms import CashCloseForm, TransactionEditForm, TransactionPayForm
 from clickgestion.transactions.models import get_breakdown_by_concept_type, get_value_totals, Transaction
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
@@ -9,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
 from django.conf import settings
 from django.utils import timezone
-from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 
 
 @login_required()
@@ -35,7 +35,47 @@ def cash_balance(request, *args, **kwargs):
     return render(request, 'transactions/cash_balance.html', extra_context)
 
 
+@login_required()
+def cash_close(request, *args, **kwargs):
+    extra_context = {}
 
+    # Get open transactions
+    open_transactions = Transaction.objects.filter(closed=False, cashclose=None)
+    extra_context['open_transactions'] = open_transactions
+
+    # Get closed transactions
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None)
+    extra_context['closed_transactions'] = closed_transactions
+
+    # Get breakdown by concept type
+    breakdown = get_breakdown_by_concept_type(closed_transactions)
+    extra_context['breakdown'] = breakdown
+
+    # Get the totals
+    values = []
+    for transaction in closed_transactions:
+        values += transaction.totals
+    totals = get_value_totals(values)
+    extra_context['totals'] = totals
+
+    # POST
+    if request.method == 'POST':
+        form = CashCloseForm(request.POST)
+        if form.is_valid():
+            cashclose = form.save()
+            # Save cashclose on all transactions
+            for transaction in closed_transactions:
+                transaction.cashclose = cashclose
+                transaction.save
+
+            # Forward the cash float with deposits
+            return render(request, 'transactions/cash_close.html', extra_context)
+        return render(request, 'transactions/cash_close.html', extra_context)
+
+
+    form = CashCloseForm()
+    extra_context['form'] = form
+    return render(request, 'transactions/cash_close.html', extra_context)
 
 
 @login_required()
@@ -251,6 +291,10 @@ def transaction_edit(request, *args, **kwargs):
 
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
+    if not transaction_code:
+        transaction = Transaction.objects.create(employee=request.user)
+        return redirect('transaction_edit', transaction_code=transaction.code)
+
     transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
 
@@ -337,24 +381,6 @@ class TransactionList(PaginationMixin, ListView):
         self.filter = EmployeeFilter(self.request.GET, queryset=self.queryset)
         self.queryset = self.filter.qs
         return self.queryset
-
-
-@login_required()
-def transaction_new(request, *args, **kwargs):
-    extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
-
-    # Create the transaction
-    transaction = Transaction.objects.create(
-        employee=request.user,
-    )
-    extra_context['transaction'] = transaction
-
-    # Redirect to edit
-    return redirect('transaction_edit', transaction_code=transaction.code)
 
 
 @login_required

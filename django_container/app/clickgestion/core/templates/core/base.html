@@ -12,13 +12,14 @@
     <body style="overflow-y:scroll;">
 
         {% include 'core/header.html' %}
-
+        <p style="margin-top:60px"></p>
 
         <div class="container-fluid py-5">
             {% block content %}
             {% endblock %}
         </div>
 
+        <p style="margin-bottom:60px"></p>
         {% include 'core/footer.html' %}
 
         <script src="{% static 'core/js/jquery-3.3.1.min.js' %}"></script>

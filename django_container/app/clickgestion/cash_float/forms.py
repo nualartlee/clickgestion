@@ -11,7 +11,7 @@ class CashFloatDepositForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
         queryset=Currency.objects.filter(enabled=True),
-        #initial=Currency.objects.get(default=True),
+        initial=Currency.objects.get(default=True),
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -39,7 +39,7 @@ class CashFloatWithdrawalForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
         queryset=Currency.objects.filter(enabled=True),
-        #initial=Currency.objects.get(default=True),
+        initial=Currency.objects.get(default=True),
     )
     amount = forms.DecimalField(decimal_places=2)
 

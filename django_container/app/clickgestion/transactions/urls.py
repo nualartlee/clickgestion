@@ -4,7 +4,8 @@ from clickgestion.transactions import views
 urlpatterns = [
     url(r'^$', views.TransactionList.as_view(), name='transaction_list'),
     url(r'^cash-balance/$', views.cash_balance, name='cash_balance'),
-    url(r'^new/$', views.transaction_new, name='transaction_new'),
+    url(r'^cash-close/$', views.cash_close, name='cash_close'),
+    url(r'^new/$', views.transaction_edit, {'transaction_code': None}, name='transaction_new'),
     url(r'^open/$', views.transactions_open, name='transactions_open'),
     url(r'^(?P<transaction_code>T[A-F0-9]+)/$', views.transaction_detail,
         name='transaction_detail'),
