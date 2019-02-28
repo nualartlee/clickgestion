@@ -16,18 +16,6 @@ class TestGetAvailableConcepts(CustomTestCase):
         for c in cn:
             self.assertEqual(c['disabled'], False)
 
-class TestTransactionListView(CustomTestCase, CustomViewTestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-        cls.test_get = True
-        cls.required_access_level = 1
-        cls.url = 'transaction_list'
-        cls.kwargs = {}
-        cls.referer = '/'
-        cls.get_template = 'transactions/transaction_list.html'
-
 
 class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
 
@@ -40,6 +28,40 @@ class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'transactions/cash_balance.html'
+
+
+class TestCashCloseView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'cash_close'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/cash_close.html'
+
+    def test_post_ok(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/message.html')
+        self.assertEqual(response.status_code, 200)
+
+class TestTransactionListView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_access_level = 1
+        cls.url = 'transaction_list'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_list.html'
 
 
 class TestTransactionEditView(CustomTestCase, CustomViewTestCase):

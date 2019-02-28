@@ -4,14 +4,14 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column, Submit
 from clickgestion.cash_float.models import CashFloatDeposit, CashFloatWithdrawal
 from django.core.exceptions import ValidationError
-from clickgestion.transactions.models import ConceptValue, Currency
+from clickgestion.transactions.models import ConceptValue, Currency, get_default_currency
 
 
 class CashFloatDepositForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
         queryset=Currency.objects.filter(enabled=True),
-        initial=Currency.objects.get(default=True),
+        initial=get_default_currency()
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -39,7 +39,7 @@ class CashFloatWithdrawalForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
         queryset=Currency.objects.filter(enabled=True),
-        initial=Currency.objects.get(default=True),
+        initial=get_default_currency()
     )
     amount = forms.DecimalField(decimal_places=2)
 

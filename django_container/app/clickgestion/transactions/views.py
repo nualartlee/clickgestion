@@ -62,14 +62,19 @@ def cash_close(request, *args, **kwargs):
     if request.method == 'POST':
         form = CashCloseForm(request.POST)
         if form.is_valid():
-            cashclose = form.save()
+            cashclose = form.instance
+            cashclose.employee = request.user
+            cashclose.save()
             # Save cashclose on all transactions
             for transaction in closed_transactions:
                 transaction.cashclose = cashclose
-                transaction.save
-
+                transaction.save()
             # Forward the cash float with deposits
-            return render(request, 'transactions/cash_close.html', extra_context)
+
+
+            # Message
+            return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
+
         return render(request, 'transactions/cash_close.html', extra_context)
 
 
