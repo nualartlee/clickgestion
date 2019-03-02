@@ -1,7 +1,37 @@
 {% load i18n %}
 <tr>
     {% if transaction.closed %}
-    <th><a class="text-dark" href="/transactions/{{ transaction.code }}">{{ transaction.code|default_if_none:"&nbsp;" }}</a></th>
+    <th>
+        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#Transaction">
+            {{ transaction.code }}
+        </button>
+        <!--Transaction Modal-->
+        <div class="modal" id="Transaction">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{ transaction.code }}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="container">
+                            {% include 'transactions/invoice.html' %}
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+                    <!--</div>-->
+
+                </div>
+            </div>
+        </div>
+    </th>
     {% else %}
     <th>
         <div class="row">
@@ -14,7 +44,6 @@
                 <a class="badge badge-danger ml-2" href="/transactions/{{ transaction.code }}/delete/">
                     {% trans 'Delete' %}
                 </a>
-
             </div>
         </div>
     </th>
@@ -30,11 +59,11 @@
                 <div class="col justify-content-start">
                     <!--<h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>-->
                     <!-- Button to Open The Filter -->
-                    <a class="button h6 mr-2" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
+                    <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
                         <small>
                             {{ concept.concept_type }}
                         </small>
-                    </a>
+                    </button>
                 </div>
                 <div class="col text-right justify-content-end">
                     {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
