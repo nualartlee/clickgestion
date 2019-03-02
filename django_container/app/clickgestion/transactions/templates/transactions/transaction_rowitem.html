@@ -31,19 +31,22 @@
         </div>
         {% endif %}
     </td>
-    <td>
-        {% if transaction.closed %}
-        <a href="/transactions/{{ transaction.code }}" class="btn btn-outline-secondary btn-sm" role="button">
-            {% trans 'View' %}
-        </a>
-
-        {% else %}
-        <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
-            {% trans 'Edit' %}
-        </a>
-        <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
-            {% trans 'Delete' %}
-        </a>
-        {% endif %}
+    <td class="align-middle">
+        <div class="text-center">
+            {% if transaction.closed %}
+            <a href="/transactions/{{ transaction.code }}" class="btn btn-outline-secondary btn-sm" role="button">
+                {% trans 'View' %}
+            </a>
+            {% else %}
+                <div class="btn-group">
+                    <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
+                        {% trans 'Edit' %}
+                    </a>
+                    <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
+                        {% trans 'Delete' %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
     </td>
 </tr>

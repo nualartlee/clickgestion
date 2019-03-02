@@ -1,6 +1,6 @@
 {% load main_template_tags %}
 {% load i18n %}
-<div class="pagination">
+<div class="pagination justify-content-center">
     {% if page_obj.has_previous %}
         <li class="page-item "><a class="page-link text-secondary" href="?{% update_query_params request page=page_obj.previous_page_number %}">&laquo;</a></li>
     {% else %}

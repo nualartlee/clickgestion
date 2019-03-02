@@ -2,7 +2,6 @@ import django_filters
 from django.utils.translation import gettext_lazy
 from clickgestion.transactions.models import Transaction
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Row, Column
 
 
 class TransactionFilter(django_filters.FilterSet):
@@ -18,7 +17,11 @@ class TransactionFilter(django_filters.FilterSet):
 
     class Meta:
         model = Transaction
-        fields = ['code', 'closed_date', 'apt_number', 'client_first_name', 'client_last_name', 'employee',]
+        fields = ['code', 'closed', 'closed_date', 'apt_number', 'client_first_name', 'client_last_name', 'employee',]
+
+    #def __init__(self, *args, **kwargs):
+    #    super().__init__()
+
 
     @property
     def form(self):

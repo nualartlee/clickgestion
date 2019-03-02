@@ -4,15 +4,33 @@
 
 
 {% block content %}
+<p style="margin-top:40px"></p>
+<div class="row mt-5">
+    <div class="col col-md-1">
+    </div>
 
-<h4>{% trans 'Transactions' %}</h4>
+    <div class="col col-md-10">
 
-<div class="row">
-
-    <!--Table-->
-    <div class="col col-md-9">
-        <table class="table table-bordered">
+        <!--Table-->
+        <table class="table table-bordered table-sm">
             <thead class="thead-light">
+                <div class="row">
+                    <div class="col-auto">
+                        <h4>{% trans 'Transactions' %}</h4>
+                    </div>
+                    <div class="col-auto">
+                        <!-- Button to Open The Filter -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#myModal">
+                            {% trans 'Filter' %}
+                        </button>
+                    </div>
+                    <div class="col-auto">
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'transaction_list' %}">
+                            {% trans 'Clear Filter' %}
+                        </a>
+                    </div>
+                </div>
+
             <tr>
                 <th>{% trans 'Reference' %}</th>
                 <th>{% trans 'Date' %}</th>
@@ -35,61 +53,58 @@
         {% if is_paginated %}
         <div class="row">
             <div class="col">
-            </div>
-            <div class="col">
             {% include 'core/pagination.html' %}
-            </div>
-            <div class="col">
             </div>
         </div>
         {% endif %}
+
     </div>
 
-    <!--Filter-->
-    <div class="col col-md-3">
+    <!--Side Panel-->
+    <div class="col col-md-1">
+    </div>
 
-        <!-- Button to Open the Modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-          Open modal
-        </button>
-
-        <!-- The Modal -->
-        <div class="modal" id="myModal">
-          <div class="modal-dialog">
+    <!-- Filter Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
             <div class="modal-content">
 
-              <!-- Modal Header -->
-              <div class="modal-header">
-                <h4 class="modal-title">{% trans 'Filter' %}</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">{% trans 'Filter' %}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-              <!-- Modal body -->
-              <div class="modal-body">
-                  <div class="container">
-                      <form method="get">
-                          {% crispy filter.form %}
-                          <div class="row">
-                              <div class="formColumn col-2"></div>
-                              <div class="formColumn col-8">
-                                  <button class="btn btn-secondary btn-block" type="submit">Search</button>
-                              </div>
-                              <div class="formColumn col-2"></div>
-                          </div>
-                      </form>
-                  </div>
-              </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <form method="get">
+                            {% crispy filter.form %}
+                            <div class="row justify-content-center">
+                                <div class="formColumn col-4">
+                                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                                        {% trans 'Search' %}
+                                    </button>
+                                </div>
+                                <div class="formColumn col-4">
+                                    <a class="btn btn-outline-secondary btn-block" href="{% url 'transaction_list' %}">
+                                        {% trans 'Clear Filter' %}
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-              <!-- Modal footer -->
-              <!--<div class="modal-footer">-->
+                <!-- Modal footer -->
+                <!--<div class="modal-footer">-->
                 <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-              <!--</div>-->
+                <!--</div>-->
 
             </div>
-          </div>
         </div>
-
-
     </div>
+
+
 </div>
 {% endblock %}

@@ -8,6 +8,7 @@ from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
+from django.http import QueryDict
 from django.conf import settings
 from django.utils import timezone
 
@@ -281,38 +282,53 @@ class TransactionList(PaginationMixin, ListView):
 
     model = Transaction
     context_object_name = 'transactions'
-    paginate_by = 10
+    paginate_by = 8
+    # ListView.as_view will pass custom arguments here
     queryset = None
-    header = None
+    header = gettext_lazy('Transactions')
     request = None
     filter = None
+    filter_data = None
+
 
     def get(self, request, *args, **kwargs):
+        # First
 
         # Check permissions
         if not request.user.is_authenticated:
             return invalid_permission_redirect(request)
 
+        # Get arguments
         self.request = request
+        self.filter_data = kwargs.pop('filter_data', {})
+
+        # Call super
         return super().get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        # Third
+
         # Call the base implementation first
         context = super().get_context_data(**kwargs)
 
         # Add data
-        if not self.header:
-            header = gettext_lazy('Transactions')
         context['header'] = self.header
         context['filter'] = self.filter
 
         return context
 
     def get_queryset(self):
-        if not self.queryset:
-            self.queryset = Transaction.objects.all()
-        # Filter
-        self.filter = TransactionFilter(self.request.GET, queryset=self.queryset)
+        # Second
+
+        # Filter the queryset
+        data = QueryDict('', mutable=True)
+        data.update(self.filter_data)
+        data.update(self.request.GET)
+        print(self.filter_data)
+        print(self.request.GET)
+        print(data)
+        #import pdb;pdb.set_trace()
+        self.filter = TransactionFilter(data)
         self.queryset = self.filter.qs
         return self.queryset
 
@@ -381,12 +397,11 @@ def transactions_open(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return invalid_permission_redirect(request)
 
-    # Get queryset
-    queryset = Transaction.objects.filter(employee=request.user, closed=False)
-
-    # Set header
-    header = gettext_lazy('Pending transactions by %(employee)s' % {'employee': request.user})
+    # Set initial filter data
+    filter_data = {
+        'closed': False,
+    }
 
     # Return
-    listview = TransactionList.as_view(queryset=queryset, header=header)
-    return listview(request)
+    listview = TransactionList.as_view()
+    return listview(request, filter_data=filter_data)
