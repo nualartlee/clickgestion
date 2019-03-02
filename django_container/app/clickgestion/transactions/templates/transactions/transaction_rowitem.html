@@ -29,12 +29,46 @@
             <div class="row">
                 <div class="col justify-content-start">
                     <!--<h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>-->
-                    <a class="h6 mr-2" href="{{ concept.url }}"><small>{{ concept.concept_type }}</small></a>
+                    <!-- Button to Open The Filter -->
+                    <a class="button h6 mr-2" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
+                        <small>
+                            {{ concept.concept_type }}
+                        </small>
+                    </a>
                 </div>
                 <div class="col text-right justify-content-end">
                     {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
                 </div>
             </div>
+
+
+            <!--Concept Modal-->
+            <div class="modal" id="{{ concept.code }}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">{{ concept.concept_type }}</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="container">
+                                {{ concept.description_short }}
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <!--<div class="modal-footer">-->
+                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+                        <!--</div>-->
+
+                    </div>
+                </div>
+            </div>
+
             {% endfor %}
         </div>
         {% endif %}
