@@ -289,6 +289,7 @@ class TransactionList(PaginationMixin, ListView):
     request = None
     filter = None
     filter_data = None
+    is_filtered = False
 
 
     def get(self, request, *args, **kwargs):
@@ -314,22 +315,32 @@ class TransactionList(PaginationMixin, ListView):
         # Add data
         context['header'] = self.header
         context['filter'] = self.filter
+        context['is_filtered'] = self.is_filtered
 
         return context
 
     def get_queryset(self):
         # Second
 
-        # Filter the queryset
+        # Create filter querydict
         data = QueryDict('', mutable=True)
+        # Add filters passed from view
         data.update(self.filter_data)
+        # Add filters selected by user
         data.update(self.request.GET)
-        print(self.filter_data)
-        print(self.request.GET)
-        print(data)
-        #import pdb;pdb.set_trace()
+
+        # Record as filtered
+        self.is_filtered = False
+        if len([k for k in data.keys() if k != 'page']) > 0:
+            self.is_filtered = True
+
+        # Add filters by permission
+
+        # Filter the queryset
         self.filter = TransactionFilter(data)
         self.queryset = self.filter.qs
+
+        # Return
         return self.queryset
 
 
