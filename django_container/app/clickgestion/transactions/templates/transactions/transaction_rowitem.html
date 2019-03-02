@@ -1,6 +1,24 @@
 {% load i18n %}
 <tr>
-    <th>{{ transaction.code|default_if_none:"&nbsp;" }}</th>
+    {% if transaction.closed %}
+    <th><a class="text-dark" href="/transactions/{{ transaction.code }}">{{ transaction.code|default_if_none:"&nbsp;" }}</a></th>
+    {% else %}
+    <th>
+        <div class="row">
+            <div class="col-8">
+                <a class="text-muted" href="/transactions/{{ transaction.code }}/edit/">
+                    {{ transaction.code|default_if_none:"&nbsp;" }}
+                </a>
+            </div>
+            <div class="col-4">
+                <a class="badge badge-danger ml-2" href="/transactions/{{ transaction.code }}/delete/">
+                    {% trans 'Delete' %}
+                </a>
+
+            </div>
+        </div>
+    </th>
+    {% endif %}
     <td>{{ transaction.closed_date|default_if_none:"&nbsp;" }}</td>
     <td>{{ transaction.apt_number|default_if_none:"&nbsp;" }}</td>
     <td>{{ transaction.client|default_if_none:"&nbsp;" }}</td>
@@ -10,7 +28,8 @@
             {% for concept in transaction.concepts.all %}
             <div class="row">
                 <div class="col justify-content-start">
-                    <h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>
+                    <!--<h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>-->
+                    <a class="h6 mr-2" href="{{ concept.url }}"><small>{{ concept.concept_type }}</small></a>
                 </div>
                 <div class="col text-right justify-content-end">
                     {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
@@ -30,23 +49,5 @@
             {% endfor %}
         </div>
         {% endif %}
-    </td>
-    <td class="align-middle">
-        <div class="text-center">
-            {% if transaction.closed %}
-            <a href="/transactions/{{ transaction.code }}" class="btn btn-outline-secondary btn-sm" role="button">
-                {% trans 'View' %}
-            </a>
-            {% else %}
-                <div class="btn-group">
-                    <a href="/transactions/{{ transaction.code }}/edit/" class="btn btn-outline-secondary btn-sm" role="button">
-                        {% trans 'Edit' %}
-                    </a>
-                    <a href="/transactions/{{ transaction.code }}/delete/" class="btn btn-outline-danger btn-sm" role="button">
-                        {% trans 'Delete' %}
-                    </a>
-                </div>
-            {% endif %}
-        </div>
     </td>
 </tr>
