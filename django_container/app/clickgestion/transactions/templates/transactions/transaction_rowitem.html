@@ -1,5 +1,6 @@
 {% load i18n %}
 <tr>
+    <!--CODE-->
     {% if transaction.closed %}
     <th>
         <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#Transaction">
@@ -48,9 +49,20 @@
         </div>
     </th>
     {% endif %}
+
+    <!--CASH CLOSE-->
+    <td>{{ transaction.cashclose|default_if_none:"&nbsp;" }}</td>
+
+    <!--DATE-->
     <td>{{ transaction.closed_date|default_if_none:"&nbsp;" }}</td>
+
+    <!--APT NUMBER-->
     <td>{{ transaction.apt_number|default_if_none:"&nbsp;" }}</td>
+
+    <!--CLIENT-->
     <td>{{ transaction.client|default_if_none:"&nbsp;" }}</td>
+
+    <!--CONCEPTS-->
     <td>
         {% if transaction.concepts.exists %}
         <div class="container">
@@ -102,6 +114,7 @@
         </div>
         {% endif %}
     </td>
+
     <td>
         {% if transaction.totals %}
         <div class="container">
