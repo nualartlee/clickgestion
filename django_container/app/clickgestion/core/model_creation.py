@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group, Permission
 from clickgestion.transactions.models import ConceptValue, Currency, Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.apt_rentals.models import NightRateRange
-from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatDepositSettings,\
+from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
     CashFloatWithdrawal, CashFloatWithdrawalSettings
 from django.utils import timezone
 from random import randrange
@@ -37,47 +37,23 @@ def create_test_models():
     create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
     create_test_users()
 
-    # Create random transactions
-    for _ in range(randrange(50, 100)):
-        selector = randrange(100)
+    # Create accounted random transactions for the past days
+    days = 30
 
-        # Create closed client transactions
-        if selector <= 80:
-            employee = get_sales_employee()
-            transaction = create_test_client_transaction(employee)
-            apt_rental = create_test_apartment_rental(transaction)
-            create_test_apartment_rental_deposit(transaction, apt_rental)
-            transaction.closed = True
-            transaction.closed_date = timezone.now() - timezone.timedelta(days=randrange(100))
-            transaction.save()
+    # For each day
+    for i in range(days):
+        date = timezone.now() - timezone.timedelta(days=days-i)
 
-        # Create closed house transactions
-        if 80 < selector <= 92:
-            employee = get_cash_employee()
-            transaction = create_test_transaction(employee)
-            if randrange(100) < 25:
-                deposit = create_test_cash_float_deposit(transaction)
-            else:
-                withdrawal = create_test_cash_float_withdrawal(transaction)
-            transaction.closed = True
-            transaction.closed_date = timezone.now() - timezone.timedelta(days=randrange(100))
-            transaction.save()
+        # Create random transactions
+        for _ in range(randrange(1, 9)):
+            create_test_random_transaction(date)
 
-        # Create open client transactions
-        if 92 < selector <= 98:
-            employee = get_sales_employee()
-            transaction = create_test_client_transaction(employee)
-            apt_rental = create_test_apartment_rental(transaction)
-            create_test_apartment_rental_deposit(transaction, apt_rental)
+        # Close Cash Desk
+        create_test_cashclose(date, get_cash_employee())
 
-        # Create open house transactions
-        if 98 < selector <= 99:
-            employee = get_cash_employee()
-            transaction = create_test_transaction(employee)
-            if randrange(100) < 25:
-                deposit = create_test_cash_float_deposit(transaction)
-            else:
-                withdrawal = create_test_cash_float_withdrawal(transaction)
+    # Create unaccounted random transactions
+    for _ in range(randrange(1, 9)):
+        create_test_random_transaction(date)
 
 
 def create_group(name, permissions):
@@ -320,13 +296,14 @@ def create_cashfloatwithdrawalsettings():
     return model
 
 
-def create_test_transaction(employee):
+def create_test_transaction(employee, date):
     fake = Faker()
     notes = None
     if randrange(100) < 40:
         notes = fake.text()
 
     model = Transaction(
+        created=date,
         employee=employee,
         notes=notes,
     )
@@ -334,7 +311,7 @@ def create_test_transaction(employee):
     return model
 
 
-def create_test_client_transaction(employee):
+def create_test_client_transaction(employee, date):
     fake = get_faker()
     apt_number = None
     if randrange(100) < 90:
@@ -362,6 +339,7 @@ def create_test_client_transaction(employee):
     model = Transaction(
         apt_number=apt_number,
         employee=employee,
+        created=date,
         client_address=client_address,
         client_email=client_email,
         client_first_name=client_first_name,
@@ -374,8 +352,8 @@ def create_test_client_transaction(employee):
     return model
 
 
-def create_test_apartment_rental(transaction):
-    checkin = timezone.now() + timezone.timedelta(days=randrange(300))
+def create_test_apartment_rental(transaction, date):
+    checkin = date + timezone.timedelta(days=randrange(21))
     checkout = checkin + timezone.timedelta(days=randrange(28))
     model = AptRental(
         adults=randrange(1, 5),
@@ -383,52 +361,126 @@ def create_test_apartment_rental(transaction):
         checkin=checkin,
         checkout=checkout,
         transaction=transaction,
+        created=date,
     )
     model.save()
     return model
 
 
-def create_test_apartment_rental_deposit(transaction, apt_rental):
+def create_test_apartment_rental_deposit(transaction, apt_rental, date):
     model = AptRentalDeposit(
         adults=apt_rental.adults,
         children=apt_rental.children,
         nights=apt_rental.nights,
         transaction=transaction,
+        created=date,
     )
     model.save()
     return model
 
 
-def create_test_cash_float_deposit(transaction):
+def create_test_cashclose(date, employee):
+    fake = Faker()
+    notes = None
+    if randrange(100) < 60:
+        notes = fake.text(max_nb_chars=512)
+    model = CashClose(
+        created=date,
+        employee=employee,
+        notes=notes,
+    )
+    model.save()
+    transactions = Transaction.objects.filter(closed_date__date__lte=date, cashclose=None)
+    print('cashclose {}'.format(date))
+    print('transactions {}'.format(transactions.count()))
+    if transactions.exists():
+        for transaction in transactions:
+            transaction.cashclose = model
+            transaction.edited = date
+            transaction.save()
+            print('{} accounted'.format(transaction.code))
+    return model
+
+
+def create_test_cash_float_deposit(transaction, date):
     currency = get_random_currency()
     amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
         currency=currency,
         amount=amount,
+        created=date,
     )
     value.save()
     model = CashFloatDeposit(
         value=value,
         transaction=transaction,
+        created=date,
     )
     model.save()
     return model
 
 
-def create_test_cash_float_withdrawal(transaction):
+def create_test_cash_float_withdrawal(transaction, date):
     currency = get_random_currency()
     amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
         currency=currency,
         amount=amount,
+        created=date,
     )
     value.save()
     model = CashFloatWithdrawal(
         value=value,
         transaction=transaction,
+        created=date,
     )
     model.save()
     return model
+
+
+def create_test_random_transaction(date):
+
+    selector = randrange(100)
+
+    # Create closed client transactions
+    if selector <= 80:
+        employee = get_sales_employee()
+        transaction = create_test_client_transaction(employee, date)
+        apt_rental = create_test_apartment_rental(transaction, date)
+        create_test_apartment_rental_deposit(transaction, apt_rental, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
+
+    # Create closed house transactions
+    if 80 < selector <= 92:
+        employee = get_cash_employee()
+        transaction = create_test_transaction(employee, date)
+        if randrange(100) < 25:
+            deposit = create_test_cash_float_deposit(transaction, date)
+        else:
+            withdrawal = create_test_cash_float_withdrawal(transaction, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
+
+    # Create open client transactions
+    if 92 < selector <= 98:
+        employee = get_sales_employee()
+        transaction = create_test_client_transaction(employee, date)
+        apt_rental = create_test_apartment_rental(transaction, date)
+        create_test_apartment_rental_deposit(transaction, apt_rental, date)
+
+    # Create open house transactions
+    if 98 < selector <= 99:
+        employee = get_cash_employee()
+        transaction = create_test_transaction(employee, date)
+        if randrange(100) < 25:
+            deposit = create_test_cash_float_deposit(transaction, date)
+        else:
+            withdrawal = create_test_cash_float_withdrawal(transaction, date)
+
+    return transaction
 
 
 def create_test_users():

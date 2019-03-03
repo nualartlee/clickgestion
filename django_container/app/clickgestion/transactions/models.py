@@ -197,9 +197,13 @@ class ConceptValue(models.Model):
     """
     The amount of a given currency that a concept credits or debits
     """
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
+    # Creation timestamp
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     credit = models.BooleanField(verbose_name=gettext_lazy('Credit'), default=True)
     currency = models.ForeignKey(Currency, verbose_name=gettext_lazy('Currency'), default=get_default_currency, on_delete=models.PROTECT, related_name='values')
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
+    # Last update timestamp
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
     class Meta:
         verbose_name = gettext_lazy('Concept Value')
@@ -219,12 +223,16 @@ class BaseConcept(models.Model):
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
     # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
+    # Creation timestamp
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     # The concept that this one is editing
     edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editingconcept', on_delete=models.CASCADE, blank=True, null=True)
     # The concept that is editing this one
     editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editedconcept', on_delete=models.SET_NULL, blank=True, null=True)
     # The transaction this concept belongs to
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
+    # Last update timestamp
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
     # The value of this concept
     value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
 
@@ -402,11 +410,15 @@ class ConceptSettings(SingletonModel):
     client_last_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Last Name Visible'))
     client_phone_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Phone Required'))
     client_phone_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Phone Visible'))
+    # Creation timestamp
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     notes_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Notes Required'))
     notes_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Notes Visible'))
     # Permission group this concept belongs to. Only concepts of the same group are allowed in a single transaction
     permission_group = models.ForeignKey(
         Group, verbose_name=gettext_lazy('Permission Group'), on_delete=models.SET_NULL, blank=True, null=True)
+    # Last update timestamp
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
     # VAT percent
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'), default=0)
 

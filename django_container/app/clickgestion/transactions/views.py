@@ -338,7 +338,7 @@ class TransactionList(PaginationMixin, ListView):
 
         # Filter the queryset
         self.filter = TransactionFilter(data)
-        self.queryset = self.filter.qs
+        self.queryset = self.filter.qs.order_by('-id')
 
         # Return
         return self.queryset
