@@ -8,4 +8,6 @@ psycopg2==2.7.5
 requests==2.19.1
 lxml==4.2.4
 uwsgi==2.0.17.1
+Faker==1.0.2
+
 

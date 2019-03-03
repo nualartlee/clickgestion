@@ -3,11 +3,14 @@ import os
 import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from clickgestion.transactions.models import Currency
+from clickgestion.transactions.models import Currency, Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
-from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatWithdrawal
+from clickgestion.apt_rentals.models import NightRateRange
+from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatDepositSettings,\
+    CashFloatWithdrawal, CashFloatWithdrawalSettings
 from django.utils import timezone
 from random import randrange
+from faker import Faker
 
 User = get_user_model()
 
@@ -35,8 +38,8 @@ def create_test_models():
     create_test_user()
     for _ in range(100):
         transaction = create_test_open_transaction()
-        create_test_apartment_rental(transaction)
-        create_test_apartment_rental_deposit(transaction)
+        apt_rental = create_test_apartment_rental(transaction)
+        create_test_apartment_rental_deposit(transaction, apt_rental)
         if randrange(2):
             transaction.closed = True
             transaction.closed_date = timezone.datetime.now() - timezone.timedelta(days=randrange(100))
@@ -203,14 +206,12 @@ def create_aptrentaldepositsettings():
 
 
 def create_nightraterange():
-    from django.utils import timezone
-    from clickgestion.apt_rentals.models import NightRateRange
     try:
         model = NightRateRange.objects.get()
     except:
         model = NightRateRange.objects.create(
-            start_date=timezone.datetime.today() - timezone.timedelta(days=365),
-            end_date=timezone.datetime.today() + timezone.timedelta(days=365),
+            start_date=timezone.now() - timezone.timedelta(days=365),
+            end_date=timezone.now() + timezone.timedelta(days=365),
             monday=10,
             tuesday=20,
             wednesday=30,
@@ -223,7 +224,6 @@ def create_nightraterange():
 
 
 def create_cashfloatdepositsettings():
-    from clickgestion.cash_desk.models import CashFloatDepositSettings
     try:
         model = CashFloatDepositSettings.objects.get()
     except:
@@ -251,7 +251,6 @@ def create_cashfloatdepositsettings():
 
 
 def create_cashfloatwithdrawalsettings():
-    from clickgestion.cash_desk.models import CashFloatWithdrawalSettings
     try:
         model = CashFloatWithdrawalSettings.objects.get()
     except:
@@ -279,30 +278,64 @@ def create_cashfloatwithdrawalsettings():
 
 
 def create_test_open_transaction():
-    from clickgestion.transactions.models import Transaction
+    fake = get_faker()
+    apt_number = None
+    if randrange(100) < 80:
+        apt_number = randrange(10, 23) + randrange(10)
+    client_address = None
+    if randrange(100) < 50:
+        client_address = fake.address()
+    client_email = None
+    if randrange(100) < 40:
+        client_email = fake.email()
+    client_first_name = None
+    if randrange(100) < 90:
+        client_first_name = fake.first_name()
+    client_id = None
+    if randrange(100) < 80:
+        client_id = fake.ssn()
+    client_last_name = None
+    if randrange(100) < 90:
+        client_last_name = fake.last_name()
+    client_phone_number = None
+    if randrange(100) < 30:
+        client_phone_number = fake.phone_number()[:14]
+    notes = None
+
     model = Transaction(
+        apt_number=apt_number,
         employee=create_test_user(),
+        client_address=client_address,
+        client_email=client_email,
+        client_first_name=client_first_name,
+        client_id=client_id,
+        client_last_name=client_last_name,
+        client_phone_number=client_phone_number,
+        notes=notes,
     )
     model.save()
     return model
 
 
 def create_test_apartment_rental(transaction):
-    from clickgestion.apt_rentals.models import AptRental
-    checkin = timezone.datetime.today() + timezone.timedelta(days=randrange(300))
+    checkin = timezone.now() + timezone.timedelta(days=randrange(300))
     checkout = checkin + timezone.timedelta(days=randrange(28))
     model = AptRental(
+        adults=randrange(1, 5),
+        children=randrange(1, 3),
         checkin=checkin,
         checkout=checkout,
         transaction=transaction,
     )
     model.save()
+    return model
 
 
-def create_test_apartment_rental_deposit(transaction):
-    from clickgestion.apt_rentals.models import AptRentalDeposit
+def create_test_apartment_rental_deposit(transaction, apt_rental):
     model = AptRentalDeposit(
-        nights=randrange(28),
+        adults=apt_rental.adults,
+        children=apt_rental.children,
+        nights=apt_rental.nights,
         transaction=transaction,
     )
     model.save()
@@ -319,5 +352,39 @@ def get_permissions_for_models(models):
     return Permission.objects.filter(name__in=names)
 
 
+def get_faker():
+    """
+    Get a random localized faker
+    :return: Faker()
+    """
+    selector = randrange(100)
+    if 0 <= selector <= 60:
+        return Faker('en_GB')
+    if 60 < selector <= 75:
+        return Faker('es_ES')
+    if 75 < selector <= 77:
+        return Faker('fr_FR')
+    if 77 < selector <= 79:
+        return Faker('it_IT')
+    if 79 < selector <= 81:
+        return Faker('nl_NL')
+    if 81 < selector <= 83:
+        return Faker('no_NO')
+    if 83 < selector <= 85:
+        return Faker('de_DE')
+    if 85 < selector <= 87:
+        return Faker('dk_DK')
+    if 87 < selector <= 89:
+        return Faker('en_US')
+    if 89 < selector <= 91:
+        return Faker('en_CA')
+    if 91 < selector <= 93:
+        return Faker('ru_RU')
+    if 93 < selector <= 95:
+        return Faker('pt_PT')
+    if 95 < selector <= 97:
+        return Faker('sv_SE')
+    if 97 < selector <= 99:
+        return Faker('fi_FI')
 
 
