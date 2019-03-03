@@ -59,7 +59,7 @@ services:
           - django_admin_email
           - django_admin_pass
         environment:
-          DJANGO_SETTINGS_MODULE: clickgestion.settings.development
+          DJANGO_SETTINGS_MODULE: clickgestion.settings.production
         restart: unless-stopped
         networks:
           default:

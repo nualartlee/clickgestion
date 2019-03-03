@@ -1,0 +1,114 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<p style="margin-top:40px"></p>
+<div class="row mt-5">
+    <div class="col col-md-1">
+    </div>
+
+    <div class="col col-md-10">
+
+        <!--Table-->
+        <table class="table table-bordered table-sm">
+            <thead class="thead-light">
+                <div class="row">
+                    <div class="col-auto">
+                        <h4>{% trans 'Transactions' %}</h4>
+                    </div>
+                    <div class="col-auto">
+                        <!-- Button to Open The Filter -->
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#FilterModal">
+                            {% trans 'Filter' %}
+                        </button>
+                    </div>
+                    <div class="col-auto">
+                        {% if is_filtered %}
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'transaction_list' %}">
+                            {% trans 'Clear Filter' %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            <tr>
+                <th>{% trans 'Reference' %}</th>
+                <th>{% trans 'Cash Close' %}</th>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Apt' %}</th>
+                <th>{% trans 'Client' %}</th>
+                <th>{% trans 'Concepts' %}</th>
+                <th>{% trans 'Totals' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                {% include 'transactions/transaction_rowitem.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="margin-top:20px"></p>
+
+        {% if is_paginated %}
+        <div class="row">
+            <div class="col">
+            {% include 'core/pagination.html' %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!--Side Panel-->
+    <div class="col col-md-1">
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal" id="FilterModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">{% trans 'Filter' %}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="container">
+                        <form method="get">
+                            {% crispy filter.form %}
+                            <div class="row justify-content-center">
+                                <div class="formColumn col-4">
+                                    <button class="btn btn-outline-secondary btn-block" type="submit">
+                                        {% trans 'Search' %}
+                                    </button>
+                                </div>
+                                <div class="formColumn col-4">
+                                    {% if is_filtered %}
+                                    <a class="btn btn-outline-danger btn-block" href="{% url 'transaction_list' %}">
+                                        {% trans 'Clear Filter' %}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <!--<div class="modal-footer">-->
+                <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+                <!--</div>-->
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}

@@ -31,6 +31,10 @@ if __name__ == "__main__":
     # Create default models
     from clickgestion.core.model_creation import create_default_models, create_test_models
     from django.conf import settings
+    print('Creating default models')
     create_default_models()
+    print('Creating test models')
+    create_test_models()
     if settings.DEBUG:
+        print('Creating test models')
         create_test_models()

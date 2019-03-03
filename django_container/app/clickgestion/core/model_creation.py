@@ -6,6 +6,9 @@ from django.contrib.auth.models import Group, Permission
 from clickgestion.transactions.models import Currency
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatWithdrawal
+from django.utils import timezone
+from random import randrange
+
 User = get_user_model()
 
 """
@@ -30,6 +33,14 @@ def create_default_models():
 def create_test_models():
     create_test_admin()
     create_test_user()
+    for _ in range(100):
+        transaction = create_test_open_transaction()
+        create_test_apartment_rental(transaction)
+        create_test_apartment_rental_deposit(transaction)
+        if randrange(2):
+            transaction.closed = True
+            transaction.closed_date = timezone.datetime.now() - timezone.timedelta(days=randrange(100))
+            transaction.save()
 
 
 def create_group(name, permissions):
@@ -264,6 +275,37 @@ def create_cashfloatwithdrawalsettings():
             permission_group=Group.objects.get(name='cash'),
             vat_percent=0,
         ).save()
+    return model
+
+
+def create_test_open_transaction():
+    from clickgestion.transactions.models import Transaction
+    model = Transaction(
+        employee=create_test_user(),
+    )
+    model.save()
+    return model
+
+
+def create_test_apartment_rental(transaction):
+    from clickgestion.apt_rentals.models import AptRental
+    checkin = timezone.datetime.today() + timezone.timedelta(days=randrange(300))
+    checkout = checkin + timezone.timedelta(days=randrange(28))
+    model = AptRental(
+        checkin=checkin,
+        checkout=checkout,
+        transaction=transaction,
+    )
+    model.save()
+
+
+def create_test_apartment_rental_deposit(transaction):
+    from clickgestion.apt_rentals.models import AptRentalDeposit
+    model = AptRentalDeposit(
+        nights=randrange(28),
+        transaction=transaction,
+    )
+    model.save()
     return model
 
 
