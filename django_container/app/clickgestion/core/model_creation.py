@@ -242,7 +242,7 @@ def create_aptrentaldepositsettings():
             client_phone_number_visible=True,
             notes_required=False,
             notes_visible=True,
-            vat_percent=10,
+            vat_percent=0,
             permission_group=Group.objects.get(name='sales'),
         ).save()
     return model
