@@ -3,7 +3,7 @@ import os
 import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from clickgestion.transactions.models import Currency, Transaction
+from clickgestion.transactions.models import ConceptValue, Currency, Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashFloatDeposit, CashFloatDepositSettings,\
@@ -34,16 +34,50 @@ def create_default_models():
 
 
 def create_test_models():
-    create_test_admin()
-    create_test_user()
-    for _ in range(100):
-        transaction = create_test_open_transaction()
-        apt_rental = create_test_apartment_rental(transaction)
-        create_test_apartment_rental_deposit(transaction, apt_rental)
-        if randrange(2):
+    create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
+    create_test_users()
+
+    # Create random transactions
+    for _ in range(randrange(50, 100)):
+        selector = randrange(100)
+
+        # Create closed client transactions
+        if selector <= 80:
+            employee = get_sales_employee()
+            transaction = create_test_client_transaction(employee)
+            apt_rental = create_test_apartment_rental(transaction)
+            create_test_apartment_rental_deposit(transaction, apt_rental)
             transaction.closed = True
-            transaction.closed_date = timezone.datetime.now() - timezone.timedelta(days=randrange(100))
+            transaction.closed_date = timezone.now() - timezone.timedelta(days=randrange(100))
             transaction.save()
+
+        # Create closed house transactions
+        if 80 < selector <= 92:
+            employee = get_cash_employee()
+            transaction = create_test_transaction(employee)
+            if randrange(100) < 25:
+                deposit = create_test_cash_float_deposit(transaction)
+            else:
+                withdrawal = create_test_cash_float_withdrawal(transaction)
+            transaction.closed = True
+            transaction.closed_date = timezone.now() - timezone.timedelta(days=randrange(100))
+            transaction.save()
+
+        # Create open client transactions
+        if 92 < selector <= 98:
+            employee = get_sales_employee()
+            transaction = create_test_client_transaction(employee)
+            apt_rental = create_test_apartment_rental(transaction)
+            create_test_apartment_rental_deposit(transaction, apt_rental)
+
+        # Create open house transactions
+        if 98 < selector <= 99:
+            employee = get_cash_employee()
+            transaction = create_test_transaction(employee)
+            if randrange(100) < 25:
+                deposit = create_test_cash_float_deposit(transaction)
+            else:
+                withdrawal = create_test_cash_float_withdrawal(transaction)
 
 
 def create_group(name, permissions):
@@ -81,27 +115,36 @@ def create_admin():
     return admin
 
 
-def create_test_admin():
+def create_superuser(username, first, last, email):
 
-    user_name = 'admin'
-    user_email = 'admin@here.com'
-    user_pass = 'admin'
     try:
-        admin = User.objects.get(username=user_name)
+        user = User.objects.get(username=username)
     except:
-        admin = User.objects.create_superuser(user_name, user_email, user_pass)
-    return admin
+        user = User.objects.create_superuser(
+            first_name=first,
+            last_name=last,
+            username=username,
+            email=email,
+            password=username,
+        )
+    return user
 
 
-def create_test_user():
+def create_user(username, first, last, email, groups):
 
-    user_name = 'test'
-    user_email = 'test@here.com'
-    user_pass = 'test'
     try:
-        user = User.objects.get(username=user_name)
+        user = User.objects.get(username=username)
     except:
-        user = User.objects.create_user(user_name, user_email, user_pass)
+        user = User.objects.create_user(
+            first_name=first,
+            last_name=last,
+            username=username,
+            email=email,
+            password=username,
+        )
+        for group in groups:
+            user.groups.add(group)
+        user.save()
     return user
 
 
@@ -277,7 +320,21 @@ def create_cashfloatwithdrawalsettings():
     return model
 
 
-def create_test_open_transaction():
+def create_test_transaction(employee):
+    fake = Faker()
+    notes = None
+    if randrange(100) < 40:
+        notes = fake.text()
+
+    model = Transaction(
+        employee=employee,
+        notes=notes,
+    )
+    model.save()
+    return model
+
+
+def create_test_client_transaction(employee):
     fake = get_faker()
     apt_number = None
     if randrange(100) < 90:
@@ -304,7 +361,7 @@ def create_test_open_transaction():
 
     model = Transaction(
         apt_number=apt_number,
-        employee=create_test_user(),
+        employee=employee,
         client_address=client_address,
         client_email=client_email,
         client_first_name=client_first_name,
@@ -340,6 +397,65 @@ def create_test_apartment_rental_deposit(transaction, apt_rental):
     )
     model.save()
     return model
+
+
+def create_test_cash_float_deposit(transaction):
+    currency = get_random_currency()
+    amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
+    value = ConceptValue(
+        currency=currency,
+        amount=amount,
+    )
+    value.save()
+    model = CashFloatDeposit(
+        value=value,
+        transaction=transaction,
+    )
+    model.save()
+    return model
+
+
+def create_test_cash_float_withdrawal(transaction):
+    currency = get_random_currency()
+    amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
+    value = ConceptValue(
+        currency=currency,
+        amount=amount,
+    )
+    value.save()
+    model = CashFloatWithdrawal(
+        value=value,
+        transaction=transaction,
+    )
+    model.save()
+    return model
+
+
+def create_test_users():
+    sgroup = create_sales_group()
+    cgroup = create_cash_group()
+    create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup, cgroup])
+    create_user('manu', 'Manuel', 'Borges', 'manu@clickgestion.com', [sgroup, cgroup])
+    create_user('vanesa', 'Vanesa', 'Perez Del Mar', 'vanesa@clickgestion.com', [sgroup, cgroup])
+    create_user('isidro', 'Isidro', 'Del Rey Rodriguez', 'isidro@clickgestion.com', [sgroup])
+    create_user('juan', 'Juan Carlos', 'Muni', 'juan@clickgestion.com', [sgroup])
+    create_user('angel', 'Angel', 'Morales Parda', 'angel@clickgestion.com', [sgroup])
+    create_user('toni', 'Toni', 'Vera Miralles', 'toni@clickgestion.com', [sgroup])
+    create_user('natalia', 'Natalia', 'Villa Martinez', 'natalia@clickgestion.com', [sgroup, cgroup])
+    create_user('marcos', 'Marcos', 'Ruiz Pantaloni', 'marcos@clickgestion.com', [sgroup, cgroup])
+    create_user('suzi', 'Suzan', 'Williams', 'suzi@clickgestion.com', [sgroup, cgroup])
+
+
+def get_cash_employee():
+    group = create_cash_group()
+    users = group.user_set.all()
+    return users[randrange(users.count())]
+
+
+def get_sales_employee():
+    group = create_sales_group()
+    users = group.user_set.all()
+    return users[randrange(users.count())]
 
 
 def get_permissions_for_models(models):
@@ -387,4 +503,14 @@ def get_faker():
     if 97 < selector <= 99:
         return Faker('fi_FI')
 
+
+def get_random_currency():
+    selector = randrange(100)
+    if 0 <= selector <= 90:
+        return Currency.objects.get(code_a='EUR')
+    if 90 < selector <= 98:
+        return Currency.objects.get(code_a='GBP')
+    if 98 < selector <= 99:
+        return Currency.objects.get(code_a='USD')
+    return Currency.objects.get(code_a='EUR')
 
