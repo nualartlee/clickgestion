@@ -3,11 +3,11 @@
     <!--CODE-->
     {% if transaction.closed %}
     <th>
-        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#Transaction">
+        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{transaction.code}}">
             {{ transaction.code }}
         </button>
         <!--Transaction Modal-->
-        <div class="modal" id="Transaction">
+        <div class="modal" id="{{transaction.code}}">
             <div class="modal-dialog">
                 <div class="modal-content">
 

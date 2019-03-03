@@ -280,25 +280,25 @@ def create_cashfloatwithdrawalsettings():
 def create_test_open_transaction():
     fake = get_faker()
     apt_number = None
-    if randrange(100) < 80:
-        apt_number = randrange(10, 23) + randrange(10)
+    if randrange(100) < 90:
+        apt_number = randrange(10, 23)*100 + randrange(10)
     client_address = None
-    if randrange(100) < 50:
+    if randrange(100) < 90:
         client_address = fake.address()
     client_email = None
-    if randrange(100) < 40:
+    if randrange(100) < 90:
         client_email = fake.email()
     client_first_name = None
     if randrange(100) < 90:
         client_first_name = fake.first_name()
     client_id = None
-    if randrange(100) < 80:
+    if randrange(100) < 90:
         client_id = fake.ssn()
     client_last_name = None
     if randrange(100) < 90:
         client_last_name = fake.last_name()
     client_phone_number = None
-    if randrange(100) < 30:
+    if randrange(100) < 90:
         client_phone_number = fake.phone_number()[:14]
     notes = None
 
