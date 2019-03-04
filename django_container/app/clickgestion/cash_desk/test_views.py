@@ -8,10 +8,10 @@ class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = True
         cls.required_access_level = 1
-        cls.url = 'cash_balance'
+        cls.url = 'cash_desk_balance'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'transactions/cash_balance.html'
+        cls.get_template = 'transactions/cash_desk_balance.html'
 
 
 class TestCashCloseView(CustomTestCase, CustomViewTestCase):
@@ -21,10 +21,10 @@ class TestCashCloseView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = True
         cls.required_access_level = 1
-        cls.url = 'cash_close'
+        cls.url = 'cash_desk_close'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'transactions/cash_close.html'
+        cls.get_template = 'transactions/cash_desk_close.html'
 
     def test_post_ok(self):
         self.log_admin_in()

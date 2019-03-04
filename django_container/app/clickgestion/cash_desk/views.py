@@ -1,5 +1,5 @@
 from clickgestion.cash_desk.forms import CashCloseForm
-from clickgestion.cash_desk.models import get_breakdown_by_concept_type, get_value_totals
+from clickgestion.cash_desk.models import get_breakdown_by_concept_type, get_value_totals, CashClose
 from clickgestion.transactions.models import Transaction
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required()
-def cash_balance(request, *args, **kwargs):
+def cash_desk_balance(request, *args, **kwargs):
     extra_context = {}
 
     # Get closed transactions
@@ -26,11 +26,33 @@ def cash_balance(request, *args, **kwargs):
     extra_context['totals'] = totals
 
     # Render
-    return render(request, 'transactions/cash_balance.html', extra_context)
+    return render(request, 'transactions/cash_desk_balance.html', extra_context)
+
+
+def cashclose_detail(request, *args, **kwargs):
+    extra_context = {}
+
+    # Get the cashclose
+    cashclose_code = kwargs.get('cashclose_code', None)
+    cashclose = get_object_or_404(CashClose, code=cashclose_code)
+    extra_context['cashclose'] = cashclose
+
+    # Get the totals
+    values = []
+    for transaction in cashclose.transactions:
+        values += transaction.totals
+    totals = get_value_totals(values)
+    extra_context['totals'] = totals
+
+    # Get breakdown by concept type
+    breakdown = get_breakdown_by_concept_type(cashclose.transactions)
+    extra_context['breakdown'] = breakdown
+
+    return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 
 
 @login_required()
-def cash_close(request, *args, **kwargs):
+def cash_desk_close(request, *args, **kwargs):
     extra_context = {}
 
     # Get open transactions
@@ -69,10 +91,10 @@ def cash_close(request, *args, **kwargs):
             # Message
             return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
 
-        return render(request, 'transactions/cash_close.html', extra_context)
+        return render(request, 'transactions/cash_desk_close.html', extra_context)
 
 
     form = CashCloseForm()
     extra_context['form'] = form
-    return render(request, 'transactions/cash_close.html', extra_context)
+    return render(request, 'transactions/cash_desk_close.html', extra_context)
 

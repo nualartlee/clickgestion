@@ -51,7 +51,13 @@
     {% endif %}
 
     <!--CASH CLOSE-->
-    <td>{{ transaction.cashclose|default_if_none:"&nbsp;" }}</td>
+    <td>
+        {% if transaction.cashclose %}
+        <a class="text-muted" href="/cash-desk/closures/{{ transaction.cashclose.code }}/">
+            {{ transaction.cashclose }}
+        </a>
+        {% endif %}
+    </td>
 
     <!--DATE-->
     <td>{{ transaction.closed_date|default_if_none:"&nbsp;" }}</td>

@@ -4,9 +4,9 @@ from clickgestion.transactions.views import concept_delete, concept_detail, conc
 from clickgestion.cash_desk.forms import CashFloatDepositForm, CashFloatWithdrawalForm
 
 urlpatterns = [
-    url(r'^balance/$', views.cash_balance, name='cash_balance'),
-    url(r'^close/$', views.cash_close, name='cash_close'),
-    #url(r'^float/', include('clickgestion.cash_float.urls')),
+    url(r'^balance/$', views.cash_desk_balance, name='cash_desk_balance'),
+    url(r'^close/$', views.cash_desk_close, name='cash_desk_close'),
+    url(r'^closures/(?P<cashclose_code>CC[A-F0-9]+)$', views.cashclose_detail, name='cashclose_detail'),
     url(r'^deposits/new/(?P<transaction_code>T[A-F0-9]+)$', concept_edit, {'concept_form': CashFloatDepositForm},
         name='cashfloat_deposit_new'),
     url(r'^deposits/(?P<concept_code>T[-A-Z0-9]+)$', concept_detail, {'concept_form': CashFloatDepositForm},
