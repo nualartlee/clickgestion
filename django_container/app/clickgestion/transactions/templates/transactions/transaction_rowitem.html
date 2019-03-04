@@ -8,24 +8,24 @@
         </button>
         <!--Transaction Modal-->
         <div class="modal" id="{{transaction.code}}">
-            <div class="modal-dialog">
-                <div class="modal-content">
+            <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
+                <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
 
                     <!-- Modal Header -->
-                    <div class="modal-header">
+                    <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
                         <h4 class="modal-title">{{ transaction.code }}</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
                     <!-- Modal body -->
-                    <div class="modal-body">
-                        <div class="container">
+                    <div class="modal-body" style="overflow-x: auto; max-width: 23cm;">
+                        <div class="row justify-content-center">
                             {% include 'transactions/invoice.html' %}
                         </div>
                     </div>
 
                     <!-- Modal footer -->
-                    <!--<div class="modal-footer">-->
+                    <!--<div class="modal-footer" style="overflow-x: auto; max-width: 23cm;">-->
                     <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
                     <!--</div>-->
 
