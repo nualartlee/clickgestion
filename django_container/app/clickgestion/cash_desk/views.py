@@ -26,7 +26,7 @@ def cash_desk_balance(request, *args, **kwargs):
     extra_context['totals'] = totals
 
     # Render
-    return render(request, 'transactions/cash_desk_balance.html', extra_context)
+    return render(request, 'cash_desk/cash_desk_balance.html', extra_context)
 
 
 def cashclose_detail(request, *args, **kwargs):
@@ -39,13 +39,13 @@ def cashclose_detail(request, *args, **kwargs):
 
     # Get the totals
     values = []
-    for transaction in cashclose.transactions:
+    for transaction in cashclose.transactions.all():
         values += transaction.totals
     totals = get_value_totals(values)
     extra_context['totals'] = totals
 
     # Get breakdown by concept type
-    breakdown = get_breakdown_by_concept_type(cashclose.transactions)
+    breakdown = get_breakdown_by_concept_type(cashclose.transactions.all())
     extra_context['breakdown'] = breakdown
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
@@ -91,10 +91,10 @@ def cash_desk_close(request, *args, **kwargs):
             # Message
             return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
 
-        return render(request, 'transactions/cash_desk_close.html', extra_context)
+        return render(request, 'cash_desk/cash_desk_close.html', extra_context)
 
 
     form = CashCloseForm()
     extra_context['form'] = form
-    return render(request, 'transactions/cash_desk_close.html', extra_context)
+    return render(request, 'cash_desk/cash_desk_close.html', extra_context)
 

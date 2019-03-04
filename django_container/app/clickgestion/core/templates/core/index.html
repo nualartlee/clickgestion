@@ -7,18 +7,18 @@
 <div class="container">
     <p style="margin-top:20px"></p>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
         </div>
         <div class="col-6">
             <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_new' %}">{% trans 'Start A New Transaction' %}</a>
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transactions_open' %}">{% trans 'View Open Transactions' %}</a>
         </div>
-        <div class="col-4">
+        <div class="col-3">
         </div>
     </div>
     <p style="margin-top:20px"></p>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
         </div>
         <div class="col-6">
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_list' %}">{% trans 'View All Transactions' %}</a>
@@ -26,20 +26,20 @@
             <a class="btn btn-outline-danger btn-large btn-block m-2" href="{% url 'cash_desk_close' %}">{% trans 'Close Cash Desk' %}</a>
 
         </div>
-        <div class="col-4">
+        <div class="col-3">
         </div>
     </div>
 
     {% if user.is_superuser %}
     <p style="margin-top:20px"></p>
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
         </div>
         <div class="col-6">
             <a class="btn btn-outline-danger btn-large btn-block m-2" href="/admin">{% trans 'Administration' %}</a>
 
         </div>
-        <div class="col-4">
+        <div class="col-3">
         </div>
     </div>
     {% endif %}
