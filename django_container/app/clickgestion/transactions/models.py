@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
+from clickgestion.transactions.totalizers import get_value_totals
 from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import Group
 from django.db import models
@@ -38,50 +39,6 @@ def get_new_transaction_code():
         return get_new_transaction_code()
     except Transaction.DoesNotExist:
         return code
-
-
-def get_value_totals(values):
-    """
-    :return: The totals per currency for the given values
-    """
-
-    class DummyValue:
-        def __init__(self, amount, credit, currency):
-            self.amount = amount
-            self.credit = credit
-            self.currency = currency
-
-    # A dictionary of currency:value totals to return
-    totals = {}
-
-    # For each concept
-    for value in values:
-
-        # Update existing currency total
-        if value.currency in totals:
-            # Add if credit
-            if value.credit:
-                totals[value.currency].amount += value.amount
-            # Subtract if debit
-            else:
-                totals[value.currency].amount -= value.amount
-
-        # Start new currency total
-        else:
-            totals[value.currency] = DummyValue(
-                amount=value.amount if value.credit else value.amount*(-1),
-                credit=True,
-                currency=value.currency,
-            )
-
-    # Update totals credit value
-    for _, value in totals.items():
-        if value.amount < 0:
-            value.credit = False
-            value.amount *= -1
-
-    # Return as ordered list of dummy values
-    return [v for v in totals.values()]
 
 
 class Transaction(models.Model):
@@ -395,6 +352,8 @@ class ConceptSettings(SingletonModel):
     """
     Settings applicable to all transaction concept types
     """
+    # Accounting group for totalizing functions
+    accounting_group = models.CharField(verbose_name=gettext_lazy('Accounting Group'), max_length=32, blank=True, null=True)
     # Required/visible transaction fields when this type of concept is included
     apt_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Apt Number Required'))
     apt_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Apt Number Visible'))

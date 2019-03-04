@@ -1,9 +1,11 @@
 from clickgestion.cash_desk.forms import CashCloseForm
-from clickgestion.cash_desk.models import get_breakdown_by_concept_type, get_value_totals, CashClose
+from clickgestion.cash_desk.models import CashClose
 from clickgestion.transactions.models import Transaction
+from clickgestion.transactions import totalizers
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 
 @login_required()
@@ -15,15 +17,21 @@ def cash_desk_balance(request, *args, **kwargs):
     extra_context['transactions'] = transactions
 
     # Get breakdown by concept type
-    breakdown = get_breakdown_by_concept_type(transactions)
+    breakdown = totalizers.get_breakdown_by_concept_type(transactions)
     extra_context['breakdown'] = breakdown
 
     # Get the totals
     values = []
     for transaction in transactions:
         values += transaction.totals
-    totals = get_value_totals(values)
+    totals = totalizers.get_value_totals(values)
     extra_context['totals'] = totals
+
+    # Get deposits in holding
+    date = timezone.now() - timezone.timedelta(days=90)
+    transactions = Transaction.objects.filter(closed_date__date__gte=date)
+    deposits = totalizers.get_deposits_in_holding(transactions)
+    extra_context['deposits'] = deposits
 
     # Render
     return render(request, 'cash_desk/cash_desk_balance.html', extra_context)
@@ -41,11 +49,11 @@ def cashclose_detail(request, *args, **kwargs):
     values = []
     for transaction in cashclose.transactions.all():
         values += transaction.totals
-    totals = get_value_totals(values)
+    totals = totalizers.get_value_totals(values)
     extra_context['totals'] = totals
 
     # Get breakdown by concept type
-    breakdown = get_breakdown_by_concept_type(cashclose.transactions.all())
+    breakdown = totalizers.get_breakdown_by_concept_type(cashclose.transactions.all())
     extra_context['breakdown'] = breakdown
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
@@ -64,14 +72,14 @@ def cash_desk_close(request, *args, **kwargs):
     extra_context['closed_transactions'] = closed_transactions
 
     # Get breakdown by concept type
-    breakdown = get_breakdown_by_concept_type(closed_transactions)
+    breakdown = totalizers.get_breakdown_by_concept_type(closed_transactions)
     extra_context['breakdown'] = breakdown
 
     # Get the totals
     values = []
     for transaction in closed_transactions:
         values += transaction.totals
-    totals = get_value_totals(values)
+    totals = totalizers.get_value_totals(values)
     extra_context['totals'] = totals
 
     # POST

@@ -70,8 +70,8 @@ class TestLoginView(CustomTestCase, CustomViewTestCase):
     def test_post_right_data(self):
         # Will redirect to homeview by default when admin and server are configured
         response = self.client.post('/login/',
-                                    {'username': 'admin',
-                                     'password': 'admin'},
+                                    {'username': 'administrator',
+                                     'password': 'administrator'},
                                     follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/index.html')

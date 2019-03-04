@@ -170,7 +170,7 @@ PAGINATION_SETTINGS = {
     'SHOW_FIRST_PAGE_WHEN_INVALID': True,
 }
 
-# available concepts
+# Available concepts
 CONCEPTS = [
     'apt_rentals.aptrental',
     'apt_rentals.aptrentaldeposit',

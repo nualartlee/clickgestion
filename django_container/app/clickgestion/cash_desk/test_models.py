@@ -1,6 +1,5 @@
 from clickgestion.core.test import CustomTestCase
-from clickgestion.cash_desk.models import CashClose
-from clickgestion.cash_desk.models import get_breakdown_by_concept_type, get_new_cashclose_code, get_value_totals
+from clickgestion.cash_desk.models import get_new_cashclose_code
 from unittest import skip
 
 

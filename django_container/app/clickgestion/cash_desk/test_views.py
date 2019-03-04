@@ -11,7 +11,7 @@ class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
         cls.url = 'cash_desk_balance'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'transactions/cash_desk_balance.html'
+        cls.get_template = 'cash_desk/cash_desk_balance.html'
 
 
 class TestCashCloseView(CustomTestCase, CustomViewTestCase):
@@ -24,7 +24,7 @@ class TestCashCloseView(CustomTestCase, CustomViewTestCase):
         cls.url = 'cash_desk_close'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'transactions/cash_desk_close.html'
+        cls.get_template = 'cash_desk/cash_desk_close.html'
 
     def test_post_ok(self):
         self.log_admin_in()

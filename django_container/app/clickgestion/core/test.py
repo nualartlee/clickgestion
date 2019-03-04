@@ -16,11 +16,15 @@ class CustomTestCase(TestCase):  # pragma: no cover
     @classmethod
     def setUpTestData(cls):
         model_creation.create_default_models()
+        #model_creation.create_test_models(days=3)
         User = get_user_model()
+        sgroup = model_creation.create_sales_group()
+        cgroup = model_creation.create_cash_group()
         # Create admin user
-        cls.admin = model_creation.create_test_admin()
+        cls.admin = model_creation.create_superuser('administrator', 'admin', 'admin', 'admin@admin.com')
         # Create normal user
-        cls.normaluser = model_creation.create_test_user()
+        cls.normaluser = model_creation.create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup, cgroup])
+
         # Create transaction
         cls.transaction = Transaction.objects.create(
             employee=cls.normaluser,

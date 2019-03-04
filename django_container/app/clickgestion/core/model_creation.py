@@ -33,12 +33,9 @@ def create_default_models():
     create_cashfloatwithdrawalsettings()
 
 
-def create_test_models():
+def create_test_models(days=30):
     create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
     create_test_users()
-
-    # Create accounted random transactions for the past days
-    days = 30
 
     # For each day
     for i in range(days):
@@ -393,14 +390,11 @@ def create_test_cashclose(date, employee):
     )
     model.save()
     transactions = Transaction.objects.filter(closed_date__date__lte=date, cashclose=None)
-    print('cashclose {}'.format(date))
-    print('transactions {}'.format(transactions.count()))
     if transactions.exists():
         for transaction in transactions:
             transaction.cashclose = model
             transaction.edited = date
             transaction.save()
-            print('{} accounted'.format(transaction.code))
     return model
 
 
