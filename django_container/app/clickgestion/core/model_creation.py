@@ -307,6 +307,7 @@ def create_test_transaction(employee, date):
         employee=employee,
         notes=notes,
     )
+    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
     return model
 
@@ -348,6 +349,7 @@ def create_test_client_transaction(employee, date):
         client_phone_number=client_phone_number,
         notes=notes,
     )
+    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
     return model
 

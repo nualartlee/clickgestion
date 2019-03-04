@@ -141,7 +141,7 @@ def get_breakdown_by_concept_type(transaction_set):
     for concept_type in breakdown:
         breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
 
-    return [ value for _, value in breakdown.items() ]
+    return [value for _, value in breakdown.items()]
 
 
 def get_value_totals(values):
