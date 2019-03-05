@@ -8,6 +8,7 @@ from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRent
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
     CashFloatWithdrawal, CashFloatWithdrawalSettings
+from clickgestion.deposit_returns.models import DepositReturn
 from django.utils import timezone
 from random import randrange
 from faker import Faker
@@ -34,6 +35,11 @@ def create_default_models():
 
 
 def create_test_models(days=30):
+    # Do not repeat
+    if User.objects.filter(username='dani').exists():
+        print('Test models already created')
+        return
+
     create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
     create_test_users()
 
@@ -44,6 +50,9 @@ def create_test_models(days=30):
         # Create random transactions
         for _ in range(randrange(1, 9)):
             create_test_random_transaction(date)
+
+        # Return deposits
+        create_test_deposit_returns(date)
 
         # Close Cash Desk
         create_test_cashclose(date, get_cash_employee())
@@ -172,6 +181,7 @@ def create_aptrentalsettings():
         model = AptRentalSettings.objects.get()
     except:
         model = AptRentalSettings(
+            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -199,6 +209,7 @@ def create_aptrentaldepositsettings():
         model = AptRentalDepositSettings.objects.get()
     except:
         model = AptRentalDepositSettings(
+            accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -244,6 +255,7 @@ def create_cashfloatdepositsettings():
         model = CashFloatDepositSettings.objects.get()
     except:
         model = CashFloatDepositSettings(
+            accounting_group='Cash',
             apt_number_required=False,
             apt_number_visible=False,
             client_address_required=False,
@@ -271,6 +283,7 @@ def create_cashfloatwithdrawalsettings():
         model = CashFloatWithdrawalSettings.objects.get()
     except:
         model = CashFloatWithdrawalSettings(
+            accounting_group='Cash',
             apt_number_required=False,
             apt_number_visible=False,
             client_address_required=False,
@@ -368,14 +381,50 @@ def create_test_apartment_rental(transaction, date):
 
 def create_test_apartment_rental_deposit(transaction, apt_rental, date):
     model = AptRentalDeposit(
-        adults=apt_rental.adults,
-        children=apt_rental.children,
-        nights=apt_rental.nights,
+        apt_rental=apt_rental,
         transaction=transaction,
         created=date,
     )
     model.save()
     return model
+
+
+def create_test_deposit_return(transaction, returned_deposit, date):
+    model = DepositReturn(
+        returned_deposit=returned_deposit,
+        transaction=transaction,
+        created=date,
+    )
+    model.save()
+    return model
+
+
+def create_test_deposit_returns(date):
+    apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
+        return_date__year=date.year,
+        return_date__month=date.month,
+        return_date__day=date.day,
+    )
+    for deposit in apt_rental_deposits_ending_today:
+        if not deposit.transaction.closed:
+            continue
+        if deposit.deposit_return:
+            continue
+        employee = get_sales_employee()
+        transaction = create_test_client_transaction(employee, date)
+        old_transaction = deposit.transaction
+        transaction.client_address = old_transaction.client_address
+        transaction.client_first_name = old_transaction.client_first_name
+        transaction.client_last_name = old_transaction.client_last_name
+        transaction.client_email = old_transaction.client_email
+        transaction.client_phone_number = old_transaction.client_phone_number
+        transaction.client_id = old_transaction.client_id
+        transaction.apt_number = old_transaction.apt_number
+
+        create_test_deposit_return(transaction, deposit, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
 
 
 def create_test_cashclose(date, employee):
@@ -439,11 +488,33 @@ def create_test_random_transaction(date):
     selector = randrange(100)
 
     # Create closed client transactions
-    if selector <= 80:
+    if selector <= 70:
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
         apt_rental = create_test_apartment_rental(transaction, date)
         create_test_apartment_rental_deposit(transaction, apt_rental, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
+
+    # Create closed house transactions
+    if 70 < selector <= 80:
+        employee = get_sales_employee()
+        transaction = create_test_client_transaction(employee, date)
+        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, deposit_return=None).reverse()
+        if not apt_rental_deposits[0]:
+            return None
+        apt_rental_deposit = apt_rental_deposits[0]
+        old_transaction = apt_rental_deposit.transaction
+        transaction.client_address = old_transaction.client_address
+        transaction.client_first_name = old_transaction.client_first_name
+        transaction.client_last_name = old_transaction.client_last_name
+        transaction.client_email = old_transaction.client_email
+        transaction.client_phone_number = old_transaction.client_phone_number
+        transaction.client_id = old_transaction.client_id
+        transaction.apt_number = old_transaction.apt_number
+
+        create_test_deposit_return(transaction, apt_rental_deposit, date)
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()

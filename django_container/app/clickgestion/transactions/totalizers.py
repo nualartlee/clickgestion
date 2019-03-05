@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.conf import settings
+from django.utils.translation import gettext_lazy
 
 
 class BreakdownType:
@@ -81,8 +82,8 @@ def get_deposits_in_holding(transaction_set):
 
             all_concepts = concept_model.objects.filter(
                 transaction__in=transaction_set,
-                editing_concept=None,
             )
+            #import pdb;pdb.set_trace()
             for concept in all_concepts:
 
                 # Update existing concept type total
@@ -95,8 +96,17 @@ def get_deposits_in_holding(transaction_set):
                 else:
                     breakdown[concept.concept_type] = BreakdownType(concept.child._meta.verbose_name_plural, [concept.value], 1, None)
 
+    # Calculate totals per type
     for concept_type in breakdown:
         breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
+
+    # Calculate global total
+    number = 0
+    values = []
+    for concept_type in breakdown:
+        number += breakdown[concept_type].concept_count
+        values += breakdown[concept_type].totals
+    breakdown['Totals'] = BreakdownType(gettext_lazy('Totals'), values, number, get_value_totals(values))
 
     return [value for _, value in breakdown.items()]
 

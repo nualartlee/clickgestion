@@ -35,6 +35,6 @@ if __name__ == "__main__":
     create_default_models()
     print('Creating test models')
     create_test_models()
-    if settings.DEBUG:
-        print('Creating test models')
-        create_test_models()
+    #if settings.DEBUG:
+        #print('Creating test models')
+        #create_test_models()

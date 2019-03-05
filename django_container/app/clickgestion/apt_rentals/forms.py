@@ -83,7 +83,7 @@ class AptRentalDepositForm(forms.ModelForm):
 
     class Meta:
         model = AptRentalDeposit
-        fields = ('adults', 'children', 'nights')
+        fields = ('adults', 'children', 'deposit_date', 'return_date')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -28,6 +28,40 @@
       {% endfor %}
       </tbody>
 
+        <!-- Deposits In Holding-->
+        <thead class="thead-dark">
+        <tr>
+            <th colspan="4" scope="col">{% trans 'Deposits In Holding' %}</th>
+        </tr>
+        </thead>
+        {% for group in deposits %}
+        <thead class="thead-light">
+        <tr>
+            <th colspan="4" scope="col">{{ group.type }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td>{% trans 'Number of concepts' %}</td>
+            <td></td>
+            <td class="text-right">
+                {{ group.concept_count }}
+            </td>
+        </tr>
+        {% for value in group.totals %}
+        <tr>
+            <td></td>
+            <td>{{ value.currency.name }}</td>
+            <td></td>
+            <td class="text-right">
+                {% include 'transactions/value_total.html' %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        {% endfor %}
+
     <!--Breakdown by concept type-->
       <thead class="thead-dark">
         <tr>

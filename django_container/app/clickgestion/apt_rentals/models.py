@@ -160,10 +160,12 @@ class AptRentalDeposit(BaseConcept):
     """
     # Number of adults
     adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
+    # Arrival date
+    deposit_date = models.DateField(verbose_name=gettext_lazy('Check In'))
+    # Departure date
+    return_date = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
-    # Number of nights
-    nights = models.SmallIntegerField(verbose_name=gettext_lazy('Nights'), default=7)
 
     #BaseConcept settings
     _url = '/apt-rentals/deposits/{}'
@@ -174,6 +176,15 @@ class AptRentalDeposit(BaseConcept):
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit')
         verbose_name_plural = gettext_lazy('Apartment Rental Deposits')
+
+    def __init__(self, *args, **kwargs):
+        apt_rental = kwargs.pop('apt_rental', None)
+        super().__init__(*args, **kwargs)
+        if apt_rental:
+            self.adults = apt_rental.adults
+            self.deposit_date = apt_rental.checkin
+            self.return_date = apt_rental.checkout
+            self.children = apt_rental.children
 
     def __str__(self):
         return self.code
@@ -187,6 +198,10 @@ class AptRentalDeposit(BaseConcept):
         return desc
 
     @property
+    def nights(self):
+        return (self.return_date - self.deposit_date).days
+
+    @property
     def price(self):
         """
         :return: Amount to deposit
@@ -197,5 +212,14 @@ class AptRentalDeposit(BaseConcept):
         if total < self.settings.min:
             return self.settings.min
         return total
+
+    def save(self, *args, **kwargs):
+        apt_rental = kwargs.pop('apt_rental', None)
+        if apt_rental:
+            self.adults = apt_rental.adults
+            self.deposit_date = apt_rental.checkin
+            self.return_date = apt_rental.checkout
+            self.children = apt_rental.children
+        super().save(*args, **kwargs)
 
 

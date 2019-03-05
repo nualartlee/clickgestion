@@ -2,9 +2,23 @@ from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from clickgestion.transactions.models import Transaction, Currency
-from clickgestion.apt_rentals.models import AptRental, AptRentalSettings, NightRateRange
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, NightRateRange
 from django.utils import timezone
 from clickgestion.core import model_creation
+
+
+def test_database_setup():
+    # Test if the database is populated
+    User = get_user_model()
+    try:
+        import pdb;pdb.set_trace()
+        User.objects.get(username='administrator')
+
+    # Create models if this is a new db
+    except User.DoesNotExist:
+        print('New database')
+        model_creation.create_default_models()
+        model_creation.create_test_models(days=30)
 
 
 class CustomTestCase(TestCase):  # pragma: no cover
@@ -15,8 +29,8 @@ class CustomTestCase(TestCase):  # pragma: no cover
 
     @classmethod
     def setUpTestData(cls):
-        model_creation.create_default_models()
-        #model_creation.create_test_models(days=3)
+
+        # Test if the database is populated
         User = get_user_model()
         sgroup = model_creation.create_sales_group()
         cgroup = model_creation.create_cash_group()
@@ -46,6 +60,12 @@ class CustomTestCase(TestCase):  # pragma: no cover
             checkout=timezone.datetime.today() + timezone.timedelta(days=7),
         )
         cls.apartment_rental.save()
+
+        cls.apartment_rental_deposit = AptRentalDeposit(
+            apt_rental=cls.apartment_rental,
+            transaction=Transaction.objects.create(employee=cls.normaluser),
+        )
+        cls.apartment_rental_deposit.save()
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
