@@ -338,7 +338,18 @@ class TransactionList(PaginationMixin, ListView):
 
         # Filter the queryset
         self.filter = TransactionFilter(data)
-        self.queryset = self.filter.qs.order_by('-id')
+        #self.queryset = self.filter.qs.order_by('-id') # 240q 65ms
+        #self.queryset = self.filter.qs.prefetch_related('concepts').order_by('-id') # 103q 33ms
+        #self.queryset = self.filter.qs.prefetch_related('concepts__value').order_by('-id') # 94q 32ms
+        #self.queryset = self.filter.qs.select_related('cashclose').prefetch_related('concepts__value').order_by('-id') # 92q 30ms
+        #self.queryset = self.filter.qs.select_related('cashclose').prefetch_related('concepts__value__currency').order_by('-id') # 83q 26ms
+        self.queryset = self.filter.qs.select_related('cashclose')\
+            .prefetch_related('concepts__value__currency') \
+            .prefetch_related('concepts__aptrental') \
+            .prefetch_related('concepts__aptrentaldeposit') \
+            .prefetch_related('concepts__cashfloatdeposit') \
+            .prefetch_related('concepts__cashfloatwithdrawal')\
+            .order_by('-id') # 79q 27ms
 
         # Return
         return self.queryset
