@@ -502,7 +502,7 @@ def create_test_random_transaction(date):
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
         apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, deposit_return=None).reverse()
-        if not apt_rental_deposits[0]:
+        if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]
         old_transaction = apt_rental_deposit.transaction

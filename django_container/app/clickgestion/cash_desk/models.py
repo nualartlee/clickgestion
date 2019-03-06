@@ -29,6 +29,7 @@ class CashFloatDeposit(BaseConcept):
     _settings_class = CashFloatDepositSettings
     _code_initials = 'CFD'
     _concept_class = 'cashfloatdeposit'
+    _verbose_name = 'Cash Float Deposit'
 
     class Meta:
         verbose_name = gettext_lazy('Cash Float Deposit')
@@ -42,12 +43,12 @@ class CashFloatDeposit(BaseConcept):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
 
-    @property
-    def price(self):
-        """
-        :return: Total price for the stay
-        """
-        return self.value.amount
+    #@property
+    #def price(self):
+    #    """
+    #    :return: Total price for the stay
+    #    """
+    #    return self.value.amount
 
 
 class CashFloatWithdrawalSettings(ConceptSettings):
@@ -70,6 +71,7 @@ class CashFloatWithdrawal(BaseConcept):
     _settings_class = CashFloatWithdrawalSettings
     _code_initials = 'CFW'
     _concept_class = 'cashfloatwithdrawal'
+    _verbose_name = 'Cash Float Withdrawal'
 
     class Meta:
         verbose_name = gettext_lazy('Cash Float Withdrawal')
@@ -83,12 +85,12 @@ class CashFloatWithdrawal(BaseConcept):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
 
-    @property
-    def price(self):
-        """
-        :return: Total price for the stay
-        """
-        return self.value.amount
+    #@property
+    #def price(self):
+    #    """
+    #    :return: Total price for the stay
+    #    """
+    #    return self.value.amount
 
 
 def get_new_cashclose_code():

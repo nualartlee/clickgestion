@@ -1,4 +1,4 @@
-from clickgestion.core.test import CustomTestCase
+from clickgestion.core.test import CustomTestCase, CustomModelTestCase
 from clickgestion.transactions.models import Transaction, get_new_transaction_code
 
 
@@ -9,10 +9,17 @@ class TestGetNewTransactionID(CustomTestCase):
         assert code
 
 
-class TestTransaction(CustomTestCase):
+class TestTransaction(CustomTestCase, CustomModelTestCase):
 
-    def test_str(self):
-        assert self.transaction.__str__()
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.model_attrs = [
+            '__str__',
+            'description_short',
+            'totals',
+        ]
+        cls.model_object = cls.transaction
 
     def test_client(self):
         self.assertEqual(self.transaction.client, '')
@@ -22,11 +29,5 @@ class TestTransaction(CustomTestCase):
         self.assertEqual(self.transaction.client, 'Bob Smith')
         self.transaction.client_first_name = ''
         self.assertEqual(self.transaction.client, 'Smith')
-
-    def test_description_short(self):
-        assert self.transaction.description_short
-
-    def test_totals(self):
-        assert self.transaction.totals
 
 

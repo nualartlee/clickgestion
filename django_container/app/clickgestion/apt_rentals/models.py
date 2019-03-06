@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.apps import apps
 from django.contrib.postgres.fields import ArrayField
 from clickgestion.transactions.models import BaseConcept, ConceptValue, ConceptSettings
 from django.utils.translation import gettext, gettext_lazy
@@ -88,6 +89,7 @@ class AptRental(BaseConcept):
     _code_initials = 'AR'
     _concept_class = 'aptrental'
     _settings_class = AptRentalSettings
+    _verbose_name = 'Apartment Rental'
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental')
@@ -108,10 +110,10 @@ class AptRental(BaseConcept):
         dict = {
             'checkin': self.checkin.strftime('%a, %d %b %Y'),
             'checkout': self.checkout.strftime('%a, %d %b %Y'),
-            'nights': self.nights,
-            'price': self.price,
+            'adults': self.adults,
+            'children': self.children,
         }
-        desc = gettext('Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s') % dict
+        desc = gettext('Apartment Rental: %(checkin)s - %(checkout)s, Adults: %(adults)s, Children: %(children)s') % dict
         return desc
 
     def get_current_rates(self):
@@ -123,15 +125,15 @@ class AptRental(BaseConcept):
             nightly_rates.append(get_night_rate(self.checkin + timezone.timedelta(days=i)))
         return nightly_rates
 
-    @property
-    def price(self):
+    def get_value(self):
         """
-        :return: Total price for the stay
+        :return:ConceptValue: Total price for the stay
         """
         # Rates are recorded on first save only
         if not self.rates:
             self.rates = self.get_current_rates()
-        return sum(self.rates)
+        value_model = apps.get_model('transactions.ConceptValue')
+        return value_model(amount=sum(self.rates))
 
 
 class AptRentalDepositSettings(ConceptSettings):
@@ -172,6 +174,7 @@ class AptRentalDeposit(BaseConcept):
     _settings_class = AptRentalDepositSettings
     _code_initials = 'ARD'
     _concept_class = 'aptrentaldeposit'
+    _verbose_name = 'Apartment Rental Deposit'
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit')
@@ -201,17 +204,17 @@ class AptRentalDeposit(BaseConcept):
     def nights(self):
         return (self.return_date - self.deposit_date).days
 
-    @property
-    def price(self):
+    def get_value(self):
         """
-        :return: Amount to deposit
+        :return: ConceptValue: Amount to deposit
         """
         total =  (self.adults * self.settings.per_adult + self.children * self.settings.per_child) * self.nights
         if total > self.settings.max:
-            return self.settings.max
+            total = self.settings.max
         if total < self.settings.min:
-            return self.settings.min
-        return total
+            total = self.settings.min
+        value_model = apps.get_model('transactions.ConceptValue')
+        return value_model(amount=total)
 
     def save(self, *args, **kwargs):
         apt_rental = kwargs.pop('apt_rental', None)

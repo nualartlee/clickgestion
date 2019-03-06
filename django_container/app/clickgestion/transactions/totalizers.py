@@ -34,10 +34,12 @@ def get_breakdown_by_concept_type(transaction_set):
     :return: A list of objects with the breakdown
     """
 
+
     # Get breakdown by concept type
     breakdown = {}
     base_concept = apps.get_model(app_label='transactions', model_name='BaseConcept')
-    all_concepts = base_concept.objects.filter(transaction__in=transaction_set)
+    #all_concepts = base_concept.objects.filter(transaction__in=transaction_set)
+    all_concepts = transaction_set
     for concept in all_concepts:
 
         # Update existing concept type total

@@ -75,11 +75,10 @@
             {% for concept in transaction.concepts.all %}
             <div class="row">
                 <div class="col justify-content-start">
-                    <!--<h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>-->
                     <!-- Button to Open The Filter -->
                     <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
                         <small>
-                            {{ concept.concept_type }}
+                            {{ concept.name }}
                         </small>
                     </button>
                 </div>
@@ -96,7 +95,7 @@
 
                         <!-- Modal Header -->
                         <div class="modal-header">
-                            <h4 class="modal-title">{{ concept.concept_type }}</h4>
+                            <h4 class="modal-title">{{ concept.name }}</h4>
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
 

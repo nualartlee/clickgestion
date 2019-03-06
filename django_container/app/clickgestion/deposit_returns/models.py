@@ -31,6 +31,7 @@ class DepositReturn(BaseConcept):
     _settings_class = DepositReturnSettings
     _code_initials = 'DR'
     _concept_class = 'depositreturn'
+    _verbose_name = 'Deposit Return'
 
     class Meta:
         verbose_name = gettext_lazy('Deposit Return')

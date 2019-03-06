@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import Group
 from django.db import models
 from django.contrib.auth.models import Permission
+import re
 from django.utils import timezone
 import uuid
 
@@ -122,6 +123,17 @@ class Transaction(models.Model):
         return perms
 
     @property
+    def next_concept_id(self):
+        next_id = 1
+        if self.concepts.exists():
+            for concept in self.concepts.values('code'):
+                result = re.search('\d+$', concept['code'])
+                code_id = int(result.group())
+                if code_id >= next_id:
+                    next_id = code_id + 1
+        return next_id
+
+    @property
     def totals(self):
         """
         :return: The total amount of all concepts
@@ -176,22 +188,24 @@ class BaseConcept(models.Model):
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
+    # Accounting group for totalizing functions
+    accounting_group = models.CharField(verbose_name=gettext_lazy('Accounting Group'), max_length=32, blank=True, null=True)
     # Human identification code
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
     # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
+    # Verbose name of the child class (in default language)
+    concept_name = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
-    # The concept that this one is editing
-    edited_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Edited Concept'), related_name='editingconcept', on_delete=models.CASCADE, blank=True, null=True)
-    # The concept that is editing this one
-    editing_concept = models.ForeignKey('self', verbose_name=gettext_lazy('Editing Concept'), related_name='editedconcept', on_delete=models.SET_NULL, blank=True, null=True)
     # The transaction this concept belongs to
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
     # Last update timestamp
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
     # The value of this concept
     value = models.OneToOneField(ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept')
+    # VAT percent
+    vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'))
 
     @property
     def child(self):
@@ -204,32 +218,32 @@ class BaseConcept(models.Model):
                 return getattr(self, self.concept_class)
         return self
 
-    @property
-    def code_initials(self):
-        """
-        :return: An acronym for code construction
-        """
-        if self.is_child:
-            return self._code_initials
-        return self.child._code_initials
+    #@property
+    #def code_initials(self):
+    #    """
+    #    :return: An acronym for code construction
+    #    """
+    #    if self.is_child:
+    #        return self._code_initials
+    #    return self.child._code_initials
 
-    @property
-    def class_type(self):
-        """
-        :return: The child class type
-        """
-        if self.is_child:
-            return self.class_type
-        return self.child.class_type
+    #@property
+    #def class_type(self):
+    #    """
+    #    :return: The child class type
+    #    """
+    #    if self.is_child:
+    #        return self.class_type
+    #    return self.child.class_type
 
-    @property
-    def concept_type(self):
-        """
-        :return: The type of concept, e.g.: Apartment Rental
-        """
-        if self.is_child:
-            return self._meta.verbose_name
-        return self.child._meta.verbose_name
+    #@property
+    #def concept_type(self):
+    #    """
+    #    :return: The type of concept, e.g.: Apartment Rental
+    #    """
+    #    if self.is_child:
+    #        return self._meta.verbose_name
+    #    return self.child._meta.verbose_name
 
     @property
     def description_short(self):
@@ -252,38 +266,65 @@ class BaseConcept(models.Model):
         # return as a set
         return set("%s.%s" % (ct, name) for ct, name in perms)
 
+
+    def get_value(self):
+        """
+        Get the value of the concept (to be used at creation time)
+        :return: ConceptValue
+        """
+        if self.is_child:
+            return self.get_value()
+        return self.child.get_value()
+
     @property
     def is_child(self):
         return self.__class__ != BaseConcept
 
     @property
-    def price(self):
-        """
-        :return: the price
-        """
-        if self.is_child:
-            return self.price
-        return self.child.price
+    def name(self):
+        return gettext_lazy(self.concept_name)
+
+    #@property
+    #def price(self):
+    #    """
+    #    :return: the price
+    #    """
+    #    if self.is_child:
+    #        return self.price
+    #    return self.child.price
 
     def save(self, *args, **kwargs):
+
+        # Save the accounting group
+        self.accounting_group = self.settings.accounting_group
 
         # Save the concept class
         self.concept_class = self._concept_class
 
+        # Save the concept class name
+        self.concept_name = self._verbose_name
+
+        # Save the VAT rate if empty
+        if not self.vat_percent:
+            self.vat_percent = self.settings.vat_percent
+
         # Create the code if empty
         if not self.code:
-            self.code = '{0}-{1}{2}'.format(self.transaction.code, self.code_initials, self.transaction.concepts.count() + 1)
+            self.code = '{0}-{1}{2}'.format(
+                self.transaction.code,
+                self._code_initials,
+                self.transaction.next_concept_id,
+            )
 
-        # Create the value if empty
+        # Save the value
         try:
             value = self.value
-            value.save()
         except ConceptValue.DoesNotExist:
-            value = ConceptValue.objects.create(
-                amount=abs(self.price),
-                credit=self.price >= 0
-            )
-            self.value = value
+            value = kwargs.pop('value', None)
+            if not value:
+                value = self.get_value()
+        value.save()
+        self.value = value
 
         # save
         super().save(*args, **kwargs)
@@ -308,7 +349,7 @@ class BaseConcept(models.Model):
         """
         The taxable amount according to vat percent rate in settings
         """
-        return (self.value.amount * self.settings.vat_percent) / (self.settings.vat_percent + 1)
+        return (self.value.amount * self.vat_percent) / (self.vat_percent + 1)
 
     @property
     def url(self):

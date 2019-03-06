@@ -76,6 +76,21 @@ class CustomTestCase(TestCase):  # pragma: no cover
         self.client.force_login(self.normaluser)
 
 
+class CustomModelTestCase: # pragma: no cover
+    """
+    Derived class with utility functions to test models
+    """
+    model_attrs = []
+    model_object = None
+
+    def test_attrs(self):
+        if self.model_attrs and self.model_object:
+            for attr in self.model_attrs:
+                assert getattr(self.model_object, attr)
+        else:
+            print('No attributes to test')
+
+
 class CustomViewTestCase:  # pragma: no cover
     """
     Derived class with utility functions to test views

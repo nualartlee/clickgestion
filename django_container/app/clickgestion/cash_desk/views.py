@@ -1,6 +1,6 @@
 from clickgestion.cash_desk.forms import CashCloseForm
 from clickgestion.cash_desk.models import CashClose
-from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.models import BaseConcept, Transaction
 from clickgestion.transactions import totalizers
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
@@ -11,13 +11,17 @@ from django.utils import timezone
 @login_required()
 def cash_desk_balance(request, *args, **kwargs):
     extra_context = {}
+    # 268q 72ms
+    # 236q 59ms
 
     # Get closed transactions
-    transactions = Transaction.objects.filter(closed=True, cashclose=None)
+    transactions = Transaction.objects.filter(closed=True, cashclose=None).prefetch_related('concepts__value__currency')
     extra_context['transactions'] = transactions
 
+    concepts = BaseConcept.objects.filter(transaction__closed=True, transaction__cashclose=None).prefetch_related('value__currency')
     # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(transactions)
+    #breakdown = totalizers.get_breakdown_by_concept_type(transactions)
+    breakdown = totalizers.get_breakdown_by_concept_type(concepts)
     extra_context['breakdown'] = breakdown
 
     # Get the totals
