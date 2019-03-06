@@ -1,0 +1,34 @@
+{% load i18n %}
+<tr>
+    <!--CODE-->
+    <th>
+        <div class="row">
+            <div class="col-8">
+                <a class="text-muted" href="/concepts/{{ concept.code }}/">
+                    {{ concept.code|default_if_none:"&nbsp;" }}
+                </a>
+            </div>
+            <div class="col-4">
+                <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/delete/">
+                    {% trans 'Delete' %}
+                </a>
+            </div>
+        </div>
+    </th>
+
+    <!--NAME-->
+    <td>{{ concept.name|default_if_none:"&nbsp;" }}</td>
+
+    <!--DESCRIPTION-->
+    <td>{{ concept.description_short|default_if_none:"&nbsp;" }}</td>
+
+    <!--DATE-->
+    <td>{{ concept.created|default_if_none:"&nbsp;" }}</td>
+
+    <!--VALUE-->
+    <td>
+        <div class="col text-right justify-content-end">
+            {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+        </div>
+    </td>
+</tr>

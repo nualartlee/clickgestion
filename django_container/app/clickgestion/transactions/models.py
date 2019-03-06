@@ -138,7 +138,7 @@ class Transaction(models.Model):
         """
         :return: The total amount of all concepts
         """
-        return get_value_totals([concept.value for concept in self.concepts.all()])
+        return get_value_totals(self.concepts.all())
 
 
 class Currency(models.Model):
@@ -217,33 +217,6 @@ class BaseConcept(models.Model):
             if self.concept_class:
                 return getattr(self, self.concept_class)
         return self
-
-    #@property
-    #def code_initials(self):
-    #    """
-    #    :return: An acronym for code construction
-    #    """
-    #    if self.is_child:
-    #        return self._code_initials
-    #    return self.child._code_initials
-
-    #@property
-    #def class_type(self):
-    #    """
-    #    :return: The child class type
-    #    """
-    #    if self.is_child:
-    #        return self.class_type
-    #    return self.child.class_type
-
-    #@property
-    #def concept_type(self):
-    #    """
-    #    :return: The type of concept, e.g.: Apartment Rental
-    #    """
-    #    if self.is_child:
-    #        return self._meta.verbose_name
-    #    return self.child._meta.verbose_name
 
     @property
     def description_short(self):

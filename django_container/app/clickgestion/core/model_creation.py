@@ -366,7 +366,7 @@ def create_test_client_transaction(employee, date):
 
 def create_test_apartment_rental(transaction, date):
     checkin = date + timezone.timedelta(days=randrange(21))
-    checkout = checkin + timezone.timedelta(days=randrange(28))
+    checkout = checkin + timezone.timedelta(days=randrange(1,28))
     model = AptRental(
         adults=randrange(1, 5),
         children=randrange(1, 3),

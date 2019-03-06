@@ -1,9 +1,9 @@
 from django.apps import apps
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
-from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.models import BaseConcept, Transaction
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
-from clickgestion.transactions.filters import TransactionFilter
+from clickgestion.transactions.filters import ConceptFilter, TransactionFilter
 from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -97,6 +97,73 @@ def concept_edit(request, *args, **kwargs):
         form = concept_form(instance=concept)
         extra_context['form'] = form
         return render(request, 'transactions/concept_edit.html', extra_context)
+
+
+class ConceptList(PaginationMixin, ListView):
+
+    model = BaseConcept
+    context_object_name = 'concepts'
+    paginate_by = 8
+    # ListView.as_view will pass custom arguments here
+    queryset = None
+    header = gettext_lazy('Concepts')
+    request = None
+    filter = None
+    filter_data = None
+    is_filtered = False
+
+    def get(self, request, *args, **kwargs):
+        # First
+
+        # Check permissions
+        if not request.user.is_authenticated:
+            return invalid_permission_redirect(request)
+
+        # Get arguments
+        self.request = request
+        self.filter_data = kwargs.pop('filter_data', {})
+
+        # Call super
+        return super().get(self, request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        # Third
+
+        # Call the base implementation first
+        context = super().get_context_data(**kwargs)
+
+        # Add data
+        context['header'] = self.header
+        context['filter'] = self.filter
+        context['is_filtered'] = self.is_filtered
+
+        return context
+
+    def get_queryset(self):
+        # Second
+
+        # Create filter querydict
+        data = QueryDict('', mutable=True)
+        # Add filters passed from view
+        data.update(self.filter_data)
+        # Add filters selected by user
+        data.update(self.request.GET)
+
+        # Record as filtered
+        self.is_filtered = False
+        if len([k for k in data.keys() if k != 'page']) > 0:
+            self.is_filtered = True
+
+        # Add filters by permission
+
+        # Filter the queryset
+        self.filter = ConceptFilter(data)
+        self.queryset = self.filter.qs.select_related('transaction') \
+            .prefetch_related('value__currency') \
+            .order_by('-id') # 79q 27ms
+
+        # Return
+        return self.queryset
 
 
 def get_available_concepts(employee, transaction):
@@ -338,17 +405,8 @@ class TransactionList(PaginationMixin, ListView):
 
         # Filter the queryset
         self.filter = TransactionFilter(data)
-        #self.queryset = self.filter.qs.order_by('-id') # 240q 65ms
-        #self.queryset = self.filter.qs.prefetch_related('concepts').order_by('-id') # 103q 33ms
-        #self.queryset = self.filter.qs.prefetch_related('concepts__value').order_by('-id') # 94q 32ms
-        #self.queryset = self.filter.qs.select_related('cashclose').prefetch_related('concepts__value').order_by('-id') # 92q 30ms
-        #self.queryset = self.filter.qs.select_related('cashclose').prefetch_related('concepts__value__currency').order_by('-id') # 83q 26ms
         self.queryset = self.filter.qs.select_related('cashclose')\
             .prefetch_related('concepts__value__currency') \
-            .prefetch_related('concepts__aptrental') \
-            .prefetch_related('concepts__aptrentaldeposit') \
-            .prefetch_related('concepts__cashfloatdeposit') \
-            .prefetch_related('concepts__cashfloatwithdrawal')\
             .order_by('-id') # 79q 27ms
 
         # Return

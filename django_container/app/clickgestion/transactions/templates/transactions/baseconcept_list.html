@@ -16,7 +16,7 @@
             <thead class="thead-light">
                 <div class="row">
                     <div class="col-auto">
-                        <h4>{% trans 'Transactions' %}</h4>
+                        <h4>{% trans 'Concepts' %}</h4>
                     </div>
                     <div class="col-auto">
                         <!-- Button to Open The Filter -->
@@ -26,7 +26,7 @@
                     </div>
                     <div class="col-auto">
                         {% if is_filtered %}
-                        <a class="btn btn-sm btn-outline-danger" href="{% url 'transaction_list' %}">
+                        <a class="btn btn-sm btn-outline-danger" href="{% url 'concept_list' %}">
                             {% trans 'Clear Filter' %}
                         </a>
                         {% endif %}
@@ -35,17 +35,15 @@
 
             <tr>
                 <th>{% trans 'Reference' %}</th>
-                <th>{% trans 'Cash Close' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Description' %}</th>
                 <th>{% trans 'Date' %}</th>
-                <th>{% trans 'Apt' %}</th>
-                <th>{% trans 'Client' %}</th>
-                <th>{% trans 'Concepts' %}</th>
-                <th>{% trans 'Totals' %}</th>
+                <th>{% trans 'Total' %}</th>
             </tr>
             </thead>
             <tbody>
-                {% for transaction in transactions %}
-                {% include 'transactions/transaction_rowitem.html' %}
+                {% for concept in concepts %}
+                {% include 'transactions/concept_rowitem.html' %}
                 {% endfor %}
             </tbody>
         </table>

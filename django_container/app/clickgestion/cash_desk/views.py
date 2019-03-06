@@ -15,27 +15,22 @@ def cash_desk_balance(request, *args, **kwargs):
     # 236q 59ms
     # 115q 36ms
 
-    # Get open transactions
-    #open_transactions = Transaction.objects.filter(closed=False, cashclose=None)
-    #extra_context['open_transactions'] = open_transactions
+    # Get closed transactions
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
+        .prefetch_related('concepts__value__currency')
+    extra_context['closed_transactions'] = closed_transactions
 
-    ## Get closed transactions
-    #closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
-    #    .prefetch_related('concepts__value__currency')
-    #extra_context['closed_transactions'] = closed_transactions
+    # Get closed concepts
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions)\
+        .prefetch_related('value__currency')
 
-    ## Get closed concepts
-    #closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions)\
-    #    .prefetch_related('value__currency')
+    # Get breakdown by concept type
+    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    extra_context['breakdown'] = breakdown
 
-    ## Get breakdown by concept type
-    #breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    #extra_context['breakdown'] = breakdown
-
-    ## Get the totals
-    #values = [total for group in breakdown for total in group.totals]
-    #totals = totalizers.get_value_totals(values)
-    #extra_context['totals'] = totals
+    # Get the totals
+    totals = totalizers.get_value_totals(closed_concepts)
+    extra_context['totals'] = totals
 
     # Get deposits in holding
     deposits = totalizers.get_deposits_in_holding()
@@ -53,16 +48,22 @@ def cashclose_detail(request, *args, **kwargs):
     cashclose = get_object_or_404(CashClose, code=cashclose_code)
     extra_context['cashclose'] = cashclose
 
-    # Get the totals
-    values = []
-    for transaction in cashclose.transactions.all():
-        values += transaction.totals
-    totals = totalizers.get_value_totals(values)
-    extra_context['totals'] = totals
+    # Get closed transactions
+    closed_transactions = Transaction.objects.filter(cashclose=cashclose) \
+        .prefetch_related('concepts__value__currency')
+    extra_context['closed_transactions'] = closed_transactions
+
+    # Get closed concepts
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
+        .prefetch_related('value__currency')
 
     # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(cashclose.transactions.all())
+    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
     extra_context['breakdown'] = breakdown
+
+    # Get the totals
+    totals = totalizers.get_value_totals(closed_concepts)
+    extra_context['totals'] = totals
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 
@@ -71,25 +72,21 @@ def cashclose_detail(request, *args, **kwargs):
 def cash_desk_close(request, *args, **kwargs):
     extra_context = {}
 
-    # Get open transactions
-    open_transactions = Transaction.objects.filter(closed=False, cashclose=None)
-    extra_context['open_transactions'] = open_transactions
-
     # Get closed transactions
-    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None)\
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
         .prefetch_related('concepts__value__currency')
     extra_context['closed_transactions'] = closed_transactions
 
     # Get closed concepts
-    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions).prefetch_related('value__currency')
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
+        .prefetch_related('value__currency')
 
     # Get breakdown by concept type
     breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
     extra_context['breakdown'] = breakdown
 
     # Get the totals
-    values = [group.totals for group in breakdown]
-    totals = totalizers.get_value_totals(values)
+    totals = totalizers.get_value_totals(closed_concepts)
     extra_context['totals'] = totals
 
     # POST

@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.conf import settings
 from django.utils.translation import gettext_lazy
-from django.db.models import Sum, Q
+from django.db.models import Sum, Count
 
 
 class ConceptGroupTotal:
@@ -161,13 +161,9 @@ def get_value_totals(concepts):
 
     # Totalize per currency
     for currency in currencies:
-        cr = values.filter(currency=currency, credit=True).aggregate(Sum('amount'))['amount__sum']
-        db = values.filter(currency=currency, credit=False).aggregate(Sum('amount'))['amount__sum']
-        print(cr)
-        print(db)
-        import pdb;pdb.set_trace()
-        amount = values.filter(currency=currency, credit=True).sum()
-        amount -= values.filter(currency=currency, credit=False).sum()
+        cr = values.filter(currency=currency, credit=True).aggregate(Sum('amount'))['amount__sum'] or 0
+        db = values.filter(currency=currency, credit=False).aggregate(Sum('amount'))['amount__sum'] or 0
+        amount = cr - db
         credit = amount >= 0
         currency_total = DummyValue(
             amount=abs(amount),
