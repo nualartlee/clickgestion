@@ -29,9 +29,8 @@ class CustomTestCase(TestCase):  # pragma: no cover
 
     @classmethod
     def setUpTestData(cls):
+        model_creation.create_default_models()
 
-        # Test if the database is populated
-        User = get_user_model()
         sgroup = model_creation.create_sales_group()
         cgroup = model_creation.create_cash_group()
         # Create admin user

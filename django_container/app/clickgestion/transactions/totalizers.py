@@ -3,59 +3,99 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy
 
 
-class BreakdownType:
-    def __init__(self, type, values, concept_count, totals):
-        self.values = values
+class ConceptGroupTotal:
+    """
+    Contains the description and total of a group of concepts for display
+    """
+    def __init__(self, type, concepts, concept_count, totals):
+        self.type = type
+        self.concepts = concepts
         self.concept_count = concept_count
         self.totals = totals
-        self.type = type
 
 
 class DummyValue:
+    """
+    Dummy ConceptValue for display
+    """
     def __init__(self, amount, credit, currency):
         self.amount = amount
         self.credit = credit
         self.currency = currency
 
 
-def get_breakdown_by_accounting_group(transaction_set):
+def get_breakdown_by_accounting_group(concepts='__all__'):
     """
+    Totalize the given concepts according to the accounting group
 
-    :param transaction_set: A set of transactions
-    :return: A list of objects with the breakdown
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
     """
-    pass
+    # Concept models
+    base_concept = apps.get_model('transactions.BaseConcept')
+    concept_value = apps.get_model('transactions.ConceptValue')
+
+    # Get the concepts if not provided
+    if concepts == '__all__':
+       concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
+
+    # Get the distinct accounting groups
+    groups = [item[0] for item in concepts.values_list('accounting_group').distinct()]
+
+    # Create a list to hold the concept totals
+    breakdown = []
+
+    # Select by group
+    for group in groups:
+        group_total = ConceptGroupTotal(
+            type=gettext_lazy(group),
+            concepts=concepts.filter(accounting_group=group).prefetch_related('value__currency'),
+            concept_count=None,
+            totals=None,
+        )
+        group_total.concept_count = group_total.concepts.count()
+        group_total.totals = get_value_totals(group_total.concepts)
+        breakdown.append(group_total)
+
+    # Return the list of totals
+    return breakdown
 
 
-def get_breakdown_by_concept_type(transaction_set):
+def get_breakdown_by_concept_type(concepts='__all__'):
     """
+    Totalize the given concepts according to concept type
 
-    :param transaction_set: A set of transactions
-    :return: A list of objects with the breakdown
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
     """
+    # Concept models
+    base_concept = apps.get_model('transactions.BaseConcept')
+    concept_value = apps.get_model('transactions.ConceptValue')
 
+    # Get the concepts if not provided
+    if concepts == '__all__':
+        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
 
-    # Get breakdown by concept type
-    breakdown = {}
-    base_concept = apps.get_model(app_label='transactions', model_name='BaseConcept')
-    #all_concepts = base_concept.objects.filter(transaction__in=transaction_set)
-    all_concepts = transaction_set
-    for concept in all_concepts:
+    # Get the distinct concept types
+    groups = [item[0] for item in concepts.values_list('concept_name').distinct()]
 
-        # Update existing concept type total
-        if concept.concept_type in breakdown:
-            # Add value
-            breakdown[concept.concept_type].values.append(concept.value)
-            breakdown[concept.concept_type].concept_count += 1
+    # Create a list to hold the concept totals
+    breakdown = []
 
-        # Start new concept type total
-        else:
-            breakdown[concept.concept_type] = BreakdownType(concept.child._meta.verbose_name_plural, [concept.value], 1, None)
+    # Select by group
+    for group in groups:
+        group_total = ConceptGroupTotal(
+            type=gettext_lazy(group),
+            concepts=concepts.filter(concept_name=group).prefetch_related('value__currency'),
+            concept_count=None,
+            totals=None,
+        )
+        group_total.concept_count = group_total.concepts.count()
+        group_total.totals = get_value_totals(group_total.concepts)
+        breakdown.append(group_total)
 
-    for concept_type in breakdown:
-        breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
-
-    return [value for _, value in breakdown.items()]
+    # Return the list of totals
+    return breakdown
 
 
 def get_breakdown_by_user(transaction_set):
@@ -67,85 +107,73 @@ def get_breakdown_by_user(transaction_set):
     pass
 
 
-def get_deposits_in_holding(transaction_set):
+def get_deposits_in_holding(concepts='__all__'):
     """
 
     :param transaction_set: A set of transactions
     :return: A list of objects with the breakdown
     """
-
+    # Concept models
+    base_concept = apps.get_model('transactions.BaseConcept')
     accounting_group = 'Deposits'
-    breakdown = {}
 
-    # For each concept type in the Deposits accounting group
-    for concept_model_name in settings.CONCEPTS:
-        concept_model = apps.get_model(concept_model_name)
-        if concept_model().settings.accounting_group == accounting_group:
+    # Get the concepts if not provided
+    if concepts == '__all__':
+        # No deposit return concept
+        holding1 = base_concept.objects.filter(
+            accounting_group=accounting_group,
+            transaction__closed=True,
+            deposit_return=None,
+        ).prefetch_related('value__currency')
+        # Deposit return concept opened
+        holding2 = base_concept.objects.filter(
+            accounting_group=accounting_group,
+            transaction__closed=True,
+            deposit_return__transaction__closed=False,
+        ).prefetch_related('value__currency')
+        # Query union
+        concepts = holding1 | holding2
 
-            all_concepts = concept_model.objects.filter(
-                transaction__in=transaction_set,
-            )
-            #import pdb;pdb.set_trace()
-            for concept in all_concepts:
-
-                # Update existing concept type total
-                if concept.concept_type in breakdown:
-                    # Add value
-                    breakdown[concept.concept_type].values.append(concept.value)
-                    breakdown[concept.concept_type].concept_count += 1
-
-                # Start new concept type total
-                else:
-                    breakdown[concept.concept_type] = BreakdownType(concept.child._meta.verbose_name_plural, [concept.value], 1, None)
-
-    # Calculate totals per type
-    for concept_type in breakdown:
-        breakdown[concept_type].totals = get_value_totals(breakdown[concept_type].values)
-
-    # Calculate global total
-    number = 0
-    values = []
-    for concept_type in breakdown:
-        number += breakdown[concept_type].concept_count
-        values += breakdown[concept_type].totals
-    breakdown['Totals'] = BreakdownType(gettext_lazy('Totals'), values, number, get_value_totals(values))
-
-    return [value for _, value in breakdown.items()]
+    # Return as breakdown
+    return get_breakdown_by_concept_type(concepts)
 
 
-def get_value_totals(values):
+def get_value_totals(concepts):
     """
-    :return: The totals per currency for the given values
+    Get the total amount per currency of a given queryset of concepts
+
+    :param concepts: BaseConcept queryset to totalize
+    :return: A list of DummyValues, one per currency
     """
+    # models
+    concept_value = apps.get_model('transactions.ConceptValue')
+    currency_model = apps.get_model('transactions.Currency')
 
-    # A dictionary of currency:value totals to return
-    totals = {}
+    # The list of DummyValues to return
+    totals = []
 
-    # For each concept
-    for value in values:
+    # Get the values
+    values = concept_value.objects.filter(concept__in=concepts).prefetch_related('currency')
 
-        # Update existing currency total
-        if value.currency in totals:
-            # Add if credit
-            if value.credit:
-                totals[value.currency].amount += value.amount
-            # Subtract if debit
-            else:
-                totals[value.currency].amount -= value.amount
+    # Get distinct currencies
+    #currencies = [v[0] for v in values.values_list('currency').distinct()]
+    currencies = currency_model.objects.filter(values__in=values).distinct()
+    print(currencies)
+    import pdb;pdb.set_trace()
 
-        # Start new currency total
-        else:
-            totals[value.currency] = DummyValue(
-                amount=value.amount if value.credit else value.amount*(-1),
-                credit=True,
-                currency=value.currency,
-            )
+    # Totalize per currency
+    for currency in currencies:
+        t = values.filter(currency=currency).annotate(cr=Sum('amount'))
+        amount = values.filter(currency=currency, credit=True).sum()
+        amount -= values.filter(currency=currency, credit=False).sum()
+        credit = amount >= 0
+        currency_total = DummyValue(
+            amount=abs(amount),
+            credit=credit,
+            currency=currency,
+        )
+        totals.append(currency_total)
 
-    # Update totals credit value
-    for _, value in totals.items():
-        if value.amount < 0:
-            value.credit = False
-            value.amount *= -1
+    # Return the list of DumyValues
+    return totals
 
-    # Return as ordered list of dummy values
-    return [v for v in totals.values()]

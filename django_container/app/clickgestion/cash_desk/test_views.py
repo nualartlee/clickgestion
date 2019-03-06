@@ -1,5 +1,6 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
+from clickgestion.core.model_creation import create_test_models
 
 class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
 
@@ -12,6 +13,8 @@ class TestCashBalanceView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'cash_desk/cash_desk_balance.html'
+        print('creating test models')
+        create_test_models(days=7)
 
 
 class TestCashCloseView(CustomTestCase, CustomViewTestCase):

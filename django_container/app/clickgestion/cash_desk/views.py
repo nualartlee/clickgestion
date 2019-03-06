@@ -13,28 +13,32 @@ def cash_desk_balance(request, *args, **kwargs):
     extra_context = {}
     # 268q 72ms
     # 236q 59ms
+    # 115q 36ms
 
-    # Get closed transactions
-    transactions = Transaction.objects.filter(closed=True, cashclose=None).prefetch_related('concepts__value__currency')
-    extra_context['transactions'] = transactions
+    # Get open transactions
+    #open_transactions = Transaction.objects.filter(closed=False, cashclose=None)
+    #extra_context['open_transactions'] = open_transactions
 
-    concepts = BaseConcept.objects.filter(transaction__closed=True, transaction__cashclose=None).prefetch_related('value__currency')
-    # Get breakdown by concept type
-    #breakdown = totalizers.get_breakdown_by_concept_type(transactions)
-    breakdown = totalizers.get_breakdown_by_concept_type(concepts)
-    extra_context['breakdown'] = breakdown
+    ## Get closed transactions
+    #closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
+    #    .prefetch_related('concepts__value__currency')
+    #extra_context['closed_transactions'] = closed_transactions
 
-    # Get the totals
-    values = []
-    for transaction in transactions:
-        values += transaction.totals
-    totals = totalizers.get_value_totals(values)
-    extra_context['totals'] = totals
+    ## Get closed concepts
+    #closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions)\
+    #    .prefetch_related('value__currency')
+
+    ## Get breakdown by concept type
+    #breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    #extra_context['breakdown'] = breakdown
+
+    ## Get the totals
+    #values = [total for group in breakdown for total in group.totals]
+    #totals = totalizers.get_value_totals(values)
+    #extra_context['totals'] = totals
 
     # Get deposits in holding
-    date = timezone.now() - timezone.timedelta(days=90)
-    transactions = Transaction.objects.filter(closed_date__date__gte=date)
-    deposits = totalizers.get_deposits_in_holding(transactions)
+    deposits = totalizers.get_deposits_in_holding()
     extra_context['deposits'] = deposits
 
     # Render
@@ -72,17 +76,19 @@ def cash_desk_close(request, *args, **kwargs):
     extra_context['open_transactions'] = open_transactions
 
     # Get closed transactions
-    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None)
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None)\
+        .prefetch_related('concepts__value__currency')
     extra_context['closed_transactions'] = closed_transactions
 
+    # Get closed concepts
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions).prefetch_related('value__currency')
+
     # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(closed_transactions)
+    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
     extra_context['breakdown'] = breakdown
 
     # Get the totals
-    values = []
-    for transaction in closed_transactions:
-        values += transaction.totals
+    values = [group.totals for group in breakdown]
     totals = totalizers.get_value_totals(values)
     extra_context['totals'] = totals
 
