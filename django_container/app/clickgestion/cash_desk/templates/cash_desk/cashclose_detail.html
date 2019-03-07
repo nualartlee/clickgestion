@@ -6,65 +6,7 @@
 {% block content %}
 <div class="container">
 
-    <p style="margin-top:40px"></p>
-
-    <!--Cash Balance-->
-    <table class="table table-hover">
-      <thead class="thead-dark">
-        <tr>
-          <th colspan="4" scope="col">{% trans 'Cash Balance' %}</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for value in totals %}
-        <tr>
-          <th scope="row">{{ value.currency.name }}</th>
-            <td></td>
-            <td></td>
-          <td class="text-right">
-              {% include 'transactions/value_total.html' %}
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-
-    <!--Breakdown by concept type-->
-      <thead class="thead-dark">
-        <tr>
-          <th colspan="4" scope="col">{% trans 'Breakdown By Concept Type' %}</th>
-        </tr>
-      </thead>
-    {% for group in breakdown %}
-        <thead class="thead-light">
-        <tr>
-            <th colspan="4" scope="col">{{ group.type }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td></td>
-            <td>{% trans 'Number of concepts' %}</td>
-            <td></td>
-            <td class="text-right">
-                {{ group.concept_count }}
-            </td>
-        </tr>
-        {% for value in group.totals %}
-          <tr>
-              <td></td>
-              <td>{{ value.currency.name }}</td>
-              <td></td>
-              <td class="text-right">
-                  {% include 'transactions/value_total.html' %}
-              </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    {% endfor %}
-    </table>
-
-
-
+    {% include 'cash_desk/cashclose.html' %}
 
 </div>
 {% endblock %}
