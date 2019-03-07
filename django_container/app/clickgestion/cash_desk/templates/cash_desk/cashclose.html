@@ -1,5 +1,5 @@
 {% load i18n humanize static %}
-<div class="border p-4" style="width: 21cm; min-height: 29.7cm;">
+<div class="border p-5" style="width: 21cm; min-height: 29.7cm;">
 <div class="container-fluid">
 
     <!--Header-->
@@ -38,7 +38,7 @@
         <div class="row justify-content-end">
             <div class="col text-right">
                 <h6><strong>{{ cashclose.code }}</strong></h6>
-                <h6>{{ cashclose.closed_date }}</h6>
+                <h6>{{ cashclose.created }}</h6>
                 <h6>{{ cashclose.employee.get_full_name }}</h6>
             </div>
         </div>
@@ -48,7 +48,7 @@
 
     <!-- Table-->
     <div class="row my-4">
-    <table class="table table-bordered">
+    <table class="table table-bordered table-sm">
 
         <!--Cash Balance-->
         <thead class="table-warning">

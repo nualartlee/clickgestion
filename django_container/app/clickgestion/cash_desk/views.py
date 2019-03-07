@@ -61,6 +61,10 @@ def cashclose_detail(request, *args, **kwargs):
     breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
     extra_context['breakdown'] = breakdown
 
+    # Get deposits in holding
+    deposits = totalizers.get_deposits_in_holding()
+    extra_context['deposits'] = deposits
+
     # Get the totals
     totals = totalizers.get_value_totals(closed_concepts)
     extra_context['totals'] = totals
@@ -84,6 +88,10 @@ def cash_desk_close(request, *args, **kwargs):
     # Get breakdown by concept type
     breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
     extra_context['breakdown'] = breakdown
+
+    # Get deposits in holding
+    deposits = totalizers.get_deposits_in_holding()
+    extra_context['deposits'] = deposits
 
     # Get the totals
     totals = totalizers.get_value_totals(closed_concepts)
