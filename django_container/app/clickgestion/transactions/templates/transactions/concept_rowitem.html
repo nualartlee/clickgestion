@@ -2,16 +2,35 @@
 <tr>
     <!--CODE-->
     <th>
-        <div class="row">
-            <div class="col-8">
-                <a class="text-muted" href="/concepts/{{ concept.code }}/">
-                    {{ concept.code|default_if_none:"&nbsp;" }}
-                </a>
-            </div>
-            <div class="col-4">
-                <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/delete/">
-                    {% trans 'Delete' %}
-                </a>
+        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.transaction.code}}">
+            {{ concept.code }}
+        </button>
+        <!--Transaction Modal-->
+        <div class="modal" id="{{concept.transaction.code}}">
+            <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
+                <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
+
+                    <!-- Modal Header -->
+                    <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
+                        <h4 class="modal-title">{{ transaction.code }}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body" style="overflow-x: auto; max-width: 23cm;">
+                        <div class="row justify-content-center">
+                            {% with concept.transaction as transaction %}
+                            {% include 'transactions/invoice.html' %}
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <!-- Modal footer -->
+                    <!--<div class="modal-footer" style="overflow-x: auto; max-width: 23cm;">-->
+                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
+                    <!--</div>-->
+
+                </div>
             </div>
         </div>
     </th>
@@ -23,7 +42,7 @@
     <td>{{ concept.description_short|default_if_none:"&nbsp;" }}</td>
 
     <!--DATE-->
-    <td>{{ concept.created|default_if_none:"&nbsp;" }}</td>
+    <td>{{ concept.transaction.closed_date|default_if_none:"&nbsp;" }}</td>
 
     <!--VALUE-->
     <td>

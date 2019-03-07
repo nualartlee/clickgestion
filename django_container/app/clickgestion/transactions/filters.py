@@ -10,10 +10,14 @@ class ConceptFilter(django_filters.FilterSet):
     code.field.label = gettext_lazy('Reference')
     code.field.widget.attrs['placeholder'] = gettext_lazy('Search by reference number')
     code.field.widget.attrs['class'] = 'form-control'
+    transaction__closed_date = django_filters.DateFromToRangeFilter()
+    transaction__closed_date.field.label = gettext_lazy('Date Range')
+    transaction__closed_date.field.widget.attrs['type'] = 'date'
+    transaction__closed_date.field.widget.attrs['class'] = 'dateinput form-control'
 
     class Meta:
         model = BaseConcept
-        fields = ['code', 'accounting_group', 'concept_class', 'concept_name']
+        fields = ['code', 'accounting_group', 'concept_class', 'concept_name', 'transaction__closed_date']
 
     @property
     def form(self):

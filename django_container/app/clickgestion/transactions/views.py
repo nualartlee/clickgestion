@@ -101,6 +101,7 @@ def concept_edit(request, *args, **kwargs):
 
 class ConceptList(PaginationMixin, ListView):
 
+    template_name = 'transactions/concept_list.html'
     model = BaseConcept
     context_object_name = 'concepts'
     paginate_by = 8

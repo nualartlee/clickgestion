@@ -195,7 +195,7 @@ class BaseConcept(models.Model):
     # Required to access instances of child classes
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
     # Verbose name of the child class (in default language)
-    concept_name = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
+    concept_name = models.CharField(verbose_name=gettext_lazy('Concept Name'), max_length=32, editable=False)
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     # The transaction this concept belongs to

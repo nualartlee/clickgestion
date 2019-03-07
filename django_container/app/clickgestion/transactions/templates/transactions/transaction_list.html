@@ -88,13 +88,13 @@
                                         {% trans 'Search' %}
                                     </button>
                                 </div>
+                                {% if is_filtered %}
                                 <div class="formColumn col-4">
-                                    {% if is_filtered %}
                                     <a class="btn btn-outline-danger btn-block" href="{% url 'transaction_list' %}">
                                         {% trans 'Clear Filter' %}
                                     </a>
-                                    {% endif %}
                                 </div>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
