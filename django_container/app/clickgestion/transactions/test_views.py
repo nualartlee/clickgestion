@@ -28,6 +28,19 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_list.html'
 
+    def test_post_print_transaction(self):
+        self.log_admin_in()
+        post_data = {
+            'print_transaction': self.transaction.code,
+        }
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            post_data,
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
+        self.assertEqual(response.status_code, 200)
+
 
 class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
 

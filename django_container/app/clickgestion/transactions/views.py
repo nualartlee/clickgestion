@@ -8,9 +8,10 @@ from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
-from django.http import QueryDict
+from django.http import HttpResponse, QueryDict
 from django.conf import settings
 from django.utils import timezone
+from django_xhtml2pdf.utils import generate_pdf
 
 
 @login_required()
@@ -359,7 +360,6 @@ class TransactionList(PaginationMixin, ListView):
     filter_data = None
     is_filtered = False
 
-
     def get(self, request, *args, **kwargs):
         # First
 
@@ -408,10 +408,36 @@ class TransactionList(PaginationMixin, ListView):
         self.filter = TransactionFilter(data)
         self.queryset = self.filter.qs.select_related('cashclose')\
             .prefetch_related('concepts__value__currency') \
-            .order_by('-id') # 79q 27ms
+            .order_by('-id')  # 79q 27ms
 
         # Return
         return self.queryset
+
+    def post(self, request, *args, **kwargs):
+
+        # Check permissions
+        if not request.user.is_authenticated:
+            return invalid_permission_redirect(request)
+
+        print_transaction = request.POST.get('print_transaction', None)
+        if print_transaction:
+            # Get the transaction
+            transaction = get_object_or_404(Transaction, code=print_transaction)
+            # Create an http response
+            resp = HttpResponse(content_type='application/pdf')
+            resp['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(transaction.code)
+            # Set context
+            context = {
+                'transaction': transaction,
+            }
+            # Generate the pdf
+            result = generate_pdf('transactions/invoice.html', file_object=resp, context=context)
+            return result
+
+        # Return same
+        request.method = 'GET'
+        return self.get(request, *args, **kwargs)
+
 
 
 @login_required

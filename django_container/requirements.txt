@@ -4,6 +4,7 @@ django-debug-toolbar==1.9.1
 django-filter==2.0.0
 django-pure-pagination==0.3.0
 django-crispy-forms
+django-xhtml2pdf
 psycopg2==2.7.5
 requests==2.19.1
 lxml==4.2.4

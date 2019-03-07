@@ -10,6 +10,8 @@
     </div>
 
     <div class="col col-md-10">
+        <form method="post" novalidate>
+            {% csrf_token %}
 
         <!--Table-->
         <table class="table table-bordered table-sm">
@@ -60,11 +62,14 @@
         </div>
         {% endif %}
 
+        </form>
+
     </div>
 
     <!--Side Panel-->
     <div class="col col-md-1">
     </div>
+
 
     <!-- Filter Modal -->
     <div class="modal" id="FilterModal">
