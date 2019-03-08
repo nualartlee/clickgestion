@@ -17,7 +17,7 @@
                         <button type="submit" class="btn btn-sm btn-outline-secondary" onclick='document.getElementById("id_print_transaction").value = "{{ transaction.code }}";form.submit();' title="{% trans 'Create PDF File' %}">
                             {% trans 'PDF' %}
                         </button>
-                        <a class="btn btn-sm btn-outline-secondary" onclick='printElement(document.getElementById("to-print"));window.print();' title="{% trans 'Print' %}">
+                        <a class="btn btn-sm btn-outline-secondary" onclick='printElement("print-{{ transaction.code }}");' title="{% trans 'Print' %}">
                             {% trans 'Print' %}
                         </a>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>

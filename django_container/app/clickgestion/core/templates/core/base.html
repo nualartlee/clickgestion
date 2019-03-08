@@ -7,33 +7,26 @@
         {% block meta %}
         {% endblock %}
         <script type="text/javascript">
-            function printElement(elem, append, delimiter) {
+            function printElement(elem_id) {
+
+                var elem = document.getElementById(elem_id);
+
                 var domClone = elem.cloneNode(true);
 
-                var $printSection = document.getElementById("printSection");
-
-                if (!$printSection) {
-                    $printSection = document.createElement("div");
-                    $printSection.id = "printSection";
-                    $printSection.width = 21cm;
-                    $printSection.height = 29.7cm;
-                    document.body.appendChild($printSection);
+                var printSection = document.getElementById("printSection");
+                if (!printSection) {
+                    printSection = document.createElement("div");
                 }
-
-                if (append !== true) {
-                    $printSection.innerHTML = "";
+                while (printSection.firstChild) {
+                    printSection.removeChild(printSection.firstChild);
                 }
+                printSection.id = "printSection";
+                printSection.width = "21cm";
+                printSection.height = "29.7cm";
+                document.body.appendChild(printSection);
 
-                else if (append === true) {
-                    if (typeof (delimiter) === "string") {
-                        $printSection.innerHTML += delimiter;
-                    }
-                    else if (typeof (delimiter) === "object") {
-                        $printSection.appendChild(delimiter);
-                    }
-                }
-
-                $printSection.appendChild(domClone);
+                printSection.appendChild(domClone);
+                window.print();
             }
         </script>
         <link rel="shortcut icon" type="image/png" href="{% static 'core/img/logo-40x40.png' %}"/>
