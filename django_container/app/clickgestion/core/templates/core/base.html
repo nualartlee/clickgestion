@@ -25,7 +25,6 @@
                 printSection.style.left = "0";
                 printSection.style.top = "0";
                 printSection.style.width = "210mm";
-                printSection.style.height = "297mm";
                 document.body.appendChild(printSection);
 
                 printSection.appendChild(domClone);
@@ -46,9 +45,6 @@
             @media print {
               body > *:not(#printSection) {
                 display: none;
-              }
-              #printSection, #printSection * {
-                visibility:visible;
               }
               @page {
                   size: 210mm 297mm;
