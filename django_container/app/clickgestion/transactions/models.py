@@ -239,7 +239,6 @@ class BaseConcept(models.Model):
         # return as a set
         return set("%s.%s" % (ct, name) for ct, name in perms)
 
-
     def get_value(self):
         """
         Get the value of the concept (to be used at creation time)

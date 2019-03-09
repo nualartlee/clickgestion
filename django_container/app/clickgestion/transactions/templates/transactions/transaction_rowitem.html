@@ -100,7 +100,14 @@
     </td>
 
     <!--DATE-->
-    <td>{{ transaction.closed_date|default_if_none:"&nbsp;" }}</td>
+    <td>
+        {% if transaction.closed %}
+        {{ transaction.closed_date|default_if_none:"&nbsp;" }}
+        {% else %}
+        {% trans 'Opened' %} {{ transaction.created|default_if_none:"&nbsp;" }}
+        {% endif %}
+
+    </td>
 
     <!--APT NUMBER-->
     <td>{{ transaction.apt_number|default_if_none:"&nbsp;" }}</td>

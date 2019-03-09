@@ -32,7 +32,7 @@
                 {{ transaction.client_phone_number|default_if_none:"&nbsp;" }}
             </div>
             <div class="row">
-                {{ transaction.client_address|linebreaks|default_if_none:"&nbsp;"}}
+                {{ transaction.client_address|default_if_none:"&nbsp;"|linebreaks}}
             </div>
             <div class="row">
             </div>
