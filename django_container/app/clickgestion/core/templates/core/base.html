@@ -21,11 +21,11 @@
                     printSection.removeChild(printSection.firstChild);
                 }
                 printSection.id = "printSection";
-                printSection.position = "absolute";
-                printSection.left = "0";
-                printSection.top = "0";
-                printSection.width = "100%";
-                printSection.height = "297mm";
+                printSection.style.position = "absolute";
+                printSection.style.left = "0";
+                printSection.style.top = "0";
+                printSection.style.width = "210mm";
+                printSection.style.height = "297mm";
                 document.body.appendChild(printSection);
 
                 printSection.appendChild(domClone);
@@ -44,8 +44,8 @@
             }
 
             @media print {
-              body * {
-                visibility:hidden;
+              body > *:not(#printSection) {
+                display: none;
               }
               #printSection, #printSection * {
                 visibility:visible;
@@ -53,12 +53,6 @@
               @page {
                   size: 210mm 297mm;
                   margin:0;
-              }
-              html, body {
-                    width: 210mm;
-                    height: 297mm;
-                    margin: 0;
-                    padding: 0;
               }
 
             }
