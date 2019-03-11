@@ -169,6 +169,28 @@ class ConceptList(PaginationMixin, ListView):
         return self.queryset
 
 
+@login_required()
+def concept_row(request, *args, **kwargs):
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the concept
+    concept_code = kwargs.get('concept_code', None)
+    concept = get_object_or_404(BaseConcept, code=concept_code)
+
+    # Set initial filter data
+    filter_data = {
+        'code': concept.code,
+    }
+    params = urllib.parse.urlencode(filter_data)
+    # Return
+    response = redirect('concept_list')
+    response['Location'] += '?{}'.format(params)
+    return response
+
+
 def get_available_concepts(employee, transaction):
     """
     Get a list of the available concepts that can be added to the given transaction.
@@ -273,7 +295,6 @@ def transaction_delete(request, *args, **kwargs):
 
 @login_required
 def transaction_detail(request, *args, **kwargs):
-    extra_context = {}
 
     # Check permissions
     if not request.user.is_authenticated:
@@ -282,8 +303,18 @@ def transaction_detail(request, *args, **kwargs):
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
-    extra_context['transaction'] = transaction
-    return render(request, 'transactions/transaction_detail.html', extra_context)
+    #extra_context['transaction'] = transaction
+    #return render(request, 'transactions/transaction_detail.html', extra_context)
+
+    # Set initial filter data
+    filter_data = {
+        'code': transaction.code,
+    }
+    params = urllib.parse.urlencode(filter_data)
+    # Return
+    response = redirect('transaction_list')
+    response['Location'] += '?{}'.format(params)
+    return response
 
 
 @login_required

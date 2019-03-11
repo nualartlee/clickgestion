@@ -38,18 +38,9 @@
     </th>
     {% else %}
     <th>
-        <div class="row">
-            <div class="col-8">
-                <a class="text-muted" href="/transactions/{{ transaction.code }}/edit/">
-                    {{ transaction.code|default_if_none:"&nbsp;" }}
-                </a>
-            </div>
-            <div class="col-4">
-                <a class="badge badge-danger ml-2" href="/transactions/{{ transaction.code }}/delete/">
-                    {% trans 'Delete' %}
-                </a>
-            </div>
-        </div>
+        <a class="btn btn-link text-warning" href="/transactions/{{ transaction.code }}/edit/">
+            {{ transaction.code|default_if_none:"&nbsp;" }}
+        </a>
     </th>
     {% endif %}
 
@@ -116,12 +107,17 @@
             {% for concept in transaction.concepts.all %}
             <div class="row">
                 <div class="col justify-content-start">
-                    <!-- Button to Open The Filter -->
-                    <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
+                    <a class="text-dark" href="{% url 'concept_row' concept_code=concept.code %}">
                         <small>
                             {{ concept.name }}
                         </small>
-                    </button>
+                    </a>
+                    <!-- Button to Open The Filter -->
+                    <!--<button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">-->
+                        <!--<small>-->
+                            <!--{{ concept.name }}-->
+                        <!--</small>-->
+                    <!--</button>-->
                 </div>
                 <div class="col text-right justify-content-end">
                     {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
@@ -161,6 +157,7 @@
         {% endif %}
     </td>
 
+    <!--TOTALS-->
     <td>
         {% if transaction.totals %}
         <div class="container">
@@ -171,5 +168,17 @@
             {% endfor %}
         </div>
         {% endif %}
+    </td>
+
+    <!--ACTIONS-->
+    <td>
+        {% if not transaction.closed %}
+        <a class="badge badge-danger ml-2" href="/transactions/{{ transaction.code }}/delete/">
+            {% trans 'Delete' %}
+        </a>
+        {% endif %}
+        <a class="badge badge-secondary ml-2" href="/transactions/{{ transaction.code }}/delete/">
+            {% trans 'More' %}
+        </a>
     </td>
 </tr>

@@ -1,41 +1,10 @@
 {% load i18n %}
 <tr>
-    <!--CODE-->
+    <!--TRANSACTION-->
     <th>
-        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.transaction.code}}">
-            {{ concept.code }}
-        </button>
-        <!--Modal For Printable A4-->
-        <div class="modal" id="{{ concept.transaction.code }}">
-            <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
-                <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
-
-                    <!-- Modal Header -->
-                    <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
-                        <!--Print button-->
-                        <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("print-{{ concept.transaction.code }}");' title="{% trans 'Print' %}">
-                            {% trans 'Print' %}
-                        </a>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body" style="overflow-x: auto; max-width: 23cm;">
-                        <div class="row justify-content-center">
-                            {% with concept.transaction as transaction %}
-                            {% include 'transactions/invoice.html' %}
-                            {% endwith %}
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <!--<div class="modal-footer" style="overflow-x: auto; max-width: 23cm;">-->
-                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                    <!--</div>-->
-
-                </div>
-            </div>
-        </div>
+        <a class="text-dark" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">
+            {{ concept.transaction.code }}
+        </a>
     </th>
 
     <!--NAME-->
@@ -53,4 +22,24 @@
             {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
         </div>
     </td>
+
+    <!--ACTIONS-->
+    <td>
+        {% if concept.transaction.closed %}
+        <a class="badge badge-warning ml-2" href="/concepts/{{ concept.code }}/return/">
+            {% trans 'Return' %}
+        </a>
+        <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/refund">
+            {% trans 'Refund' %}
+        </a>
+        {% else %}
+        <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/delete/">
+            {% trans 'Delete' %}
+        </a>
+        {% endif %}
+        <a class="badge badge-secondary ml-2" href="/concepts/{{ concept.code }}/delete/">
+            {% trans 'More' %}
+        </a>
+    </td>
+
 </tr>

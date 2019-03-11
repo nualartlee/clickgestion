@@ -75,16 +75,12 @@ class AptRental(BaseConcept):
     """
     # Number of adults
     adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
-    # Arrival date
-    #checkin = models.DateField(verbose_name=gettext_lazy('Check In'))
-    # Departure date
-    #checkout = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
     # Ordered list of daily rates
     rates = ArrayField(models.FloatField(), verbose_name=gettext_lazy('Array Of Rates'))
 
-    #BaseConcept settings
+    # BaseConcept settings
     _url = '/apt-rentals/{}'
     _code_initials = 'AR'
     _concept_class = 'aptrental'
@@ -107,14 +103,14 @@ class AptRental(BaseConcept):
 
     @property
     def description_short(self):
-        dict = {
+        data = {
             'start_date': self.start_date.strftime('%a, %d %b %Y'),
             'end_date': self.end_date.strftime('%a, %d %b %Y'),
             'adults': self.adults,
             'children': self.children,
         }
-        desc = gettext('Apartment Rental: %(start_date)s - %(end_date)s, Adults: %(adults)s, Children: %(children)s') % dict
-        return desc
+        desc = gettext('Apartment Rental: %(start_date)s - %(end_date)s, Adults: %(adults)s, Children: %(children)s')
+        return desc % data
 
     def get_current_rates(self):
         """
@@ -149,7 +145,6 @@ class AptRentalDepositSettings(ConceptSettings):
     # Amount per child/night
     per_child = models.FloatField(verbose_name=gettext_lazy('Amount Per Child/Night'), default=5)
 
-
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit Settings')
         verbose_name_plural = gettext_lazy('Apartment Rental Deposit Settings')
@@ -162,14 +157,10 @@ class AptRentalDeposit(BaseConcept):
     """
     # Number of adults
     adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
-    # Arrival date
-    #deposit_date = models.DateField(verbose_name=gettext_lazy('Check In'))
-    # Departure date
-    #return_date = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
 
-    #BaseConcept settings
+    # BaseConcept settings
     _url = '/apt-rentals/deposits/{}'
     _settings_class = AptRentalDepositSettings
     _code_initials = 'ARD'
@@ -194,13 +185,14 @@ class AptRentalDeposit(BaseConcept):
 
     @property
     def description_short(self):
-        if self.returned:
-            return_date = self.deposit_return.transaction.closed_date.strftime('%a, %d %b %Y')
-            desc = gettext_lazy('Refundable Deposit Returned') + ' {}'.format(return_date)
-        else:
-            due_date = self.end_date.strftime('%a, %d %b %Y')
-            desc = gettext_lazy('Refundable Deposit Due') + ' {}'.format(due_date)
-        return desc
+        data = {
+            'start_date': self.start_date.strftime('%a, %d %b %Y'),
+            'end_date': self.end_date.strftime('%a, %d %b %Y'),
+            'adults': self.adults,
+            'children': self.children,
+        }
+        desc = gettext('Apartment Deposit: %(start_date)s - %(end_date)s, Adults: %(adults)s, Children: %(children)s')
+        return desc % data
 
     @property
     def nights(self):
@@ -221,7 +213,8 @@ class AptRentalDeposit(BaseConcept):
     @property
     def returned(self):
         if self.deposit_return.exists():
-            return self.deposit_return.transaction.closed
+            deposit_return = self.deposit_return.first()
+            return deposit_return.transaction.closed
         return False
 
     def save(self, *args, **kwargs):
