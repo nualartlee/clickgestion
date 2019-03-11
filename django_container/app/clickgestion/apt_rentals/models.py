@@ -195,7 +195,7 @@ class AptRentalDeposit(BaseConcept):
     @property
     def description_short(self):
         desc = gettext_lazy('Refundable Deposit') + '; '
-        desc += gettext_lazy('Return') + ': {}, '.format(self.end_date)
+        desc += gettext_lazy('Return') + ': {}, '.format(self.end_date.strftime('%a, %d %b %Y'))
         return desc
 
     @property
