@@ -18,11 +18,12 @@ from django.conf import settings
 
 urlpatterns = [
     url(r'^', include('clickgestion.core.urls')),
-    url(r'^transactions/', include('clickgestion.transactions.urls')),
-    url(r'^concepts/', include('clickgestion.transactions.concept_urls')),
     url(r'^apt-rentals/', include('clickgestion.apt_rentals.urls')),
+    url(r'^concepts/', include('clickgestion.transactions.concept_urls')),
     url(r'^cash-desk/', include('clickgestion.cash_desk.urls')),
+    url(r'^deposit-returns/', include('clickgestion.deposit_returns.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^transactions/', include('clickgestion.transactions.urls')),
 ]
 
 if settings.DEBUG:

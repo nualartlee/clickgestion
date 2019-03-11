@@ -16,6 +16,7 @@ class TestGetAvailableConcepts(CustomTestCase):
         for c in cn:
             self.assertEqual(c['disabled'], False)
 
+
 class TestTransactionListView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
@@ -38,7 +39,7 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
             post_data,
             follow=True,
         )
-        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
+        self.assertTemplateUsed(response, 'transactions/invoice.html')
         self.assertEqual(response.status_code, 200)
 
 

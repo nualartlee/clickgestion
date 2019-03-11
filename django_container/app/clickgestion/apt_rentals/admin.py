@@ -3,7 +3,7 @@ from clickgestion.apt_rentals import models
 
 
 class AptRentalAdmin(admin.ModelAdmin):
-    list_filter = ('checkin', 'checkout')
+    list_filter = ('start_date', 'end_date')
 
 
 admin.site.register(models.AptRental, AptRentalAdmin)

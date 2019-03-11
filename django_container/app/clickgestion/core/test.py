@@ -55,8 +55,8 @@ class CustomTestCase(TestCase):  # pragma: no cover
         # Create an apartment rental
         cls.apartment_rental = AptRental(
             transaction=cls.transaction,
-            checkin=timezone.datetime.today(),
-            checkout=timezone.datetime.today() + timezone.timedelta(days=7),
+            start_date=timezone.datetime.today(),
+            end_date=timezone.datetime.today() + timezone.timedelta(days=7),
         )
         cls.apartment_rental.save()
 

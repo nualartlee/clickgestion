@@ -198,6 +198,10 @@ class BaseConcept(models.Model):
     concept_name = models.CharField(verbose_name=gettext_lazy('Concept Name'), max_length=32, editable=False)
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    # End date
+    end_date = models.DateTimeField(verbose_name=gettext_lazy('End Date'), blank=True, null=True)
+    # Start date
+    start_date = models.DateTimeField(verbose_name=gettext_lazy('Start Date'), blank=True, null=True)
     # The transaction this concept belongs to
     transaction = models.ForeignKey(Transaction, verbose_name=gettext_lazy('Transaction'), on_delete=models.CASCADE, related_name='concepts')
     # Last update timestamp
@@ -214,8 +218,7 @@ class BaseConcept(models.Model):
         :return:
         """
         if not self.is_child:
-            if self.concept_class:
-                return getattr(self, self.concept_class)
+            return getattr(self, self.concept_class)
         return self
 
     @property

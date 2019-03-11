@@ -365,13 +365,13 @@ def create_test_client_transaction(employee, date):
 
 
 def create_test_apartment_rental(transaction, date):
-    checkin = date + timezone.timedelta(days=randrange(21))
-    checkout = checkin + timezone.timedelta(days=randrange(1,28))
+    start_date = date + timezone.timedelta(days=randrange(21))
+    end_date = start_date + timezone.timedelta(days=randrange(1,28))
     model = AptRental(
         adults=randrange(1, 5),
         children=randrange(1, 3),
-        checkin=checkin,
-        checkout=checkout,
+        start_date=start_date,
+        end_date=end_date,
         transaction=transaction,
         created=date,
     )
@@ -401,9 +401,9 @@ def create_test_deposit_return(transaction, returned_deposit, date):
 
 def create_test_deposit_returns(date):
     apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
-        return_date__year=date.year,
-        return_date__month=date.month,
-        return_date__day=date.day,
+        end_date__year=date.year,
+        end_date__month=date.month,
+        end_date__day=date.day,
     )
     for deposit in apt_rental_deposits_ending_today:
         if not deposit.transaction.closed:

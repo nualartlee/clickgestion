@@ -4,7 +4,6 @@ from clickgestion.transactions.models import BaseConcept, ConceptSettings, Conce
 from django.db import models
 
 
-
 class DepositReturnSettings(ConceptSettings):
     """
     Deposit Return Concept Settings

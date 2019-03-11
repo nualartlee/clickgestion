@@ -76,9 +76,9 @@ class AptRental(BaseConcept):
     # Number of adults
     adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
     # Arrival date
-    checkin = models.DateField(verbose_name=gettext_lazy('Check In'))
+    #checkin = models.DateField(verbose_name=gettext_lazy('Check In'))
     # Departure date
-    checkout = models.DateField(verbose_name=gettext_lazy('Check Out'))
+    #checkout = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
     # Ordered list of daily rates
@@ -103,17 +103,17 @@ class AptRental(BaseConcept):
         """
         :return: The total number of nights
         """
-        return (self.checkout - self.checkin).days
+        return (self.end_date - self.start_date).days
 
     @property
     def description_short(self):
         dict = {
-            'checkin': self.checkin.strftime('%a, %d %b %Y'),
-            'checkout': self.checkout.strftime('%a, %d %b %Y'),
+            'start_date': self.start_date.strftime('%a, %d %b %Y'),
+            'end_date': self.end_date.strftime('%a, %d %b %Y'),
             'adults': self.adults,
             'children': self.children,
         }
-        desc = gettext('Apartment Rental: %(checkin)s - %(checkout)s, Adults: %(adults)s, Children: %(children)s') % dict
+        desc = gettext('Apartment Rental: %(start_date)s - %(end_date)s, Adults: %(adults)s, Children: %(children)s') % dict
         return desc
 
     def get_current_rates(self):
@@ -122,7 +122,7 @@ class AptRental(BaseConcept):
         """
         nightly_rates = []
         for i in range(self.nights):
-            nightly_rates.append(get_night_rate(self.checkin + timezone.timedelta(days=i)))
+            nightly_rates.append(get_night_rate(self.start_date + timezone.timedelta(days=i)))
         return nightly_rates
 
     def get_value(self):
@@ -163,9 +163,9 @@ class AptRentalDeposit(BaseConcept):
     # Number of adults
     adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
     # Arrival date
-    deposit_date = models.DateField(verbose_name=gettext_lazy('Check In'))
+    #deposit_date = models.DateField(verbose_name=gettext_lazy('Check In'))
     # Departure date
-    return_date = models.DateField(verbose_name=gettext_lazy('Check Out'))
+    #return_date = models.DateField(verbose_name=gettext_lazy('Check Out'))
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
 
@@ -185,8 +185,8 @@ class AptRentalDeposit(BaseConcept):
         super().__init__(*args, **kwargs)
         if apt_rental:
             self.adults = apt_rental.adults
-            self.deposit_date = apt_rental.checkin
-            self.return_date = apt_rental.checkout
+            self.start_date = apt_rental.start_date
+            self.end_date = apt_rental.end_date
             self.children = apt_rental.children
 
     def __str__(self):
@@ -195,14 +195,12 @@ class AptRentalDeposit(BaseConcept):
     @property
     def description_short(self):
         desc = gettext_lazy('Refundable Deposit') + '; '
-        desc += gettext_lazy('Adults') + ': {}, '.format(self.adults)
-        desc += gettext_lazy('Children') + ': {}, '.format(self.children)
-        desc += gettext_lazy('Nights') + ': {}'.format(self.nights)
+        desc += gettext_lazy('Return') + ': {}, '.format(self.end_date)
         return desc
 
     @property
     def nights(self):
-        return (self.return_date - self.deposit_date).days
+        return (self.end_date - self.start_date).days
 
     def get_value(self):
         """
@@ -220,8 +218,8 @@ class AptRentalDeposit(BaseConcept):
         apt_rental = kwargs.pop('apt_rental', None)
         if apt_rental:
             self.adults = apt_rental.adults
-            self.deposit_date = apt_rental.checkin
-            self.return_date = apt_rental.checkout
+            self.start_date = apt_rental.start_date
+            self.end_date = apt_rental.end_date
             self.children = apt_rental.children
         super().save(*args, **kwargs)
 

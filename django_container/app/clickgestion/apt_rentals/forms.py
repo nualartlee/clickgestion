@@ -1,18 +1,18 @@
 from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Row, Column, Submit
+from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from django.core.exceptions import ValidationError
 
 
 class AptRentalForm(forms.ModelForm):
-    checkin = forms.DateField(
+    start_date = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
     )
-    checkout = forms.DateField(
+    end_date = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
@@ -20,7 +20,7 @@ class AptRentalForm(forms.ModelForm):
 
     class Meta:
         model = AptRental
-        fields = ('adults', 'checkin', 'checkout', 'children')
+        fields = ('adults', 'children', 'end_date', 'start_date')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,7 +30,7 @@ class AptRentalForm(forms.ModelForm):
             Row(
                 Column(
                     Field(
-                        'checkin',
+                        'start_date',
                         title=gettext_lazy("Arrival date"),
                         css_class='col-8',
                     ),
@@ -38,7 +38,7 @@ class AptRentalForm(forms.ModelForm):
                 ),
                 Column(
                     Field(
-                        'checkout',
+                        'end_date',
                         title=gettext_lazy("Departure date"),
                         css_class='col-8',
                     ),
@@ -69,8 +69,8 @@ class AptRentalForm(forms.ModelForm):
 
         # Assert that all nightly prices are set
         rates = AptRental(
-            checkin=self.cleaned_data.get('checkin'),
-            checkout=self.cleaned_data.get('checkout'),
+            start_date=self.cleaned_data.get('start_date'),
+            end_date=self.cleaned_data.get('end_date'),
         ).get_current_rates()
         if 'missing' in rates:
             error = gettext_lazy('Missing prices in selected dates')
@@ -83,7 +83,7 @@ class AptRentalDepositForm(forms.ModelForm):
 
     class Meta:
         model = AptRentalDeposit
-        fields = ('adults', 'children', 'deposit_date', 'return_date')
+        fields = ('adults', 'children', 'end_date', 'start_date')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

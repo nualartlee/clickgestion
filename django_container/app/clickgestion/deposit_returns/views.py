@@ -1,12 +1,31 @@
 from django.apps import apps
-from clickgestion.cash_desk.forms import CashCloseForm
-from clickgestion.transactions.models import Transaction
-from clickgestion.transactions import totalizers
-from django.shortcuts import get_object_or_404, render, redirect, reverse
-from django.utils.translation import gettext, gettext_lazy
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
+from clickgestion.core.utilities import invalid_permission_redirect
+from clickgestion.transactions.views import ConceptList
+
+
+def today(request, *args, **kwargs):
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Set initial filter data
+    accounting_group = 'Deposits'
+    filter_data = {
+        'accounting_group': accounting_group,
+        'transaction__closed': True,
+        'deposit_return': None,
+        'end_date_after': timezone.localdate(),
+        'end_date_before': timezone.localdate(),
+    }
+
+    # Return
+    listview = ConceptList.as_view()
+    return listview(request, filter_data=filter_data)
 
 
 @login_required()
