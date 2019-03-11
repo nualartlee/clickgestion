@@ -194,8 +194,12 @@ class AptRentalDeposit(BaseConcept):
 
     @property
     def description_short(self):
-        desc = gettext_lazy('Refundable Deposit') + '; '
-        desc += gettext_lazy('Return') + ': {}, '.format(self.end_date.strftime('%a, %d %b %Y'))
+        if self.returned:
+            return_date = self.deposit_return.transaction.closed_date.strftime('%a, %d %b %Y')
+            desc = gettext_lazy('Refundable Deposit Returned') + ' {}'.format(return_date)
+        else:
+            due_date = self.end_date.strftime('%a, %d %b %Y')
+            desc = gettext_lazy('Refundable Deposit Due') + ' {}'.format(due_date)
         return desc
 
     @property
@@ -206,13 +210,19 @@ class AptRentalDeposit(BaseConcept):
         """
         :return: ConceptValue: Amount to deposit
         """
-        total =  (self.adults * self.settings.per_adult + self.children * self.settings.per_child) * self.nights
+        total = (self.adults * self.settings.per_adult + self.children * self.settings.per_child) * self.nights
         if total > self.settings.max:
             total = self.settings.max
         if total < self.settings.min:
             total = self.settings.min
         value_model = apps.get_model('transactions.ConceptValue')
         return value_model(amount=total)
+
+    @property
+    def returned(self):
+        if self.deposit_return.exists():
+            return self.deposit_return.transaction.closed
+        return False
 
     def save(self, *args, **kwargs):
         apt_rental = kwargs.pop('apt_rental', None)

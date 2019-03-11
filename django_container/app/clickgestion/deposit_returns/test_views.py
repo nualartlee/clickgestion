@@ -8,7 +8,7 @@ class TestTodayView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = True
         cls.required_access_level = 1
-        cls.url = 'deposit_returns_today'
+        cls.url = 'concept_list'
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'transactions/concept_list.html'

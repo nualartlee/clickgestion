@@ -150,7 +150,7 @@ class TestTransactionsOpenView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = True
         cls.required_access_level = 1
-        cls.url = 'transactions_open'
+        cls.url = 'transaction_list'
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_list.html'

@@ -34,7 +34,7 @@ class DepositReturn(BaseConcept):
 
     class Meta:
         verbose_name = gettext_lazy('Deposit Return')
-        verbose_name_plural = gettext_lazy('Deposit Return')
+        verbose_name_plural = gettext_lazy('Deposit Returns')
 
     def __str__(self):
         return self.code
