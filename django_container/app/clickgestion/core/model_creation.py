@@ -313,12 +313,12 @@ def create_test_transaction(employee, date):
         notes = fake.text()
 
     model = Transaction(
-        created=date,
         employee=employee,
         notes=notes,
     )
     model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
+    Transaction.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -350,7 +350,6 @@ def create_test_client_transaction(employee, date):
     model = Transaction(
         apt_number=apt_number,
         employee=employee,
-        created=date,
         client_address=client_address,
         client_email=client_email,
         client_first_name=client_first_name,
@@ -361,6 +360,7 @@ def create_test_client_transaction(employee, date):
     )
     model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
+    Transaction.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -373,9 +373,9 @@ def create_test_apartment_rental(transaction, date):
         start_date=start_date,
         end_date=end_date,
         transaction=transaction,
-        created=date,
     )
     model.save()
+    AptRental.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -383,9 +383,9 @@ def create_test_apartment_rental_deposit(transaction, apt_rental, date):
     model = AptRentalDeposit(
         apt_rental=apt_rental,
         transaction=transaction,
-        created=date,
     )
     model.save()
+    AptRentalDeposit.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -393,9 +393,9 @@ def create_test_deposit_return(transaction, returned_deposit, date):
     model = DepositReturn(
         returned_deposit=returned_deposit,
         transaction=transaction,
-        created=date,
     )
     model.save()
+    DepositReturn.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -425,19 +425,24 @@ def create_test_deposit_returns(date):
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()
+        Transaction.objects.filter(id=transaction.id).update(created=date)
 
 
 def create_test_cashclose(date, employee):
     fake = Faker()
     notes = None
-    if randrange(100) < 60:
-        notes = fake.text(max_nb_chars=512)
+    if randrange(100) < 30:
+        notes = fake.text(max_nb_chars=256)
+    elif randrange(100) < 30:
+        notes = fake.text(max_nb_chars=128)
+    elif randrange(100) < 30:
+        notes = fake.text(max_nb_chars=64)
     model = CashClose(
-        created=date,
         employee=employee,
         notes=notes,
     )
     model.save()
+    CashClose.objects.filter(id=model.id).update(created=date)
     transactions = Transaction.objects.filter(closed_date__date__lte=date, cashclose=None)
     if transactions.exists():
         for transaction in transactions:
@@ -453,15 +458,15 @@ def create_test_cash_float_deposit(transaction, date):
     value = ConceptValue(
         currency=currency,
         amount=amount,
-        created=date,
     )
     value.save()
+    ConceptValue.objects.filter(id=value.id).update(created=date)
     model = CashFloatDeposit(
         value=value,
         transaction=transaction,
-        created=date,
     )
     model.save()
+    CashFloatDeposit.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -471,15 +476,15 @@ def create_test_cash_float_withdrawal(transaction, date):
     value = ConceptValue(
         currency=currency,
         amount=amount,
-        created=date,
     )
     value.save()
+    ConceptValue.objects.filter(id=value.id).update(created=date)
     model = CashFloatWithdrawal(
         value=value,
         transaction=transaction,
-        created=date,
     )
     model.save()
+    CashFloatWithdrawal.objects.filter(id=value.id).update(created=date)
     return model
 
 

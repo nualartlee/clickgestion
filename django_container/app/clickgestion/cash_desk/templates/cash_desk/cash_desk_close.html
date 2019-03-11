@@ -40,7 +40,7 @@
 
         <div class="row">
             <div class="col">
-                <button type="submit" class="btn btn-success btn-block" title="{% trans 'Confirm and close cash desk' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
+                <button type="submit" class="btn btn-danger btn-block" title="{% trans 'Confirm and close cash desk' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
             </div>
             <div class="col">
                 <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
