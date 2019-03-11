@@ -12,6 +12,7 @@ from django.http import HttpResponse, QueryDict
 from django.conf import settings
 from django.utils import timezone
 from django_xhtml2pdf.utils import generate_pdf
+import urllib
 
 
 @login_required()
@@ -508,7 +509,8 @@ def transactions_open(request, *args, **kwargs):
     filter_data = {
         'closed': False,
     }
-
+    params = urllib.parse.urlencode(filter_data)
     # Return
-    listview = TransactionList.as_view()
-    return listview(request, filter_data=filter_data)
+    response = redirect('transaction_list')
+    response['Location'] += '?{}'.format(params)
+    return response
