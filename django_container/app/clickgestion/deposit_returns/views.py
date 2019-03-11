@@ -1,10 +1,10 @@
 from django.apps import apps
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.utils import timezone
 from clickgestion.core.utilities import invalid_permission_redirect
-from clickgestion.transactions.views import ConceptList
+import urllib
 
 
 def today(request, *args, **kwargs):
@@ -22,10 +22,11 @@ def today(request, *args, **kwargs):
         'end_date_after': timezone.localdate(),
         'end_date_before': timezone.localdate(),
     }
-
+    params = urllib.parse.urlencode(filter_data)
     # Return
-    listview = ConceptList.as_view()
-    return listview(request, filter_data=filter_data)
+    response = redirect('concept_list')
+    response['Location'] += '?{}'.format(params)
+    return response
 
 
 @login_required()
