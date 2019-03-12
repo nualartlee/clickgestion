@@ -17,10 +17,13 @@ import urllib
 
 @login_required()
 def cash_desk_balance(request, *args, **kwargs):
-    extra_context = {}
     # 268q 72ms
     # 236q 59ms
     # 115q 36ms
+    extra_context = {}
+
+    # Set the header
+    extra_context['document_header'] = gettext('Cash Desk Balance')
 
     # Get closed transactions
     closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
@@ -49,6 +52,9 @@ def cash_desk_balance(request, *args, **kwargs):
 
 def cashclose_detail(request, *args, **kwargs):
     extra_context = {}
+
+    # Set the header
+    extra_context['document_header'] = gettext('Cash Desk Close')
 
     # Get the cashclose
     cashclose_code = kwargs.get('cashclose_code', None)
