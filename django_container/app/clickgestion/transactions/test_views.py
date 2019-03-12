@@ -1,7 +1,9 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
+from clickgestion.core import model_creation
 from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.views import get_available_concepts
+from django.utils import timezone
 
 
 class TestGetAvailableConcepts(CustomTestCase):
@@ -13,8 +15,26 @@ class TestGetAvailableConcepts(CustomTestCase):
         transaction = Transaction()
         cn = get_available_concepts(self.admin, transaction)
         self.assertGreater(len(cn), 0)
+        # None should be disabled
         for c in cn:
             self.assertEqual(c['disabled'], False)
+
+    def test_transaction_with_rental(self):
+        date = timezone.now()
+        employee = model_creation.get_sales_employee()
+        transaction = model_creation.create_test_client_transaction(employee, date)
+        apt_rental = model_creation.create_test_apartment_rental(transaction, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
+        cn = get_available_concepts(self.admin, transaction)
+        self.assertGreater(len(cn), 0)
+        # Cash operations should be disabled
+        for c in cn:
+            if c['name'] in ['Cash Float Deposit', 'Cash Float Withdrawal']:
+                self.assertEqual(c['disabled'], True, msg='{} is not disabled'.format(c['name']))
+            else:
+                self.assertEqual(c['disabled'], False, msg='{} is not enabled'.format(c['name']))
 
 
 class TestTransactionListView(CustomTestCase, CustomViewTestCase):

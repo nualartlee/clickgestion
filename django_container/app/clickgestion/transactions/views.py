@@ -33,7 +33,7 @@ def get_available_concepts(employee, transaction):
     # create the list of permitted concepts
     available_concepts = []
     for concept in settings.CONCEPTS:
-        permission = concept.replace('.','.add_')
+        permission = concept.replace('.', '.add_')
         concept_model = apps.get_model(concept)
 
         # Skip this concept if not permitted by the user

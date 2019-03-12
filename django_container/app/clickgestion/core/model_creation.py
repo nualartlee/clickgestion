@@ -63,13 +63,13 @@ def create_test_models(days=30):
         create_test_random_transaction(date)
 
 
-def create_group(name, permissions):
+def create_group(name, models):
     try:
         group = Group.objects.get(name=name)
     except Group.DoesNotExist:
         group = Group.objects.create(name=name)
         # Add permissions
-        for permission in get_permissions_for_models([CashFloatDeposit, CashFloatWithdrawal]):
+        for permission in get_permissions_for_models(models):
             if not permission in group.permissions.all():
                 group.permissions.add(permission)
         group.save()
