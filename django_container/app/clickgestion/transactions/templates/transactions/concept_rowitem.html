@@ -2,7 +2,7 @@
 <tr>
     <!--TRANSACTION-->
     <th>
-        <a class="btn-link text-dark" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">
+        <a class="btn-link text-dark" href="{% url 'transaction_row' transaction_code=concept.transaction.code %}">
             {{ concept.transaction.code }}
         </a>
     </th>
@@ -53,7 +53,20 @@
             </button>
           </div>
           <div class="modal-body">
-              {{ concept.description_short }}
+              <div class="row">
+                  <div class="col-3">
+                  </div>
+                  <div class="col-6">
+                      <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">{% trans 'View The Transaction' %}</a>
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_concepts' transaction_code=concept.transaction.code %}">{% trans 'View All Concepts On The Same Transaction' %}</a>
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_detail' concept_code=concept.code %}">{% trans "View The Concept's Details" %}</a>
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'deposit_return' concept_code=concept.code %}">{% trans "Return The Deposit" %}</a>
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_refund' concept_code=concept.code %}">{% trans "Refund This Concept" %}</a>
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_delete' concept_code=concept.code %}">{% trans "Delete This Concept" %}</a>
+                  </div>
+                  <div class="col-3">
+                  </div>
+              </div>
           </div>
         </div>
       </div>

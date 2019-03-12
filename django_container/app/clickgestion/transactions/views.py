@@ -170,6 +170,23 @@ class ConceptList(PaginationMixin, ListView):
 
 
 @login_required()
+def concept_refund(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the concept and form
+    concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
+    extra_context['concept'] = concept
+
+    # Get the transaction
+    transaction = concept.transaction
+    extra_context['transaction'] = transaction
+
+    return render(request, 'transactions/concept_detail.html', extra_context)
+
+
+@login_required()
 def concept_row(request, *args, **kwargs):
 
     # Check permissions
@@ -264,6 +281,26 @@ def get_concept_and_form_from_kwargs(**kwargs):
     return concept, concept_form
 
 
+def transaction_concepts(request, *args, **kwargs):
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the transaction
+    transaction = get_transaction_from_kwargs(**kwargs)
+
+    # Set initial filter data
+    filter_data = {
+        'code': transaction.code,
+    }
+    params = urllib.parse.urlencode(filter_data)
+    # Return
+    response = redirect('concept_list')
+    response['Location'] += '?{}'.format(params)
+    return response
+
+
 def transaction_delete(request, *args, **kwargs):
     extra_context = {}
 
@@ -295,6 +332,7 @@ def transaction_delete(request, *args, **kwargs):
 
 @login_required
 def transaction_detail(request, *args, **kwargs):
+    extra_context = {}
 
     # Check permissions
     if not request.user.is_authenticated:
@@ -303,18 +341,8 @@ def transaction_detail(request, *args, **kwargs):
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
-    #extra_context['transaction'] = transaction
-    #return render(request, 'transactions/transaction_detail.html', extra_context)
-
-    # Set initial filter data
-    filter_data = {
-        'code': transaction.code,
-    }
-    params = urllib.parse.urlencode(filter_data)
-    # Return
-    response = redirect('transaction_list')
-    response['Location'] += '?{}'.format(params)
-    return response
+    extra_context['transaction'] = transaction
+    return render(request, 'transactions/transaction_detail.html', extra_context)
 
 
 @login_required
@@ -515,7 +543,7 @@ def transaction_pay(request, *args, **kwargs):
             # Save the transaction
             if form.cleaned_data['save_button']:
                 transaction.save()
-                return redirect('transaction_detail', transaction_code=transaction.code)
+                return redirect('transaction_row', transaction_code=transaction.code)
 
         else:
             extra_context['form'] = form
@@ -539,6 +567,28 @@ def transactions_open(request, *args, **kwargs):
     # Set initial filter data
     filter_data = {
         'closed': False,
+    }
+    params = urllib.parse.urlencode(filter_data)
+    # Return
+    response = redirect('transaction_list')
+    response['Location'] += '?{}'.format(params)
+    return response
+
+
+@login_required
+def transaction_row(request, *args, **kwargs):
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+
+    # Set initial filter data
+    filter_data = {
+        'code': transaction.code,
     }
     params = urllib.parse.urlencode(filter_data)
     # Return

@@ -47,40 +47,9 @@
     <!--CASH CLOSE-->
     <td>
         {% if transaction.cashclose %}
-        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{transaction.cashclose.code}}">
+        <a class="btn-link text-dark" href="{% url 'cashclose_row' cashclose_code=transaction.cashclose.code %}">
             {{ transaction.cashclose.code }}
-        </button>
-        <!--Modal For Printable A4-->
-        <div class="modal" id="{{transaction.cashclose.code}}">
-            <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
-                <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
-
-                    <!-- Modal Header -->
-                    <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
-                        <!--Print button-->
-                        <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("print-{{ transaction.cashclose.code }}");' title="{% trans 'Print' %}">
-                            {% trans 'Print' %}
-                        </a>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body" style="overflow-x: auto; max-width: 23cm;">
-                        <div class="row justify-content-center">
-                            {% with transaction.cashclose as cashclose %}
-                            {% include 'cash_desk/cashclose.html' %}
-                            {% endwith %}
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <!--<div class="modal-footer" style="overflow-x: auto; max-width: 23cm;">-->
-                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                    <!--</div>-->
-
-                </div>
-            </div>
-        </div>
+        </a>
         {% endif %}
     </td>
 

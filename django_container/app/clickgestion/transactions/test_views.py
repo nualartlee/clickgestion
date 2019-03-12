@@ -97,7 +97,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
     def test_post_confirm_button(self):
         self.log_admin_in()
         post_data = {
-            'save_button': True,
+            'confirm_button': True,
             'cancel_button': False,
             'client_apt_number': '1605',
             'client_first_name': 'Donna',
@@ -127,7 +127,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
             post_data,
             follow=True,
         )
-        self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
+        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
         self.assertEqual(response.status_code, 200)
 
     def test_post_cancel_button(self):

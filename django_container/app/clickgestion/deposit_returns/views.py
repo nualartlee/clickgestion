@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 from clickgestion.core.utilities import invalid_permission_redirect
 import urllib
+from clickgestion.transactions.views import get_concept_and_form_from_kwargs
 
 
 def today(request, *args, **kwargs):
@@ -27,6 +28,23 @@ def today(request, *args, **kwargs):
     response = redirect('concept_list')
     response['Location'] += '?{}'.format(params)
     return response
+
+
+@login_required()
+def deposit_return(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+
+    # Get the concept and form
+    concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
+    extra_context['concept'] = concept
+
+    # Get the transaction
+    transaction = concept.transaction
+    extra_context['transaction'] = transaction
+
+    return render(request, 'transactions/concept_detail.html', extra_context)
 
 
 @login_required()

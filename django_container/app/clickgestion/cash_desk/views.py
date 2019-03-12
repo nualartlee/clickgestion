@@ -2,7 +2,7 @@ from clickgestion.cash_desk.filters import CashCloseFilter
 from clickgestion.cash_desk.forms import CashCloseForm
 from clickgestion.cash_desk.models import CashClose
 from clickgestion.transactions.models import BaseConcept, Transaction
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext, gettext_lazy
 from django_xhtml2pdf.utils import generate_pdf
 from django.http import HttpResponse, QueryDict
@@ -11,6 +11,7 @@ from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
 from clickgestion.transactions import totalizers
+import urllib
 
 
 @login_required()
@@ -75,6 +76,28 @@ def cashclose_detail(request, *args, **kwargs):
     extra_context['totals'] = totals
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
+
+
+@login_required()
+def cashclose_row(request, *args, **kwargs):
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the cashclose
+    cashclose_code = kwargs.get('cashclose_code', None)
+    cashclose = get_object_or_404(CashClose, code=cashclose_code)
+
+    # Set initial filter data
+    filter_data = {
+        'code': cashclose.code,
+    }
+    params = urllib.parse.urlencode(filter_data)
+    # Return
+    response = redirect('cashclose_list')
+    response['Location'] += '?{}'.format(params)
+    return response
 
 
 class CashCloseList(PaginationMixin, ListView):
