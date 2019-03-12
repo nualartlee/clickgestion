@@ -1,7 +1,8 @@
 from clickgestion.cash_desk.filters import CashCloseFilter
 from clickgestion.cash_desk.forms import CashCloseForm
 from clickgestion.cash_desk.models import CashClose
-from clickgestion.transactions.models import BaseConcept, Transaction
+from clickgestion.concepts.models import BaseConcept
+from clickgestion.transactions.models import Transaction
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext, gettext_lazy
 from django_xhtml2pdf.utils import generate_pdf
@@ -10,7 +11,7 @@ from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
-from clickgestion.transactions import totalizers
+from clickgestion.concepts import totalizers
 import urllib
 
 

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from django.apps import apps
 from django.contrib.postgres.fields import ArrayField
-from clickgestion.transactions.models import BaseConcept, ConceptValue, ConceptSettings
+from clickgestion.concepts.models import BaseConcept, ConceptSettings
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 from django.utils import timezone
@@ -128,7 +128,7 @@ class AptRental(BaseConcept):
         # Rates are recorded on first save only
         if not self.rates:
             self.rates = self.get_current_rates()
-        value_model = apps.get_model('transactions.ConceptValue')
+        value_model = apps.get_model('concepts.ConceptValue')
         return value_model(amount=sum(self.rates))
 
 
@@ -207,7 +207,7 @@ class AptRentalDeposit(BaseConcept):
             total = self.settings.max
         if total < self.settings.min:
             total = self.settings.min
-        value_model = apps.get_model('transactions.ConceptValue')
+        value_model = apps.get_model('concepts.ConceptValue')
         return value_model(amount=total)
 
     @property

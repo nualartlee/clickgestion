@@ -1,8 +1,8 @@
 from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from clickgestion.transactions.models import Transaction, Currency
-from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, NightRateRange
+from clickgestion.transactions.models import Transaction
+from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit
 from django.utils import timezone
 from clickgestion.core import model_creation
 

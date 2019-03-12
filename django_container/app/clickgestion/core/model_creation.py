@@ -3,7 +3,8 @@ import os
 import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from clickgestion.transactions.models import ConceptValue, Currency, Transaction
+from clickgestion.concepts.models import ConceptValue, Currency
+from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\

@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from clickgestion.transactions import views
+from clickgestion.concepts import views
 
 urlpatterns = [
     url(r'^$', views.ConceptList.as_view(), name='concept_list'),

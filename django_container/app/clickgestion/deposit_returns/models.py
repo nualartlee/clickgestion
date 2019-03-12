@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.utils.translation import gettext_lazy
-from clickgestion.transactions.models import BaseConcept, ConceptSettings, ConceptValue
+from clickgestion.concepts.models import BaseConcept, ConceptSettings, ConceptValue
 from django.db import models
 
 
@@ -20,7 +20,7 @@ class DepositReturn(BaseConcept):
     """
     # The concept that this one returns
     returned_deposit = models.ForeignKey(
-        'transactions.BaseConcept',
+        'concepts.BaseConcept',
         verbose_name=gettext_lazy('Returned Deposit'),
         related_name='deposit_return', on_delete=models.CASCADE,
     )

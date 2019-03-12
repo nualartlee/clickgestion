@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from clickgestion.transactions.views import concept_delete, concept_detail, concept_edit
+from clickgestion.concepts.views import concept_delete, concept_detail, concept_edit
 from clickgestion.apt_rentals.forms import AptRentalForm, AptRentalDepositForm
 
 urlpatterns = [

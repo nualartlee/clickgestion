@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
-from clickgestion.transactions.models import ConceptValue, Currency, get_default_currency
+from clickgestion.concepts.models import ConceptValue, Currency, get_default_currency
 
 
 class CashCloseForm(forms.ModelForm):
