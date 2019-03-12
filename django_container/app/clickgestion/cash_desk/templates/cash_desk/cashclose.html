@@ -59,10 +59,8 @@
         <tbody>
             {% for value in totals %}
             <tr>
-                <td></td>
-                <td>{{ value.currency.name }}</td>
-                <td></td>
-                <td class="text-right">
+                <td style="text-indent: 10%">{{ value.currency.name }}</td>
+                <td colspan="3" class="text-right">
                     {% include 'concepts/value_total.html' %}
                 </td>
             </tr>
@@ -78,24 +76,20 @@
         {% for group in deposits %}
         <thead class="thead-light">
         <tr>
-            <th colspan="4" scope="col">{{ group.type }}</th>
+            <th style="text-indent: 5%" colspan="4" scope="col">{{ group.type }}</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td></td>
-            <td>{% trans 'Number of concepts' %}</td>
-            <td></td>
-            <td class="text-right">
+            <td style="text-indent: 10%">{% trans 'Number of concepts' %}</td>
+            <td colspan="3" class="text-right">
                 {{ group.concept_count }}
             </td>
         </tr>
         {% for value in group.totals %}
         <tr>
-            <td></td>
-            <td>{{ value.currency.name }}</td>
-            <td></td>
-            <td class="text-right">
+            <td style="text-indent: 10%">{{ value.currency.name }}</td>
+            <td colspan="3" class="text-right">
                 {% include 'concepts/value_total.html' %}
             </td>
         </tr>
@@ -112,24 +106,20 @@
         {% for group in breakdown %}
         <thead class="thead-light">
             <tr>
-                <th colspan="4" scope="col">{{ group.type }}</th>
+                <th style="text-indent: 5%" colspan="4" scope="col">{{ group.type }}</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td></td>
-                <td>{% trans 'Number of concepts' %}</td>
-                <td></td>
-                <td class="text-right">
+                <td style="text-indent: 10%">{% trans 'Number of concepts' %}</td>
+                <td colspan="3" class="text-right">
                     {{ group.concept_count }}
                 </td>
             </tr>
             {% for value in group.totals %}
             <tr>
-                <td></td>
-                <td>{{ value.currency.name }}</td>
-                <td></td>
-                <td class="text-right">
+                <td style="text-indent: 10%">{{ value.currency.name }}</td>
+                <td colspan="3" class="text-right">
                     {% include 'concepts/value_total.html' %}
                 </td>
             </tr>
