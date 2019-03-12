@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy
 from django.db import models
 from django.utils import timezone
 import uuid
-from clickgestion.transactions.models import BaseConcept, ConceptSettings
+from clickgestion.concepts.models import BaseConcept, ConceptSettings
 
 User = get_user_model()
 

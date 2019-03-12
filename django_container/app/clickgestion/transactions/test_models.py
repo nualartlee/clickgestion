@@ -1,5 +1,5 @@
 from clickgestion.core.test import CustomTestCase, CustomModelTestCase
-from clickgestion.transactions.models import Transaction, get_new_transaction_code
+from clickgestion.transactions.models import get_new_transaction_code
 
 
 class TestGetNewTransactionID(CustomTestCase):

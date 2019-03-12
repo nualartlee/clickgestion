@@ -1,6 +1,6 @@
 from clickgestion.core.test import CustomTestCase
-from clickgestion.transactions.totalizers import get_breakdown_by_accounting_group, get_deposits_in_holding
-from clickgestion.transactions.models import BaseConcept
+from clickgestion.concepts.totalizers import get_breakdown_by_accounting_group, get_deposits_in_holding
+from clickgestion.concepts.models import BaseConcept
 from clickgestion.core.model_creation import create_test_models
 
 
@@ -17,3 +17,4 @@ class TestTotalizers(CustomTestCase):
 
     def test_get_deposits_in_holding(self):
         assert get_deposits_in_holding()
+

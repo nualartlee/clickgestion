@@ -11,5 +11,5 @@ class TestTodayView(CustomTestCase, CustomViewTestCase):
         cls.url = 'concept_list'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'transactions/concept_list.html'
+        cls.get_template = 'concepts/concept_list.html'
 

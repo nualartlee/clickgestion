@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
-from clickgestion.transactions.models import Transaction, ConceptValue
+from clickgestion.transactions.models import Transaction
 
 
 class TransactionEditForm(forms.ModelForm):
@@ -200,15 +200,4 @@ class TransactionPayForm(forms.ModelForm):
                     self.fields[field].required = True
                 if self.fields[field].required:
                     self.fields[field].widget = default_widget
-
-
-class ConceptValueForm(forms.ModelForm):
-
-    class Meta:
-        model = ConceptValue
-        fields = (
-            'currency',
-            'amount',
-        )
-
 

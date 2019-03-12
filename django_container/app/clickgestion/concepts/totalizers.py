@@ -1,7 +1,6 @@
 from django.apps import apps
-from django.conf import settings
 from django.utils.translation import gettext_lazy
-from django.db.models import Sum, Count
+from django.db.models import Sum
 
 
 class ConceptGroupTotal:
@@ -33,8 +32,8 @@ def get_breakdown_by_accounting_group(concepts='__all__'):
     :return: a list of ConceptGroupTotals
     """
     # Concept models
-    base_concept = apps.get_model('transactions.BaseConcept')
-    concept_value = apps.get_model('transactions.ConceptValue')
+    base_concept = apps.get_model('concepts.BaseConcept')
+    concept_value = apps.get_model('concepts.ConceptValue')
 
     # Get the concepts if not provided
     if concepts == '__all__':
@@ -70,8 +69,8 @@ def get_breakdown_by_concept_type(concepts='__all__'):
     :return: a list of ConceptGroupTotals
     """
     # Concept models
-    base_concept = apps.get_model('transactions.BaseConcept')
-    concept_value = apps.get_model('transactions.ConceptValue')
+    base_concept = apps.get_model('concepts.BaseConcept')
+    concept_value = apps.get_model('concepts.ConceptValue')
 
     # Get the concepts if not provided
     if concepts == '__all__':
@@ -115,7 +114,7 @@ def get_deposits_in_holding(concepts='__all__'):
     :return: A list of objects with the breakdown
     """
     # Concept models
-    base_concept = apps.get_model('transactions.BaseConcept')
+    base_concept = apps.get_model('concepts.BaseConcept')
     accounting_group = 'Deposits'
 
     # Get the concepts if not provided
@@ -147,8 +146,8 @@ def get_value_totals(concepts):
     :return: A list of DummyValues, one per currency
     """
     # models
-    concept_value = apps.get_model('transactions.ConceptValue')
-    currency_model = apps.get_model('transactions.Currency')
+    concept_value = apps.get_model('concepts.ConceptValue')
+    currency_model = apps.get_model('concepts.Currency')
 
     # The list of DummyValues to return
     totals = []

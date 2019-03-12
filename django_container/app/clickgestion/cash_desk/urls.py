@@ -1,6 +1,6 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 from clickgestion.cash_desk import views
-from clickgestion.transactions.views import concept_delete, concept_detail, concept_edit
+from clickgestion.concepts.views import concept_delete, concept_detail, concept_edit
 from clickgestion.cash_desk.forms import CashFloatDepositForm, CashFloatWithdrawalForm
 
 urlpatterns = [
