@@ -32,7 +32,7 @@
             {% else %}
 
             {% for concept in transaction.concepts.all %}
-            {% include 'transactions/concept_listitem.html' %}
+            {% include 'concepts/concept_listitem.html' %}
             {% endfor %}
 
             {% endifequal %}
@@ -52,7 +52,7 @@
                         <div class="container">
                             {% for value in transaction.totals %}
                             <div class="row justify-content-end">
-                                {% include 'transactions/value_bold_md.html' %}
+                                {% include 'concepts/value_bold_md.html' %}
                             </div>
                             {% endfor %}
                         </div>

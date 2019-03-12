@@ -7,10 +7,7 @@ from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
-from django.http import HttpResponse, QueryDict
-from django.conf import settings
-from django.utils import timezone
-from django_xhtml2pdf.utils import generate_pdf
+from django.http import QueryDict
 import urllib
 
 
@@ -210,7 +207,7 @@ def concept_row(request, *args, **kwargs):
 def get_transaction_from_kwargs(**kwargs):
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404('transactions.Transaction', code=transaction_code)
+    transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
     return transaction
 
 

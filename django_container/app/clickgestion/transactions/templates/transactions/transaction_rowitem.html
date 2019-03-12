@@ -89,7 +89,7 @@
                     <!--</button>-->
                 </div>
                 <div class="col text-right justify-content-end">
-                    {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                    {% with concept.value as value %}{% include 'concepts/value_sm.html' %}{% endwith %}
                 </div>
             </div>
 
@@ -132,7 +132,7 @@
         <div class="container">
             {% for value in transaction.totals %}
             <div class="row justify-content-end">
-                {% include 'transactions/value_bold_sm.html' %}
+                {% include 'concepts/value_bold_sm.html' %}
             </div>
             {% endfor %}
         </div>

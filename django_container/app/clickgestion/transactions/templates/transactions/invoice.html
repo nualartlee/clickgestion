@@ -71,7 +71,7 @@
             <td>{{ concept.tax_amount|floatformat:2|intcomma }}</td>
             <td>
                 {% with concept.value as value %}
-                {% include 'transactions/value_md.html' %}
+                {% include 'concepts/value_md.html' %}
                 {% endwith %}
             </td>
         </tr>
@@ -86,7 +86,7 @@
             <td colspan="3"></td>
             <td colspan="2">{% trans 'Total' %} {{ value.currency.name }}</td>
             <td colspan="2" class="text-right">
-                {% include 'transactions/value_bold_md.html' %}
+                {% include 'concepts/value_bold_md.html' %}
             </td>
         </tr>
         {% endfor %}

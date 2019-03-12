@@ -147,7 +147,7 @@ msgid "Back"
 msgstr "Volver"
 
 #: clickgestion/core/templates/core/delete.html:21
-#: clickgestion/transactions/templates/transactions/concept_listitem.html:19
+#: clickgestion/transactions/templates/concepts/concept_listitem.html:19
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:42
 #: clickgestion/transactions/templates/transactions/transaction_listitem.html:32
 msgid "Delete"
@@ -256,7 +256,7 @@ msgstr "Concepto Abstracto %(id)s"
 msgid "Concept Data Object"
 msgstr "Objeto De Datos De Concepto"
 
-#: clickgestion/transactions/templates/transactions/concept_listitem.html:16
+#: clickgestion/transactions/templates/concepts/concept_listitem.html:16
 #: clickgestion/transactions/templates/transactions/transaction_detail.html:39
 #: clickgestion/transactions/templates/transactions/transaction_listitem.html:29
 msgid "Edit"

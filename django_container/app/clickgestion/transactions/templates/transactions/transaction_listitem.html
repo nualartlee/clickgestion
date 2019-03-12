@@ -43,7 +43,7 @@
                                     <h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>
                                 </div>
                                 <div class="col text-right justify-content-end">
-                                    {% with concept.value as value %}{% include 'transactions/value_sm.html' %}{% endwith %}
+                                    {% with concept.value as value %}{% include 'concepts/value_sm.html' %}{% endwith %}
                                 </div>
                             </div>
                         {% endfor %}
@@ -56,7 +56,7 @@
                         <div class="container">
                             {% for value in transaction.totals %}
                             <div class="row justify-content-end">
-                                {% include 'transactions/value_bold_sm.html' %}
+                                {% include 'concepts/value_bold_sm.html' %}
                             </div>
                             {% endfor %}
                         </div>

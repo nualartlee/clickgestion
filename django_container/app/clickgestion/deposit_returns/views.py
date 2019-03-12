@@ -44,7 +44,7 @@ def deposit_return(request, *args, **kwargs):
     transaction = concept.transaction
     extra_context['transaction'] = transaction
 
-    return render(request, 'transactions/concept_detail.html', extra_context)
+    return render(request, 'concepts/concept_detail.html', extra_context)
 
 
 @login_required()
