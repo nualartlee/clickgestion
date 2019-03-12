@@ -203,6 +203,9 @@ class CashCloseList(PaginationMixin, ListView):
 def cash_desk_close(request, *args, **kwargs):
     extra_context = {}
 
+    # Set the header
+    extra_context['document_header'] = gettext('Cash Desk Balance')
+
     # Get closed transactions
     closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
         .prefetch_related('concepts__value__currency')
