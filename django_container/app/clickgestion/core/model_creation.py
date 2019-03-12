@@ -4,6 +4,7 @@ import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from clickgestion.concepts.models import ConceptValue, Currency
+from clickgestion.deposit_returns.models import DepositReturn
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
 from clickgestion.apt_rentals.models import NightRateRange
@@ -81,7 +82,7 @@ def create_cash_group():
 
 
 def create_sales_group():
-    return create_group('sales', [AptRental, AptRentalDeposit])
+    return create_group('sales', [AptRental, AptRentalDeposit, DepositReturn])
 
 
 def create_admin():

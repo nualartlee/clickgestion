@@ -149,6 +149,10 @@ def transaction_detail(request, *args, **kwargs):
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
     extra_context['transaction'] = transaction
+
+    # Get print signal, will autoprint with js if true
+    print_transaction = request.GET.get('print', False)
+    extra_context['print_transaction'] = print_transaction
     return render(request, 'transactions/transaction_detail.html', extra_context)
 
 
@@ -344,7 +348,12 @@ def transaction_pay(request, *args, **kwargs):
                 transaction.closed = True
                 transaction.closed_date = timezone.datetime.now()
                 transaction.save()
-                return redirect('transaction_detail', transaction_code=transaction.code)
+
+                # Display and print
+                params = urllib.parse.urlencode({'print': True})
+                response = redirect('transaction_detail', transaction_code=transaction.code)
+                response['Location'] += '?{}'.format(params)
+                return response
 
             # Save the transaction
             if form.cleaned_data['save_button']:
