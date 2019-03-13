@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^closures/$', views.CashCloseList.as_view(), name='cashclose_list'),
     url(r'^closures/(?P<cashclose_code>CC[A-F0-9]+)/$', views.cashclose_row, name='cashclose_row'),
     url(r'^closures/(?P<cashclose_code>CC[A-F0-9]+)/detail/$', views.cashclose_detail, name='cashclose_detail'),
+    url(r'^closures/(?P<cashclose_code>CC[A-F0-9]+)/document/$', views.cashclose_document, name='cashclose_document'),
     url(r'^deposits/new/(?P<transaction_code>T[A-F0-9]+)$', concept_edit, {'concept_form': CashFloatDepositForm},
         name='cashfloat_deposit_new'),
     url(r'^deposits/(?P<concept_code>T[-A-Z0-9]+)$', concept_detail, {'concept_form': CashFloatDepositForm},

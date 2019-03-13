@@ -7,14 +7,14 @@
 <div class="container">
     <p class="mb-4"></p>
         <!--Print button-->
-        <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("print-{{ transaction.code }}");' title="{% trans 'Print' %}">
+        <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("transaction-document-a4");' title="{% trans 'Print' %}">
             {% trans 'Print' %}
         </a>
     {% include 'transactions/transaction_document_a4.html' %}
 </div>
 {% if print_transaction %}
 <script type="text/javascript">
-    printElement("print-{{ transaction.code }}");
+    printElement("transaction-document-a4");
 </script>
 {% endif %}
 {% endblock %}

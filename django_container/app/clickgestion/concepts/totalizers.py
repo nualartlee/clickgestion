@@ -92,6 +92,7 @@ def get_breakdown_by_concept_type(concepts='__all__'):
         )
         group_total.concept_count = group_total.concepts.count()
         group_total.totals = get_value_totals(group_total.concepts)
+        group_total.type = group_total.concepts[0].name_plural
         breakdown.append(group_total)
 
     # Return the list of totals

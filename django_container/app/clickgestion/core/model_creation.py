@@ -476,6 +476,7 @@ def create_test_cash_float_withdrawal(transaction, date):
     currency = get_random_currency()
     amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
+        credit=False,
         currency=currency,
         amount=amount,
     )

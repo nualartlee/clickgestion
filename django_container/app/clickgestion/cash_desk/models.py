@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
+from clickgestion.concepts.models import BaseConcept, ConceptSettings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
 from django.db import models
 from django.utils import timezone
+from clickgestion.concepts import totalizers
 import uuid
-from clickgestion.concepts.models import BaseConcept, ConceptSettings
 
 User = get_user_model()
 
@@ -114,4 +115,30 @@ class CashClose(models.Model):
 
     def __str__(self):
         return self.code
+
+    @property
+    def balance(self):
+        return totalizers.get_value_totals(self.concepts)
+
+    @property
+    def breakdown_by_accounting_group(self):
+        return totalizers.get_breakdown_by_accounting_group(self.concepts)
+
+    @property
+    def breakdown_by_concept_type(self):
+        return totalizers.get_breakdown_by_concept_type(self.concepts)
+
+    @property
+    def breakdowns(self):
+        breakdowns = [
+            {'name': gettext_lazy('Breakdown By Concept Type'), 'groups': self.breakdown_by_concept_type},
+            {'name': gettext_lazy('Breakdown By Accounting Group'), 'groups': self.breakdown_by_accounting_group},
+        ]
+        return breakdowns
+
+    @property
+    def concepts(self):
+        return BaseConcept.objects.filter(transaction__cashclose=self)
+
+
 

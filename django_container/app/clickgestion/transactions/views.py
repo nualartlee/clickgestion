@@ -174,6 +174,23 @@ def transaction_detail(request, *args, **kwargs):
 
 
 @login_required
+def transaction_document(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+    extra_context['transaction'] = transaction
+
+    # Return
+    return render(request, 'transactions/transaction_document_a4.html', extra_context)
+
+
+@login_required
 def transaction_edit(request, *args, **kwargs):
     extra_context = {}
 
@@ -233,23 +250,6 @@ def transaction_edit(request, *args, **kwargs):
         form = TransactionEditForm(instance=transaction)
         extra_context['form'] = form
         return render(request, 'transactions/transaction_edit.html', extra_context)
-
-
-@login_required
-def transaction_document(request, *args, **kwargs):
-    extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
-
-    # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
-    extra_context['transaction'] = transaction
-
-    # Return
-    return render(request, 'transactions/transaction_document_a4.html', extra_context)
 
 
 class TransactionList(PaginationMixin, ListView):

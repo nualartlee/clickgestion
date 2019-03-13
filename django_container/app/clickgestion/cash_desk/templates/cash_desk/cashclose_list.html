@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-auto">
                         <!-- Button to Open The Filter -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#FilterModal">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#modal-filter">
                             {% trans 'Filter' %}
                         </button>
                     </div>
@@ -71,7 +71,7 @@
 
 
     <!-- Filter Modal -->
-    <div class="modal" id="FilterModal">
+    <div class="modal" id="modal-filter">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -103,12 +103,26 @@
                         </form>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <!-- Modal footer -->
-                <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                <!--</div>-->
+    <!--Modal For Printable A4-->
+    <div class="modal fade" id="modal-printable-a4">
+        <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
+            <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
 
+                <!-- Modal Header -->
+                <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
+                    <!--Print button-->
+                    <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("cashclose-document-a4");' title="{% trans 'Print' %}">
+                        {% trans 'Print' %}
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body"></div>
             </div>
         </div>
     </div>

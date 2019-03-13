@@ -11,6 +11,7 @@ from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
+from django.utils import timezone
 from clickgestion.concepts import totalizers
 import urllib
 
@@ -25,26 +26,54 @@ def cash_desk_balance(request, *args, **kwargs):
     # Set the header
     extra_context['document_header'] = gettext('Cash Desk Balance')
 
+    # Create a dummy cashclose to use the same templates
+    cashclose = {}
+    cashclose['employee'] = {'get_full_name': request.user.get_full_name() }
+    cashclose['created'] = timezone.now()
+
     # Get closed transactions
     closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
         .prefetch_related('concepts__value__currency')
-    extra_context['closed_transactions'] = closed_transactions
+    cashclose['transactions'] = closed_transactions
 
     # Get closed concepts
     closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions)\
         .prefetch_related('value__currency')
+    cashclose['concepts'] = closed_concepts
+
+    # Get the balance
+    balance = totalizers.get_value_totals(closed_concepts)
+    cashclose['balance'] = balance
+
+    # Get breakdowns
+    breakdowns = []
 
     # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    extra_context['breakdown'] = breakdown
+    groups = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    breakdowns.append({
+        'name': gettext('Breakdown By Concept Type'),
+        'groups': groups,
+    })
 
-    # Get the totals
-    totals = totalizers.get_value_totals(closed_concepts)
-    extra_context['totals'] = totals
+    # Get breakdown by accounting group
+    groups = totalizers.get_breakdown_by_accounting_group(closed_concepts)
+    breakdowns.append({
+        'name': gettext('Breakdown By Accounting Group'),
+        'groups': groups,
+    })
 
     # Get deposits in holding
-    deposits = totalizers.get_deposits_in_holding()
-    extra_context['deposits'] = deposits
+    groups = totalizers.get_deposits_in_holding()
+    breakdowns.append({
+        'name': gettext('Deposits In Holding'),
+        'groups': groups,
+    })
+
+    # Collect the breakdowns
+    cashclose['breakdowns'] = breakdowns
+
+    # Pass the dummy cashclose
+    extra_context['cashclose'] = cashclose
 
     # Render
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
@@ -83,6 +112,23 @@ def cashclose_detail(request, *args, **kwargs):
     extra_context['totals'] = totals
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
+
+
+@login_required()
+def cashclose_document(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the cashclose
+    cashclose_code = kwargs.get('cashclose_code', None)
+    cashclose = get_object_or_404(CashClose, code=cashclose_code)
+    extra_context['cashclose'] = cashclose
+
+    # Return
+    return render(request, 'cash_desk/cashclose_document_a4.html', extra_context)
 
 
 @login_required()
@@ -191,7 +237,7 @@ class CashCloseList(PaginationMixin, ListView):
                 'cashclose': cashclose,
             }
             # Generate the pdf
-            result = generate_pdf('cash_desk/cashclose.html', file_object=resp, context=context)
+            result = generate_pdf('cash_desk/cashclose_document_a4.html', file_object=resp, context=context)
             return result
 
         # Return same

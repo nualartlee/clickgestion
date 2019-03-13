@@ -146,6 +146,12 @@ class BaseConcept(models.Model):
     def name(self):
         return gettext_lazy(self.concept_name)
 
+    @property
+    def name_plural(self):
+        if self.is_child:
+            return self._meta.verbose_name_plural
+        return self.child._meta.verbose_name_plural
+
     def save(self, *args, **kwargs):
 
         # Save the accounting group

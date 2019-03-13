@@ -4,10 +4,18 @@
 
 
 {% block content %}
-<div class="row justify-content-center">
-
-    {% include 'cash_desk/cashclose.html' %}
-
+<div class="container">
+    <p class="mb-4"></p>
+    <!--Print button-->
+    <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("cashclose-document-a4");' title="{% trans 'Print' %}">
+        {% trans 'Print' %}
+    </a>
+    {% include 'cash_desk/cashclose_document_a4.html' %}
 </div>
+{% if print_cashclose %}
+<script type="text/javascript">
+    printElement("cashclose-document-a4");
+</script>
+{% endif %}
 {% endblock %}
 
