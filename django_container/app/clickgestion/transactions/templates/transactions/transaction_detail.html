@@ -10,7 +10,7 @@
         <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("print-{{ transaction.code }}");' title="{% trans 'Print' %}">
             {% trans 'Print' %}
         </a>
-    {% include 'transactions/invoice.html' %}
+    {% include 'transactions/transaction_document_a4.html' %}
 </div>
 {% if print_transaction %}
 <script type="text/javascript">

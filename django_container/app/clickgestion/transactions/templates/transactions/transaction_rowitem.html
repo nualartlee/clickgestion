@@ -3,38 +3,9 @@
     <!--CODE-->
     {% if transaction.closed %}
     <th>
-        <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{transaction.code}}">
+        <a data-remote="{% url 'transaction_document' transaction_code=transaction.code %}" class="btn btn-link text-dark" data-toggle="modal" data-target="#modal-printable-a4">
             {{ transaction.code }}
-        </button>
-        <!--Modal For Printable A4-->
-        <div class="modal" id="{{transaction.code}}">
-            <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
-                <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
-
-                    <!-- Modal Header -->
-                    <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
-                        <!--Print button-->
-                        <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("print-{{ transaction.code }}");' title="{% trans 'Print' %}">
-                            {% trans 'Print' %}
-                        </a>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="modal-body" style="overflow-x: auto; max-width: 23cm;">
-                        <div class="row justify-content-center">
-                            {% include 'transactions/invoice.html' %}
-                        </div>
-                    </div>
-
-                    <!-- Modal footer -->
-                    <!--<div class="modal-footer" style="overflow-x: auto; max-width: 23cm;">-->
-                    <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                    <!--</div>-->
-
-                </div>
-            </div>
-        </div>
+        </a>
     </th>
     {% else %}
     <th>
@@ -81,43 +52,9 @@
                             {{ concept.name }}
                         </small>
                     </a>
-                    <!-- Button to Open The Filter -->
-                    <!--<button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">-->
-                        <!--<small>-->
-                            <!--{{ concept.name }}-->
-                        <!--</small>-->
-                    <!--</button>-->
                 </div>
                 <div class="col text-right justify-content-end">
                     {% with concept.value as value %}{% include 'concepts/value_sm.html' %}{% endwith %}
-                </div>
-            </div>
-
-
-            <!--Concept Modal-->
-            <div class="modal" id="{{ concept.code }}">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">{{ concept.name }}</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <div class="container">
-                                {{ concept.description_short }}
-                            </div>
-                        </div>
-
-                        <!-- Modal footer -->
-                        <!--<div class="modal-footer">-->
-                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                        <!--</div>-->
-
-                    </div>
                 </div>
             </div>
 
@@ -146,28 +83,9 @@
             {% trans 'Delete' %}
         </a>
         {% endif %}
-        <a class="badge badge-secondary ml-2" href="#" data-toggle="modal" data-target="#actions-{{ transaction.code }}">
+        <a class="badge badge-secondary ml-2" href="#" data-remote="{% url 'transaction_actions' transaction_code=transaction.code %}" data-toggle="modal" data-target="#modal-actions">
             {% trans 'More' %}
         </a>
     </td>
-
-    <!-- Modal -->
-    <div class="modal fade" id="actions-{{ transaction.code }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{ transaction.code }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-6">
-                        <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=transaction.code %}">{% trans 'View The Transaction' %}</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </tr>

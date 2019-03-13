@@ -88,6 +88,23 @@ def get_concept_and_form_from_kwargs(**kwargs):
     return concept, concept_form
 
 
+@login_required
+def transaction_actions(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+    extra_context['transaction'] = transaction
+
+    # Return
+    return render(request, 'transactions/transaction_actions.html', extra_context)
+
+
 def transaction_concepts(request, *args, **kwargs):
 
     # Check permissions
@@ -218,6 +235,23 @@ def transaction_edit(request, *args, **kwargs):
         return render(request, 'transactions/transaction_edit.html', extra_context)
 
 
+@login_required
+def transaction_document(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the transaction
+    transaction_code = kwargs.get('transaction_code', None)
+    transaction = get_object_or_404(Transaction, code=transaction_code)
+    extra_context['transaction'] = transaction
+
+    # Return
+    return render(request, 'transactions/transaction_document_a4.html', extra_context)
+
+
 class TransactionList(PaginationMixin, ListView):
 
     model = Transaction
@@ -302,7 +336,7 @@ class TransactionList(PaginationMixin, ListView):
                 'transaction': transaction,
             }
             # Generate the pdf
-            result = generate_pdf('transactions/invoice.html', file_object=resp, context=context)
+            result = generate_pdf('transactions/transaction_document_a4.html', file_object=resp, context=context)
             return result
 
         # Return same

@@ -59,7 +59,7 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
             post_data,
             follow=True,
         )
-        self.assertTemplateUsed(response, 'transactions/invoice.html')
+        self.assertTemplateUsed(response, 'transactions/transaction_document_a4.html')
         self.assertEqual(response.status_code, 200)
 
 

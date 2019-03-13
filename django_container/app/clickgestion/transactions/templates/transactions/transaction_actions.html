@@ -1,0 +1,4 @@
+{% load i18n humanize static %}
+<div class="col-6">
+    <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=transaction.code %}">{% trans 'View The Transaction' %}</a>
+</div>

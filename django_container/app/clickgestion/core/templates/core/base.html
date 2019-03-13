@@ -6,31 +6,6 @@
         <title>ClickGestion</title>
         {% block meta %}
         {% endblock %}
-        <script type="text/javascript">
-            function printElement(elem_id) {
-
-                var elem = document.getElementById(elem_id);
-
-                var domClone = elem.cloneNode(true);
-
-                var printSection = document.getElementById("printSection");
-                if (!printSection) {
-                    printSection = document.createElement("div");
-                }
-                while (printSection.firstChild) {
-                    printSection.removeChild(printSection.firstChild);
-                }
-                printSection.id = "printSection";
-                printSection.style.position = "absolute";
-                printSection.style.left = "0";
-                printSection.style.top = "0";
-                printSection.style.width = "210mm";
-                document.body.appendChild(printSection);
-
-                printSection.appendChild(domClone);
-                window.print();
-            }
-        </script>
         <link rel="shortcut icon" type="image/png" href="{% static 'core/img/logo-40x40.png' %}"/>
         <link rel="stylesheet" href="{% static 'core/js/bootstrap-4.0.0-dist/css/bootstrap.min.css' %}">
         <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
@@ -74,5 +49,37 @@
         <script src="{% static 'core/js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'core/js/popper-1.14.4.js' %}"></script>
         <script src="{% static 'core/js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
+        <!--JQuery to load data into Bootstrap4 modal body-->
+        <script>
+            $('body').on('click', '[data-toggle="modal"]', function(){
+                $($(this).data("target")+' .modal-body').load($(this).data("remote"));
+            });
+        </script>
+        <!--JS to print an html element by id on A4 paper-->
+        <script type="text/javascript">
+            function printElement(elem_id) {
+
+                var elem = document.getElementById(elem_id);
+
+                var domClone = elem.cloneNode(true);
+
+                var printSection = document.getElementById("printSection");
+                if (!printSection) {
+                    printSection = document.createElement("div");
+                }
+                while (printSection.firstChild) {
+                    printSection.removeChild(printSection.firstChild);
+                }
+                printSection.id = "printSection";
+                printSection.style.position = "absolute";
+                printSection.style.left = "0";
+                printSection.style.top = "0";
+                printSection.style.width = "210mm";
+                document.body.appendChild(printSection);
+
+                printSection.appendChild(domClone);
+                window.print();
+            }
+        </script>
     </body>
 </html>

@@ -43,13 +43,6 @@ class CashFloatDeposit(BaseConcept):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
 
-    #@property
-    #def price(self):
-    #    """
-    #    :return: Total price for the stay
-    #    """
-    #    return self.value.amount
-
 
 class CashFloatWithdrawalSettings(ConceptSettings):
     """
@@ -84,13 +77,6 @@ class CashFloatWithdrawal(BaseConcept):
     def description_short(self):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
-
-    #@property
-    #def price(self):
-    #    """
-    #    :return: Total price for the stay
-    #    """
-    #    return self.value.amount
 
 
 def get_new_cashclose_code():

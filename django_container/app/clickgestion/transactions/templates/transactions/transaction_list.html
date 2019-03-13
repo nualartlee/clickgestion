@@ -22,7 +22,7 @@
                     </div>
                     <div class="col-auto">
                         <!-- Button to Open The Filter -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#FilterModal">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#modal-filter">
                             {% trans 'Filter' %}
                         </button>
                     </div>
@@ -72,8 +72,8 @@
     </div>
 
 
-    <!-- Filter Modal -->
-    <div class="modal" id="FilterModal">
+    <!-- Modal for filter -->
+    <div class="modal fade" id="modal-filter">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -105,16 +105,44 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- Modal footer -->
-                <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                <!--</div>-->
-
             </div>
         </div>
     </div>
 
+    <!--Modal For Printable A4-->
+    <div class="modal fade" id="modal-printable-a4">
+        <div class="modal-dialog modal-lg" style="overflow-x: auto; max-width: 23cm;">
+            <div class="modal-content" style="overflow-x: auto; max-width: 23cm;">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="overflow-x: auto; max-width: 23cm;">
+                    <!--Print button-->
+                    <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("transaction-document-a4");' title="{% trans 'Print' %}">
+                        {% trans 'Print' %}
+                    </a>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for actions -->
+    <div class="modal fade" id="modal-actions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ transaction.code }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

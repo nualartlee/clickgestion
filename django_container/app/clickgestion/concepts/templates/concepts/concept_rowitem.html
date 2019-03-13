@@ -7,6 +7,9 @@
         </a>
     </th>
 
+    <!--CODE-->
+    <td>{{ concept.code|slice:"12:"|default_if_none:"&nbsp;" }}</td>
+
     <!--NAME-->
     <td>{{ concept.name|default_if_none:"&nbsp;" }}</td>
 
