@@ -71,7 +71,16 @@ def deposit_return_new(request, *args, **kwargs):
         # Create the transaction if not provided
         if not transaction:
             Transaction = apps.get_model('transactions.Transaction')
-            transaction = Transaction(employee=request.user)
+            transaction = Transaction(
+                apt_number=concept.transaction.apt_number,
+                client_address=concept.transaction.client_address,
+                client_email=concept.transaction.client_email,
+                client_first_name=concept.transaction.client_first_name,
+                client_id=concept.transaction.client_id,
+                client_last_name=concept.transaction.client_last_name,
+                client_phone_number=concept.transaction.client_phone_number,
+                employee=request.user,
+            )
             transaction.save()
 
         # Create the return
