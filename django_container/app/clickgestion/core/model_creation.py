@@ -410,7 +410,7 @@ def create_test_deposit_returns(date):
     for deposit in apt_rental_deposits_ending_today:
         if not deposit.transaction.closed:
             continue
-        if deposit.deposit_return:
+        if deposit.deposit_returned:
             continue
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
@@ -509,7 +509,7 @@ def create_test_random_transaction(date):
     if 70 < selector <= 80:
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
-        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, deposit_return=None).reverse()
+        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, deposit_returns=None).reverse()
         if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]

@@ -29,17 +29,25 @@
     <!--ACTIONS-->
     <td>
         {% if concept.transaction.closed %}
-        <a class="badge badge-warning ml-2" href="/concepts/{{ concept.code }}/return/">
-            {% trans 'Return' %}
-        </a>
-        <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/refund">
-            {% trans 'Refund' %}
-        </a>
+
+            {% if concept.can_return_deposit %}
+            <a class="badge badge-warning ml-2" href="{% url 'deposit_return_new' concept_code=concept.code %}">
+                {% trans 'Return' %}
+            </a>
+            {% endif %}
+
+            <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/refund">
+                {% trans 'Refund' %}
+            </a>
+
         {% else %}
-        <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/delete/">
-            {% trans 'Delete' %}
-        </a>
+
+            <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/delete/">
+                {% trans 'Delete' %}
+            </a>
+
         {% endif %}
+
         <a class="badge badge-secondary ml-2" href="#" data-toggle="modal" data-target="#actions-{{ concept.code }}">
         {% trans 'More' %}
         </a>
@@ -63,7 +71,9 @@
                       <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">{% trans 'View The Transaction' %}</a>
                       <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_concepts' transaction_code=concept.transaction.code %}">{% trans 'View All Concepts On The Same Transaction' %}</a>
                       <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_detail' concept_code=concept.code %}">{% trans "View The Concept's Details" %}</a>
-                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'deposit_return' concept_code=concept.code %}">{% trans "Return The Deposit" %}</a>
+                      {% if concept.can_return_deposit %}
+                      <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'deposit_return_new' concept_code=concept.code %}">{% trans "Return The Deposit" %}</a>
+                      {% endif %}
                       <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_refund' concept_code=concept.code %}">{% trans "Refund This Concept" %}</a>
                       <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_delete' concept_code=concept.code %}">{% trans "Delete This Concept" %}</a>
                   </div>

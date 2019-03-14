@@ -124,13 +124,13 @@ def get_deposits_in_holding(concepts='__all__'):
         holding1 = base_concept.objects.filter(
             accounting_group=accounting_group,
             transaction__closed=True,
-            deposit_return=None,
+            deposit_returns=None,
         ).prefetch_related('value__currency')
         # Deposit return concept opened
         holding2 = base_concept.objects.filter(
             accounting_group=accounting_group,
             transaction__closed=True,
-            deposit_return__transaction__closed=False,
+            deposit_returns__transaction__closed=False,
         ).prefetch_related('value__currency')
         # Query union
         concepts = holding1 | holding2

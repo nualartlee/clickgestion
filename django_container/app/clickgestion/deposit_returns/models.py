@@ -22,10 +22,10 @@ class DepositReturn(BaseConcept):
     returned_deposit = models.ForeignKey(
         'concepts.BaseConcept',
         verbose_name=gettext_lazy('Returned Deposit'),
-        related_name='deposit_return', on_delete=models.CASCADE,
+        related_name='deposit_returns', on_delete=models.CASCADE,
     )
 
-    #BaseConcept settings
+    # BaseConcept settings
     _url = '/deposit-returns/{}'
     _settings_class = DepositReturnSettings
     _code_initials = 'DR'
@@ -44,7 +44,7 @@ class DepositReturn(BaseConcept):
         desc = '{}: {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
         return desc
 
-    def save(self):
+    def save(self, *args, **kwargs):
         value = ConceptValue(
             amount=self.returned_deposit.value.amount,
             credit=False,
@@ -52,6 +52,6 @@ class DepositReturn(BaseConcept):
         )
         value.save()
         self.value = value
-        super().save()
+        super().save(*args, **kwargs)
 
 

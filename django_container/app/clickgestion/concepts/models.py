@@ -99,6 +99,17 @@ class BaseConcept(models.Model):
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'))
 
     @property
+    def can_return_deposit(self):
+
+        # Get status
+        is_deposit = self.concept_class in ['aptrentaldeposit', 'parkingdeposit', ]
+        is_closed = self.transaction.closed
+        is_not_returned = not self.deposit_returned
+
+        # Return
+        return is_deposit and is_closed and is_not_returned
+
+    @property
     def child(self):
         """
         Get the instance of the child class inheriting from BaseConcept
@@ -107,6 +118,14 @@ class BaseConcept(models.Model):
         if not self.is_child:
             return getattr(self, self.concept_class)
         return self
+
+    @property
+    def deposit_returned(self):
+        if self.deposit_returns.exists():
+            for r in self.deposit_returns.all():
+                if r.transaction.closed:
+                    return True
+        return False
 
     @property
     def description_short(self):
@@ -184,6 +203,9 @@ class BaseConcept(models.Model):
                 value = self.get_value()
         value.save()
         self.value = value
+
+        #if self.concept_class == 'depositreturn':
+        #    import pdb;pdb.set_trace()
 
         # save
         super().save(*args, **kwargs)

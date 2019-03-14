@@ -37,6 +37,11 @@ def forbidden(request, exception):
 
 
 def message(request):
+    """
+    Simple message view
+
+    Add 'header' and 'message' to context for rendering
+    """
     return render(request, 'core/message.html')
 
 

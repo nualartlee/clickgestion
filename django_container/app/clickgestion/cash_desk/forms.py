@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
-from clickgestion.concepts.models import ConceptValue, Currency, get_default_currency
+from django.apps import apps
 
 
 class CashCloseForm(forms.ModelForm):
@@ -36,9 +36,8 @@ class CashCloseForm(forms.ModelForm):
 class CashFloatDepositForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
-        queryset=Currency.objects.filter(enabled=True),
-        #initial=get_default_currency(),
-        initial=Currency.objects.get(default=True),
+        queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
+        #initial=apps.get_model('concepts.Currency').objects.filter(default=True).first(),
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -52,7 +51,7 @@ class CashFloatDepositForm(forms.ModelForm):
         self.helper.form_tag = False
 
     def save(self, commit=True):
-        value = ConceptValue()
+        value = apps.get_model('concepts.ConceptValue')()
         value.amount = self.cleaned_data['amount']
         value.currency = self.cleaned_data['currency']
         value.save()
@@ -65,9 +64,8 @@ class CashFloatDepositForm(forms.ModelForm):
 class CashFloatWithdrawalForm(forms.ModelForm):
 
     currency = forms.ModelChoiceField(
-        queryset=Currency.objects.filter(enabled=True),
-        #initial=get_default_currency(),
-        initial=Currency.objects.get(default=True),
+        queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
+        #initial=apps.get_model('concepts.Currency').objects.filter(default=True).first(),
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -81,7 +79,7 @@ class CashFloatWithdrawalForm(forms.ModelForm):
         self.helper.form_tag = False
 
     def save(self, commit=True):
-        value = ConceptValue()
+        value = apps.get_model('concepts.ConceptValue')()
         value.amount = self.cleaned_data['amount']
         value.currency = self.cleaned_data['currency']
         value.credit = False

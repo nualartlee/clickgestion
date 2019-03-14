@@ -2,7 +2,7 @@ from django.apps import apps
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
 from clickgestion.transactions.models import Transaction
 from django.shortcuts import get_object_or_404, render, redirect, reverse
-from django.utils.translation import gettext, gettext_lazy
+from django.utils.translation import gettext
 from clickgestion.transactions.filters import TransactionFilter
 from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
@@ -259,7 +259,7 @@ class TransactionList(PaginationMixin, ListView):
     paginate_by = 8
     # ListView.as_view will pass custom arguments here
     queryset = None
-    header = gettext_lazy('Transactions')
+    header = gettext('Transactions')
     request = None
     filter = None
     filter_data = None
