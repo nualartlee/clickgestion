@@ -17,7 +17,6 @@ def today(request, *args, **kwargs):
 
     # Set initial filter data
     filter_data = {
-        'transaction__closed': True,
         'end_date_after': timezone.localdate(),
         'end_date_before': timezone.localdate(),
         'returned': False,
@@ -67,19 +66,27 @@ def deposit_return_new(request, *args, **kwargs):
             transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
 
         # Create the transaction if not provided
-        if not transaction:
+        else:
             Transaction = apps.get_model('transactions.Transaction')
-            transaction = Transaction(
-                apt_number=concept.transaction.apt_number,
-                client_address=concept.transaction.client_address,
-                client_email=concept.transaction.client_email,
-                client_first_name=concept.transaction.client_first_name,
-                client_id=concept.transaction.client_id,
-                client_last_name=concept.transaction.client_last_name,
-                client_phone_number=concept.transaction.client_phone_number,
-                employee=request.user,
-            )
-            transaction.save()
+            transaction = Transaction()
+
+        # Copy client data from deposit
+        if not transaction.apt_number:
+            transaction.apt_number = concept.transaction.apt_number
+        if not transaction.client_address:
+            transaction.client_address = concept.transaction.client_address
+        if not transaction.client_email:
+            transaction.client_email = concept.transaction.client_email
+        if not transaction.client_first_name:
+            transaction.client_first_name = concept.transaction.client_first_name
+        if not transaction.client_id:
+            transaction.client_id = concept.transaction.client_id
+        if not transaction.client_last_name:
+            transaction.client_last_name = concept.transaction.client_last_name
+        if not transaction.client_phone_number:
+            transaction.client_phone_number = concept.transaction.client_phone_number
+        transaction.employee = request.user
+        transaction.save()
 
         # Delete any open returns
         concept.deposit_returns.all().delete()

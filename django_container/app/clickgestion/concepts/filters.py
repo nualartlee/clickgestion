@@ -62,6 +62,7 @@ class DepositFilter(ConceptFilter):
         concepts = super().qs
         return concepts.filter(
             concept_class__in=['aptrentaldeposit'],
+            transaction__closed=True,
         )
 
 

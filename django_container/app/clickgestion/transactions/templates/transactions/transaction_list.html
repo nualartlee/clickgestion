@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-auto">
                         {% if is_filtered %}
-                        <a class="btn btn-sm btn-outline-danger" href="{% url 'transaction_list' %}">
+                        <a class="btn btn-sm btn-outline-danger" href="{{ request.path }}">
                             {% trans 'Clear Filter' %}
                         </a>
                         {% endif %}
@@ -96,7 +96,7 @@
                                 </div>
                                 {% if is_filtered %}
                                 <div class="formColumn col-4">
-                                    <a class="btn btn-outline-danger btn-block" href="{% url 'transaction_list' %}">
+                                    <a class="btn btn-outline-danger btn-block" href="{{ request.path }}">
                                         {% trans 'Clear Filter' %}
                                     </a>
                                 </div>
