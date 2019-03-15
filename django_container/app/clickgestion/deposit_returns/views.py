@@ -19,15 +19,16 @@ def today(request, *args, **kwargs):
     # Set initial filter data
     accounting_group = 'Deposits'
     filter_data = {
-        'accounting_group': accounting_group,
-        'transaction__closed': True,
-        'deposit_return': None,
-        'end_date_after': timezone.localdate(),
-        'end_date_before': timezone.localdate(),
+        #'accounting_group': accounting_group,
+        #'transaction__closed': True,
+        #'deposit_return': None,
+        #'end_date_after': timezone.localdate(),
+        #'end_date_before': timezone.localdate(),
+        'returned': 2,
     }
     params = urllib.parse.urlencode(filter_data)
     # Return
-    response = redirect('concept_list')
+    response = redirect('deposit_list')
     response['Location'] += '?{}'.format(params)
     return response
 
@@ -55,9 +56,8 @@ def deposit_return_new(request, *args, **kwargs):
 
     # Check for a concept to return
     concept_code = kwargs.get('concept_code', None)
-    concept = get_object_or_404(apps.get_model('concepts.BaseConcept'), code=concept_code)
-
-    if concept:
+    if concept_code:
+        concept = get_object_or_404(apps.get_model('concepts.BaseConcept'), code=concept_code)
 
         # Check that the concept is a returnable deposit
         if not concept.can_return_deposit:
@@ -66,7 +66,9 @@ def deposit_return_new(request, *args, **kwargs):
             return redirect('message')
 
         # Check for a transaction waiting for the concept to return
-        transaction = request.session.pop('deposit_return_transaction', None)
+        transaction_code = request.session.pop('deposit_return_transaction_code', None)
+        if transaction_code:
+            transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
 
         # Create the transaction if not provided
         if not transaction:
@@ -83,31 +85,29 @@ def deposit_return_new(request, *args, **kwargs):
             )
             transaction.save()
 
+        # Delete any open returns
+        concept.deposit_returns.all().delete()
+
         # Create the return
         DepositReturn(transaction=transaction, returned_deposit=concept).save()
 
         # Redirect to transaction edit
         return redirect('transaction_edit', transaction_code=transaction.code)
 
+    # Check for a transaction to add a return to
+    transaction_code = kwargs.get('transaction_code', None)
+    if transaction_code:
+        transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
 
-    # Get deposits to be returned today
-    accounting_group = 'Deposits'
+        # Save the transaction in cookie before looking for the deposit to return
+        request.session['deposit_return_transaction_code'] = transaction.code
 
-    # For each concept type in the Deposits accounting group
-    deposit_types = []
-    for concept_model_name in settings.CONCEPTS:
-        concept_model = apps.get_model(concept_model_name)
-        if concept_model().settings.accounting_group == accounting_group:
-            deposit_type = {}
-            deposit_type['type'] = concept_model().concept_type
-            deposit_type['concepts'] = concept_model.objects.filter(
-                transaction__closed=True,
-                return_date__year=timezone.now().year,
-                return_date__month=timezone.now().month,
-                return_date__day=timezone.now().day,
-                deposit_return=None,
-            )
-            deposit_types.append(deposit_type)
-    extra_context['deposit_types'] = deposit_types
-    return render(request, 'deposits/cash_desk_close.html', extra_context)
-
+        # Set initial filter data and display returnable deposit list
+        filter_data = {
+            'returned': False,
+        }
+        params = urllib.parse.urlencode(filter_data)
+        # Return
+        response = redirect('deposit_list')
+        response['Location'] += '?{}'.format(params)
+        return response

@@ -3,6 +3,7 @@ from clickgestion.concepts import views
 
 urlpatterns = [
     url(r'^$', views.ConceptList.as_view(), name='concept_list'),
+    url(r'^deposits$', views.DepositList.as_view(), name='deposit_list'),
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$', views.concept_row,
         name='concept_row'),
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$', views.concept_delete,
