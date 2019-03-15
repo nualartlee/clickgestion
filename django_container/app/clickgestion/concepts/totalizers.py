@@ -7,8 +7,8 @@ class ConceptGroupTotal:
     """
     Contains the description and total of a group of concepts for display
     """
-    def __init__(self, type, concepts, concept_count, totals):
-        self.type = type
+    def __init__(self, name, concepts, concept_count, totals):
+        self.name = name
         self.concepts = concepts
         self.concept_count = concept_count
         self.totals = totals
@@ -46,9 +46,9 @@ def get_breakdown_by_accounting_group(concepts='__all__'):
     breakdown = []
 
     # Select by group
-    for group in groups:
+    for group in [g for g in groups if g]:
         group_total = ConceptGroupTotal(
-            type=gettext_lazy(group),
+            name=gettext_lazy(group),
             concepts=concepts.filter(accounting_group=group).prefetch_related('value__currency'),
             concept_count=None,
             totals=None,
@@ -83,16 +83,17 @@ def get_breakdown_by_concept_type(concepts='__all__'):
     breakdown = []
 
     # Select by group
-    for group in groups:
+    for group in [g for g in groups if g]:
         group_total = ConceptGroupTotal(
-            type=gettext_lazy(group),
+            #name=gettext_lazy(group),
+            name=None,
             concepts=concepts.filter(concept_name=group).prefetch_related('value__currency'),
             concept_count=None,
             totals=None,
         )
         group_total.concept_count = group_total.concepts.count()
         group_total.totals = get_value_totals(group_total.concepts)
-        group_total.type = group_total.concepts[0].name_plural
+        group_total.name = group_total.concepts[0].name_plural
         breakdown.append(group_total)
 
     # Return the list of totals
@@ -124,13 +125,13 @@ def get_deposits_in_holding(concepts='__all__'):
         holding1 = base_concept.objects.filter(
             accounting_group=accounting_group,
             transaction__closed=True,
-            deposit_returns=None,
+            depositreturns=None,
         ).prefetch_related('value__currency')
         # Deposit return concept opened
         holding2 = base_concept.objects.filter(
             accounting_group=accounting_group,
             transaction__closed=True,
-            deposit_returns__transaction__closed=False,
+            depositreturns__transaction__closed=False,
         ).prefetch_related('value__currency')
         # Query union
         concepts = holding1 | holding2

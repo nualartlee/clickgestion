@@ -2,7 +2,7 @@ from django.apps import apps
 from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
-from clickgestion.concepts.filters import ConceptFilter, DepositFilter
+from clickgestion.concepts.filters import ConceptFilter
 from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -203,18 +203,6 @@ def concept_row(request, *args, **kwargs):
     response = redirect('concept_list')
     response['Location'] += '?{}'.format(params)
     return response
-
-
-class DepositList(ConceptList):
-
-    # ListView.as_view will pass custom arguments here
-    queryset = None
-    header = gettext_lazy('Deposits')
-    request = None
-    filter_type = DepositFilter
-    filter = None
-    filter_data = None
-    is_filtered = False
 
 
 def get_transaction_from_kwargs(**kwargs):

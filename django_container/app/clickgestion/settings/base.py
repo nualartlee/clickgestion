@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'clickgestion.transactions',
     'clickgestion.apt_rentals',
     'clickgestion.cash_desk',
-    'clickgestion.deposit_returns',
+    'clickgestion.deposits',
 ]
 
 MIDDLEWARE = [
@@ -175,8 +175,8 @@ PAGINATION_SETTINGS = {
 # Available concepts
 CONCEPTS = [
     'apt_rentals.aptrental',
-    'apt_rentals.aptrentaldeposit',
     'cash_desk.cashfloatdeposit',
     'cash_desk.cashfloatwithdrawal',
-    'deposit_returns.depositreturn',
+    'deposits.depositreturn',
+    'deposits.aptrentaldeposit',
 ]

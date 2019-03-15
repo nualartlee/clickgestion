@@ -121,8 +121,8 @@ class BaseConcept(models.Model):
 
     @property
     def deposit_returned(self):
-        if self.deposit_returns.exists():
-            for r in self.deposit_returns.all():
+        if self.depositreturns.exists():
+            for r in self.depositreturns.all():
                 if r.transaction.closed:
                     return True
         return False

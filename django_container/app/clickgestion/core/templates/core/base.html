@@ -11,19 +11,34 @@
         <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
 
         <style>
+
             @media screen {
+
+              /* Hide the cloned print section in screen mode */
               #printSection {
                   display: none;
               }
+
             }
 
             @media print {
+
+              /* Show only the cloned print section in print mode */
               body > *:not(#printSection) {
                 display: none;
               }
+
+              /* Set page size */
               @page {
                   size: 210mm 297mm;
                   margin:0;
+              }
+
+              /* Show background colors on tables (disabled by default in bootstrap) */
+              .table .thead-light th {
+                  color: #495057 !important;
+                  background-color: #e9ecef !important;
+                  border-color: #dee2e6 !important;
               }
 
             }

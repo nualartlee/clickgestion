@@ -4,13 +4,12 @@ import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from clickgestion.concepts.models import ConceptValue, Currency
-from clickgestion.deposit_returns.models import DepositReturn
+from clickgestion.deposits.models import AptRentalDeposit, AptRentalDepositSettings, DepositReturn, DepositReturnSettings
 from clickgestion.transactions.models import Transaction
-from clickgestion.apt_rentals.models import AptRental, AptRentalDeposit, AptRentalSettings, AptRentalDepositSettings
+from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
     CashFloatWithdrawal, CashFloatWithdrawalSettings
-from clickgestion.deposit_returns.models import DepositReturn
 from django.utils import timezone
 from random import randrange
 from faker import Faker
@@ -54,7 +53,7 @@ def create_test_models(days=30):
             create_test_random_transaction(date)
 
         # Return deposits
-        create_test_deposit_returns(date)
+        create_test_depositreturns(date)
 
         # Close Cash Desk
         create_test_cashclose(date, get_cash_employee())
@@ -308,6 +307,34 @@ def create_cashfloatwithdrawalsettings():
     return model
 
 
+def create_depositreturnsettings():
+    try:
+        model = DepositReturnSettings.objects.get()
+    except:
+        model = DepositReturnSettings(
+            accounting_group='Deposits',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='cash'),
+            vat_percent=0,
+        ).save()
+    return model
+
+
 def create_test_transaction(employee, date):
     fake = Faker()
     notes = None
@@ -391,7 +418,7 @@ def create_test_apartment_rental_deposit(transaction, apt_rental, date):
     return model
 
 
-def create_test_deposit_return(transaction, returned_deposit, date):
+def create_test_depositreturn(transaction, returned_deposit, date):
     model = DepositReturn(
         returned_deposit=returned_deposit,
         transaction=transaction,
@@ -401,7 +428,7 @@ def create_test_deposit_return(transaction, returned_deposit, date):
     return model
 
 
-def create_test_deposit_returns(date):
+def create_test_depositreturns(date):
     apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
         end_date__year=date.year,
         end_date__month=date.month,
@@ -423,7 +450,7 @@ def create_test_deposit_returns(date):
         transaction.client_id = old_transaction.client_id
         transaction.apt_number = old_transaction.apt_number
 
-        create_test_deposit_return(transaction, deposit, date)
+        create_test_depositreturn(transaction, deposit, date)
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()
@@ -509,7 +536,7 @@ def create_test_random_transaction(date):
     if 70 < selector <= 80:
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
-        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, deposit_returns=None).reverse()
+        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, depositreturns=None).reverse()
         if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]
@@ -522,7 +549,7 @@ def create_test_random_transaction(date):
         transaction.client_id = old_transaction.client_id
         transaction.apt_number = old_transaction.apt_number
 
-        create_test_deposit_return(transaction, apt_rental_deposit, date)
+        create_test_depositreturn(transaction, apt_rental_deposit, date)
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()

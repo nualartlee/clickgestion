@@ -40,29 +40,3 @@ class ConceptFilter(django_filters.FilterSet):
         form.helper = FormHelper()
         form.helper.form_tag = False
         return form
-
-
-class DepositFilter(ConceptFilter):
-
-    returned = django_filters.BooleanFilter(method='returned_filter')
-    returned.field.label = gettext_lazy('Returned')
-
-    def returned_filter(self, queryset, name, value):
-
-        # Returned
-        if value:
-            return queryset.filter(deposit_returns__transaction__closed=True)
-
-        # Not returned
-        else:
-            return queryset.filter(Q(deposit_returns__transaction__closed=False) | Q(deposit_returns__transaction=None))
-
-    @property
-    def qs(self):
-        concepts = super().qs
-        return concepts.filter(
-            concept_class__in=['aptrentaldeposit'],
-            transaction__closed=True,
-        )
-
-

@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^apt-rentals/', include('clickgestion.apt_rentals.urls')),
     url(r'^concepts/', include('clickgestion.concepts.urls')),
     url(r'^cash-desk/', include('clickgestion.cash_desk.urls')),
-    url(r'^deposit-returns/', include('clickgestion.deposit_returns.urls')),
+    url(r'^deposits/', include('clickgestion.deposits.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
 ]

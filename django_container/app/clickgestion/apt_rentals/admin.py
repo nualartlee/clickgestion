@@ -7,7 +7,5 @@ class AptRentalAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.AptRental, AptRentalAdmin)
-admin.site.register(models.AptRentalDeposit)
-admin.site.register(models.AptRentalDepositSettings)
 admin.site.register(models.NightRateRange)
 admin.site.register(models.AptRentalSettings)
