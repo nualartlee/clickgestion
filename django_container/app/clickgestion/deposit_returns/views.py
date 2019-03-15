@@ -2,7 +2,6 @@ from django.apps import apps
 from clickgestion.deposit_returns.models import DepositReturn
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from django.conf import settings
 from django.utils import timezone
 from clickgestion.core.utilities import invalid_permission_redirect
 import urllib
@@ -17,14 +16,11 @@ def today(request, *args, **kwargs):
         return invalid_permission_redirect(request)
 
     # Set initial filter data
-    accounting_group = 'Deposits'
     filter_data = {
-        #'accounting_group': accounting_group,
-        #'transaction__closed': True,
-        #'deposit_return': None,
-        #'end_date_after': timezone.localdate(),
-        #'end_date_before': timezone.localdate(),
-        'returned': 2,
+        'transaction__closed': True,
+        'end_date_after': timezone.localdate(),
+        'end_date_before': timezone.localdate(),
+        'returned': False,
     }
     params = urllib.parse.urlencode(filter_data)
     # Return
