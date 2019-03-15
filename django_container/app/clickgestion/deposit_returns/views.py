@@ -67,8 +67,8 @@ def deposit_return_new(request, *args, **kwargs):
 
         # Create the transaction if not provided
         else:
-            Transaction = apps.get_model('transactions.Transaction')
-            transaction = Transaction()
+            transaction_model = apps.get_model('transactions.Transaction')
+            transaction = transaction_model()
 
         # Copy client data from deposit
         if not transaction.apt_number:

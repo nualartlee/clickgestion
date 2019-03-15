@@ -41,7 +41,7 @@ class DepositReturn(BaseConcept):
 
     @property
     def description_short(self):
-        desc = '{}: {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
+        desc = '{} {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
         return desc
 
     def save(self, *args, **kwargs):
