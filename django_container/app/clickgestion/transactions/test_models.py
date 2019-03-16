@@ -18,6 +18,9 @@ class TestTransaction(CustomTestCase, CustomModelTestCase):
             '__str__',
             'description_short',
             'totals',
+            'client_signature_required',
+            'employee_signature_required',
+            'title',
         ]
         cls.model_object = cls.transaction
 
@@ -29,5 +32,11 @@ class TestTransaction(CustomTestCase, CustomModelTestCase):
         self.assertEqual(self.transaction.client, 'Bob Smith')
         self.transaction.client_first_name = ''
         self.assertEqual(self.transaction.client, 'Smith')
+
+    def test_client_signature_required(self):
+        self.assertFalse(self.transaction.client_signature_required or False)
+
+    def test_title(self):
+        self.assertTrue(self.transaction.title)
 
 

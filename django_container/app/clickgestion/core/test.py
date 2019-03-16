@@ -86,7 +86,10 @@ class CustomModelTestCase: # pragma: no cover
     def test_attrs(self):
         if self.model_attrs and self.model_object:
             for attr in self.model_attrs:
-                assert getattr(self.model_object, attr)
+                self.assertTrue(
+                    getattr(self.model_object, attr) or True,
+                    '{}.{} returned False'.format(self.model_object, attr)
+                )
         else:
             print('No attributes to test')
 

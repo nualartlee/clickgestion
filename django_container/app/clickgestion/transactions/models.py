@@ -86,6 +86,13 @@ class Transaction(models.Model):
         return name
 
     @property
+    def client_signature_required(self):
+        for concept in self.concepts.all():
+            if concept.settings.client_signature_required:
+                return True
+        return False
+
+    @property
     def description_short(self):
         """
         :return: A short single line description of the concept.
@@ -104,6 +111,13 @@ class Transaction(models.Model):
                 description += 'db '
             description += ' {0} {1}'.format(value.currency.symbol, value.amount)
         return description
+
+    @property
+    def employee_signature_required(self):
+        for concept in self.concepts.all():
+            if concept.settings.employee_signature_required:
+                return True
+        return False
 
     def get_all_permissions(self):
         """
@@ -132,6 +146,18 @@ class Transaction(models.Model):
                 if code_id >= next_id:
                     next_id = code_id + 1
         return next_id
+
+    @property
+    def title(self):
+        accounting_groups = self.concepts.values_list('accounting_group', flat=True).distinct()
+        if 'Production' in accounting_groups:
+            return gettext_lazy('Invoice')
+        if 'Deposits' in accounting_groups:
+            return gettext_lazy('Deposit Transaction')
+        if 'Cash' in accounting_groups:
+            return gettext_lazy('Cash Management')
+        return gettext_lazy('Transaction')
+
 
     @property
     def totals(self):

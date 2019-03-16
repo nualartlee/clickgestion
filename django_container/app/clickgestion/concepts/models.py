@@ -291,8 +291,12 @@ class ConceptSettings(SingletonModel):
     client_last_name_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Last Name Visible'))
     client_phone_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Phone Required'))
     client_phone_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Phone Visible'))
+    # Client signature required on document
+    client_signature_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Client Signature Required'))
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    # Employee signature required on document
+    employee_signature_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Employee Signature Required'))
     notes_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Notes Required'))
     notes_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Notes Visible'))
     # Permission group this concept belongs to. Only concepts of the same group are allowed in a single transaction

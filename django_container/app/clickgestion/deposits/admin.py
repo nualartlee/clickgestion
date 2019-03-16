@@ -1,8 +1,9 @@
 from django.contrib import admin
-from clickgestion.deposits.models import AptRentalDeposit, AptRentalDepositSettings, DepositReturn
+from clickgestion.deposits import models
 
 
-admin.site.register(AptRentalDeposit)
-admin.site.register(AptRentalDepositSettings)
-admin.site.register(DepositReturn)
+admin.site.register(models.AptRentalDeposit)
+admin.site.register(models.AptRentalDepositSettings)
+admin.site.register(models.DepositReturn)
+admin.site.register(models.DepositReturnSettings)
 
