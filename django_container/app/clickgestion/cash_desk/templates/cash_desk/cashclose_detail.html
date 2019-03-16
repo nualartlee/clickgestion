@@ -7,14 +7,14 @@
 <div class="container">
     <p class="mb-4"></p>
     <!--Print button-->
-    <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("cashclose-document-a4");' title="{% trans 'Print' %}">
+    <a class="btn btn-sm btn-outline-secondary m-1" onclick='printElement("document-a4");' title="{% trans 'Print' %}">
         {% trans 'Print' %}
     </a>
     {% include 'cash_desk/cashclose_document_a4.html' %}
 </div>
 {% if print_cashclose %}
 <script type="text/javascript">
-    printElement("cashclose-document-a4");
+    printElement("document-a4");
 </script>
 {% endif %}
 {% endblock %}
