@@ -100,27 +100,26 @@
 
             <!--Employee Signature-->
             {% if transaction.employee_signature_required %}
-            <div class="col text-right">
-                <h6>{% trans 'Employee Signature' %}</h6>
-                <div class="border m-2" style="width: 80mm; height: 30mm;"> </div>
-                <h6><strong>{{ transaction.employee.get_full_name }}</strong></h6>
+            <div class="col-6">
+                <h6>{% trans 'Employee Signature:' %}</h6>
+                <div class="border my-1" style="height: 25mm;"></div>
+                <h6 class="text-right"><strong>{{ transaction.employee.get_full_name }}</strong></h6>
             </div>
             {% endif %}
 
             <!--Client Signature-->
             {% if transaction.client_signature_required %}
-            <div class="col text-right">
-                <h6>{% trans 'Client Signature' %}</h6>
-                <div class="border m-2" style="width: 80mm; height: 30mm;"> </div>
-                <h6><strong>{{ transaction.client|default_if_none:"{% trans 'Client Signature' %}" }}</strong></h6>
+            <div class="col-6">
+                <h6>{% trans 'Client Signature:' %}</h6>
+                <div class="border my-1" style="height: 25mm;"></div>
+                <h6 class="text-right"><strong>{{ transaction.client|default_if_none:"{% trans 'Client Signature' %}" }}</strong></h6>
             </div>
             {% endif %}
-
 
         </div>
 
         <!--Thank you-->
-        <div class="row justify-content-center my-5">
+        <div class="row align-items-end justify-content-center my-5">
             <h5>{% trans 'Thank You' %}</h5>
         </div>
     </div>
