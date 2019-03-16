@@ -44,7 +44,7 @@
     <table class="table table-bordered table-sm">
         <thead class="thead-light">
         <tr>
-            <th colspan="3">{% trans 'Concepts' %}</th>
+            <th>{% trans 'Concepts' %}</th>
             <th>{% trans 'Taxable' %}</th>
             <th>{% trans 'Rate' %}</th>
             <th>{% trans 'Tax' %}</th>
@@ -54,7 +54,7 @@
         <tbody>
         {% for concept in transaction.concepts.all %}
         <tr>
-            <td colspan="3">{{ concept.description_short }}</td>
+            <td class="pl-3">{{ concept.description_short }}</td>
             <td class="text-nowrap">{{ concept.taxable_amount|floatformat:2|intcomma }}</td>
             <td class="text-nowrap">{{ concept.settings.vat_percent }}%</td>
             <td class="text-nowrap">{{ concept.tax_amount|floatformat:2|intcomma }}</td>
@@ -67,13 +67,12 @@
         {% endfor %}
         <thead class="thead-light">
         <tr>
-            <th colspan="7">{% trans 'Totals' %}</th>
+            <th colspan="5">{% trans 'Totals' %}</th>
         </tr>
         </thead>
         {% for value in transaction.totals %}
         <tr>
-            <td colspan="3"></td>
-            <td colspan="2">{% trans 'Total' %} {{ value.currency.name }}</td>
+            <td colspan="3" class="pl-3">{% trans 'Total' %} {{ value.currency.name }}</td>
             <td colspan="2" class="text-right text-nowrap">
                 {% include 'concepts/value_bold_md.html' %}
             </td>

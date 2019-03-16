@@ -2,10 +2,13 @@
 {% load i18n humanize static %}
 
 {% block document_header_title %}
-<h3><strong>{{ transaction.title }}</strong></h3>
+<h3><strong>{% if document_header %}{{ document_header }}{% else %}{% trans 'Cash Desk Close' %}{% endif %}</strong></h3>
 {% endblock %}
 
 {% block document_body_top_left %}
+<!--Top Left-->
+<div class="col">
+</div>
 {% endblock %}
 
 {% block document_body_top_right %}
