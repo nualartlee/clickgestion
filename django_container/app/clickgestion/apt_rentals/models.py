@@ -95,6 +95,10 @@ class AptRental(BaseConcept):
         return self.code
 
     @property
+    def name(self):
+        return self._meta.verbose_name
+
+    @property
     def nights(self):
         """
         :return: The total number of nights

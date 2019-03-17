@@ -44,6 +44,10 @@ class CashFloatDeposit(BaseConcept):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
 
+    @property
+    def name(self):
+        return self._meta.verbose_name
+
 
 class CashFloatWithdrawalSettings(ConceptSettings):
     """
@@ -78,6 +82,10 @@ class CashFloatWithdrawal(BaseConcept):
     def description_short(self):
         desc = self._meta.verbose_name + ' ' + self.code
         return desc
+
+    @property
+    def name(self):
+        return self._meta.verbose_name
 
 
 def get_new_cashclose_code():

@@ -68,6 +68,10 @@ class AptRentalDeposit(BaseConcept):
         return desc % data
 
     @property
+    def name(self):
+        return self._meta.verbose_name
+
+    @property
     def nights(self):
         return (self.end_date - self.start_date).days
 
@@ -132,6 +136,10 @@ class DepositReturn(BaseConcept):
     def description_short(self):
         desc = '{} {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
         return desc
+
+    @property
+    def name(self):
+        return self._meta.verbose_name
 
     def save(self, *args, **kwargs):
         value = ConceptValue(
