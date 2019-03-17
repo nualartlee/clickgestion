@@ -40,7 +40,7 @@
                         {% for concept in transaction.concepts.all %}
                             <div class="row">
                                 <div class="col justify-content-start">
-                                    <h6 class="mr-2"><small>{{ concept.concept_type }}</small></h6>
+                                    <h6 class="mr-2"><small>{{ concept.name }}</small></h6>
                                 </div>
                                 <div class="col text-right justify-content-end">
                                     {% with concept.value as value %}{% include 'concepts/value_sm.html' %}{% endwith %}

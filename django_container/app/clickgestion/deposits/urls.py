@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from clickgestion.deposits import views
-from clickgestion.deposits.forms import AptRentalDepositForm
+from clickgestion.deposits.forms import AptRentalDepositForm, DepositReturnForm
 from clickgestion.concepts.views import concept_delete, concept_detail, concept_edit
 
 urlpatterns = [
@@ -23,6 +23,9 @@ urlpatterns = [
 
     url(r'^returns/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$', views.depositreturn_detail,
         name='depositreturn_detail'),
+    url(r'^returns/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$', concept_delete,
+        {'concept_form': DepositReturnForm},
+        name='depositreturn_delete'),
     url(r'^returns/new/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$', views.depositreturn_new,
         name='depositreturn_new'),
     url(r'^returns/new/(?P<transaction_code>T[A-F0-9]{10})/$', views.depositreturn_new,

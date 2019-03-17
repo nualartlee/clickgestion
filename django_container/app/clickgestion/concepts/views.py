@@ -28,7 +28,7 @@ def concept_delete(request, *args, **kwargs):
     extra_context['transaction'] = transaction
 
     # Use default delete view
-    extra_context['header'] = gettext('Delete {}?'.format(concept.concept_type))
+    extra_context['header'] = gettext('Delete {}?'.format(concept.name))
     extra_context['message'] = concept.description_short
     extra_context['next'] = request.META['HTTP_REFERER']
 
