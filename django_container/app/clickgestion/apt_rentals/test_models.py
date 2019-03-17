@@ -30,8 +30,9 @@ class TestAptRental(CustomTestCase, CustomModelTestCase):
             '_settings_class',
             '_verbose_name',
             'description_short',
-            'get_value',
-            'nights',
             'get_current_rates',
+            'get_value',
+            'name',
+            'nights',
         ]
         cls.model_object = cls.apartment_rental
