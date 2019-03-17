@@ -6,6 +6,8 @@ urlpatterns = [
         name='concept_list'),
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$', views.concept_row,
         name='concept_row'),
+    url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/actions/$', views.concept_actions,
+        name='concept_actions'),
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$', views.concept_delete,
         name='concept_delete'),
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/detail/$', views.concept_detail,

@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-auto">
                         <!-- Button to Open The Filter -->
-                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#FilterModal">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#modal-filter">
                             {% trans 'Filter' %}
                         </button>
                     </div>
@@ -66,8 +66,8 @@
     <div class="col col-md-1">
     </div>
 
-    <!-- Filter Modal -->
-    <div class="modal" id="FilterModal">
+    <!-- Modal for filter -->
+    <div class="modal" id="modal-filter">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -99,16 +99,24 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- Modal footer -->
-                <!--<div class="modal-footer">-->
-                <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                <!--</div>-->
-
             </div>
         </div>
     </div>
 
+    <!-- Modal for actions -->
+    <div class="modal fade" id="modal-actions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{% trans 'Actions' %}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

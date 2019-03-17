@@ -93,10 +93,10 @@
         <script src="{% static 'core/js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'core/js/popper-1.14.4.js' %}"></script>
         <script src="{% static 'core/js/bootstrap-4.0.0-dist/js/bootstrap.min.js' %}"></script>
-        <!--JQuery to load data into Bootstrap4 modal body-->
+        <!--JQuery to load data into Bootstrap4 modal content-->
         <script>
             $('body').on('click', '[data-toggle="modal"]', function(){
-                $($(this).data("target")+' .modal-body').load($(this).data("remote"));
+                $($(this).data("target")+' .modal-content').load($(this).data("remote"));
             });
         </script>
     </body>

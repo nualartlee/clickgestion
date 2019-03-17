@@ -1,4 +1,16 @@
 {% load i18n humanize static %}
-<div class="col-6">
-    <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=transaction.code %}">{% trans 'View The Transaction' %}</a>
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ transaction.code }}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=transaction.code %}">
+                {% trans 'View The Transaction' %}
+            </a>
+        </div>
+    </div>
 </div>

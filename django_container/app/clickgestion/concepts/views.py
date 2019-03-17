@@ -11,6 +11,23 @@ from django.http import QueryDict
 import urllib
 
 
+@login_required
+def concept_actions(request, *args, **kwargs):
+    extra_context = {}
+
+    # Check permissions
+    if not request.user.is_authenticated:
+        return invalid_permission_redirect(request)
+
+    # Get the concept
+    concept_code = kwargs.get('concept_code', None)
+    concept = get_object_or_404(BaseConcept, code=concept_code)
+    extra_context['concept'] = concept
+
+    # Return
+    return render(request, 'concepts/concept_actions.html', extra_context)
+
+
 @login_required()
 def concept_delete(request, *args, **kwargs):
     extra_context = {}
