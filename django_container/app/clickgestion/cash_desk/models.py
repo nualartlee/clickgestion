@@ -26,10 +26,10 @@ class CashFloatDeposit(BaseConcept):
     """
 
     #BaseConcept settings
-    _url = '/cash-desk/deposits/{}'
-    _settings_class = CashFloatDepositSettings
     _code_initials = 'CFD'
     _concept_class = 'cashfloatdeposit'
+    _settings_class = CashFloatDepositSettings
+    _url = '/cash-desk/deposits/{}'
     _verbose_name = 'Cash Float Deposit'
 
     class Meta:
@@ -102,7 +102,7 @@ def get_new_cashclose_code():
     # Check if already used
     try:
         CashClose.objects.get(code=code)
-        return get_new_cashclose_code()
+        return get_new_cashclose_code()  # pragma: no cover
     except CashClose.DoesNotExist:
         return code
 
@@ -111,7 +111,8 @@ class CashClose(models.Model):
     """
     A cash close records an end of day cash desk close operation.
     """
-    code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_cashclose_code, editable=False)
+    code = models.CharField(
+        verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_cashclose_code, editable=False)
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     employee = models.ForeignKey(User, verbose_name=gettext_lazy('Employee'), editable=False)
     notes = models.TextField(max_length=1024, verbose_name=gettext_lazy('Notes'), blank=True, null=True)

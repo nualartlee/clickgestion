@@ -1,9 +1,10 @@
+from django.apps import apps
 from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
-from django.apps import apps
+from django.core.exceptions import ValidationError
 
 
 class CashCloseForm(forms.ModelForm):
@@ -47,8 +48,17 @@ class CashFloatDepositForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def clean_amount(self):
+        # Assert that amount is positive
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            error = gettext_lazy('Enter a positive amount.')
+            raise ValidationError(error)
+        return amount
 
     def save(self, commit=True):
         value = apps.get_model('concepts.ConceptValue')()
@@ -57,7 +67,8 @@ class CashFloatDepositForm(forms.ModelForm):
         value.save()
         deposit = super().save(commit=False)
         deposit.value = value
-        deposit.save()
+        if commit:
+            deposit.save()
         return deposit
 
 
@@ -75,8 +86,17 @@ class CashFloatWithdrawalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def clean_amount(self):
+        # Assert that amount is positive
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            error = gettext_lazy('Enter a positive amount.')
+            raise ValidationError(error)
+        return amount
 
     def save(self, commit=True):
         value = apps.get_model('concepts.ConceptValue')()
@@ -86,9 +106,9 @@ class CashFloatWithdrawalForm(forms.ModelForm):
         value.save()
         withdrawal = super().save(commit=False)
         withdrawal.value = value
-        withdrawal.save()
+        if commit:
+            withdrawal.save()
         return withdrawal
-
 
 
 
