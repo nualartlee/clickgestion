@@ -6,6 +6,7 @@ from clickgestion.apt_rentals.models import AptRental
 from clickgestion.deposits.models import AptRentalDeposit
 from django.utils import timezone
 from clickgestion.core import model_creation
+from django.apps import apps
 
 
 def test_database_setup():
@@ -98,15 +99,11 @@ class CustomViewTestCase:  # pragma: no cover
     """
     Derived class with utility functions to test views
     If test_get/post is set, it will test the method over the three access levels.
-    If access level is met, the response should be ok (200) and use the template specified.
-    Otherwise, the response should redirect to login
+    If the user has required_permission is met, the response should be ok (200) and use the template specified.
+    Otherwise, the response should redirect to login or permission denied
     """
-    class AccessLevels:
-        anyone = 0
-        normal_user = 1
-        administrator = 2
 
-    required_access_level = AccessLevels.anyone
+    required_permission = ''
     url = None
     kwargs = {}
     referer = '/'
@@ -122,19 +119,56 @@ class CustomViewTestCase:  # pragma: no cover
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
-        self.check_response(True, response, 0)
+        if self.required_permission is None:
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
+            self.assertTemplateUsed(response, self.get_template)
+        else:
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.request['PATH_INFO'], reverse('login'))
+            self.assertTemplateUsed(response, 'core/login.html')
 
-    def test_normaluser_get(self):
+    def test_non_permitted_get(self):
+        if not self.required_permission:
+            print("No permission required")
+            return True
         if not self.test_get:
             print("Not testing GET")
             return
+        codename = self.required_permission.split('.')[1]
+        permission = apps.get_model('auth.Permission').objects.get(codename=codename)
+        self.normaluser.user_permissions.remove(permission)
+        self.normaluser.save()
         self.log_normaluser_in()
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
-        self.check_response(False, response, 1)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'core/403.html')
+
+    def test_permitted_get(self):
+        if not self.required_permission:
+            print("No permission required")
+            return True
+        if not self.test_get:
+            print("Not testing GET")
+            return
+        codename = self.required_permission.split('.')[1]
+        permission = apps.get_model('auth.Permission').objects.get(codename=codename)
+        self.normaluser.user_permissions.add(permission)
+        self.normaluser.save()
+        self.log_normaluser_in()
+        response = self.client.get(
+            reverse(self.url, kwargs=self.kwargs),
+            HTTP_REFERER=self.referer, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
+        self.assertTemplateUsed(response, self.get_template)
 
     def test_superuser_get(self):
+        if not self.required_permission:
+            print("No permission required")
+            return True
         if not self.test_get:
             print("Not testing GET")
             return
@@ -142,25 +176,14 @@ class CustomViewTestCase:  # pragma: no cover
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
-        self.check_response(False, response, 2)
-
-    def check_response(self, anonymous, response, access_level):
-        if self.required_access_level > access_level:
-            if anonymous:
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(response.request['PATH_INFO'], reverse('login'))
-                self.assertTemplateUsed(response, 'core/login.html')
-            else:
-                self.assertEqual(response.status_code, 403)
-                self.assertTemplateUsed(response, 'core/403.html')
-        else:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
-            self.assertTemplateUsed(response, self.get_template)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
+        self.assertTemplateUsed(response, self.get_template)
 
     def repeat_get(self):
         self.test_anonymous_get()
-        self.test_normaluser_get()
+        self.test_non_permitted_get()
+        self.test_permitted_get()
         self.test_superuser_get()
 
 

@@ -1,18 +1,19 @@
+from clickgestion.concepts.models import BaseConcept
 from clickgestion.cash_desk.filters import CashCloseFilter
 from clickgestion.cash_desk.forms import CashCloseForm
 from clickgestion.cash_desk.models import CashClose
-from clickgestion.concepts.models import BaseConcept
-from clickgestion.transactions.models import Transaction
+from clickgestion.core.utilities import custom_permission_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext, gettext_lazy
 from django_xhtml2pdf.utils import generate_pdf
 from django.http import HttpResponse, QueryDict
-from clickgestion.core.utilities import invalid_permission_redirect
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from pure_pagination.mixins import PaginationMixin
 from django.utils import timezone
 from clickgestion.concepts import totalizers
+from clickgestion.transactions.models import Transaction
 import urllib
 
 
@@ -79,6 +80,7 @@ def cash_desk_balance(request, *args, **kwargs):
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 
 
+@custom_permission_required('cash_desk.add_cashclose')
 def cashclose_detail(request, *args, **kwargs):
     extra_context = {}
 
@@ -114,13 +116,9 @@ def cashclose_detail(request, *args, **kwargs):
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 
 
-@login_required()
+@custom_permission_required('cash_desk.add_cashclose')
 def cashclose_document(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the cashclose
     cashclose_code = kwargs.get('cashclose_code', None)
@@ -131,12 +129,8 @@ def cashclose_document(request, *args, **kwargs):
     return render(request, 'cash_desk/cashclose_document_a4.html', extra_context)
 
 
-@login_required()
+@custom_permission_required('cash_desk.add_cashclose')
 def cashclose_row(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the cashclose
     cashclose_code = kwargs.get('cashclose_code', None)
@@ -153,6 +147,7 @@ def cashclose_row(request, *args, **kwargs):
     return response
 
 
+@method_decorator(custom_permission_required('cash_desk.add_cashclose'), name='dispatch')
 class CashCloseList(PaginationMixin, ListView):
 
     model = CashClose
@@ -168,10 +163,6 @@ class CashCloseList(PaginationMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         # First
-
-        # Check permissions
-        if not request.user.is_authenticated:
-            return invalid_permission_redirect(request)
 
         # Get arguments
         self.request = request
@@ -221,10 +212,6 @@ class CashCloseList(PaginationMixin, ListView):
 
     def post(self, request, *args, **kwargs):
 
-        # Check permissions
-        if not request.user.is_authenticated:
-            return invalid_permission_redirect(request)
-
         print_cashclose = request.POST.get('print_cashclose', None)
         if print_cashclose:
             # Get the cashclose
@@ -245,7 +232,7 @@ class CashCloseList(PaginationMixin, ListView):
         return self.get(request, *args, **kwargs)
 
 
-@login_required()
+@custom_permission_required('cash_desk.add_cashclose')
 def cash_desk_close(request, *args, **kwargs):
     extra_context = {}
 

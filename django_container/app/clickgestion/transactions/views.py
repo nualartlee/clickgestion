@@ -1,17 +1,18 @@
 from django.apps import apps
-from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
-from clickgestion.transactions.models import Transaction
+from clickgestion.core.utilities import custom_permission_required
 from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django_xhtml2pdf.utils import generate_pdf
 from django.utils.translation import gettext
-from clickgestion.transactions.filters import TransactionFilter
-from clickgestion.core.utilities import invalid_permission_redirect
+from django.http import HttpResponse, QueryDict
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from pure_pagination.mixins import PaginationMixin
-from django.http import HttpResponse, QueryDict
 from django.conf import settings
 from django.utils import timezone
-from django_xhtml2pdf.utils import generate_pdf
+from clickgestion.transactions.models import Transaction
+from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
+from clickgestion.transactions.filters import TransactionFilter
 import urllib
 
 
@@ -92,10 +93,6 @@ def get_concept_and_form_from_kwargs(**kwargs):
 def transaction_actions(request, *args, **kwargs):
     extra_context = {}
 
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
-
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
@@ -105,11 +102,8 @@ def transaction_actions(request, *args, **kwargs):
     return render(request, 'transactions/transaction_actions.html', extra_context)
 
 
+@login_required
 def transaction_concepts(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the transaction
     transaction = get_transaction_from_kwargs(**kwargs)
@@ -125,12 +119,9 @@ def transaction_concepts(request, *args, **kwargs):
     return response
 
 
+@custom_permission_required('transactions.add_transaction')
 def transaction_delete(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the object
     transaction_code = kwargs.get('transaction_code', None)
@@ -158,10 +149,6 @@ def transaction_delete(request, *args, **kwargs):
 def transaction_detail(request, *args, **kwargs):
     extra_context = {}
 
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
-
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
@@ -177,10 +164,6 @@ def transaction_detail(request, *args, **kwargs):
 def transaction_document(request, *args, **kwargs):
     extra_context = {}
 
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
-
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
     transaction = get_object_or_404(Transaction, code=transaction_code)
@@ -193,10 +176,6 @@ def transaction_document(request, *args, **kwargs):
 @login_required
 def transaction_edit(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
@@ -252,6 +231,7 @@ def transaction_edit(request, *args, **kwargs):
         return render(request, 'transactions/transaction_edit.html', extra_context)
 
 
+@method_decorator(login_required, name='dispatch')
 class TransactionList(PaginationMixin, ListView):
 
     model = Transaction
@@ -267,10 +247,6 @@ class TransactionList(PaginationMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         # First
-
-        # Check permissions
-        if not request.user.is_authenticated:
-            return invalid_permission_redirect(request)
 
         # Get arguments
         self.request = request
@@ -320,10 +296,6 @@ class TransactionList(PaginationMixin, ListView):
 
     def post(self, request, *args, **kwargs):
 
-        # Check permissions
-        if not request.user.is_authenticated:
-            return invalid_permission_redirect(request)
-
         print_transaction = request.POST.get('print_transaction', None)
         if print_transaction:
             # Get the transaction
@@ -347,10 +319,6 @@ class TransactionList(PaginationMixin, ListView):
 @login_required
 def transaction_pay(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
@@ -407,11 +375,8 @@ def transaction_pay(request, *args, **kwargs):
         return render(request, 'transactions/transaction_pay.html', extra_context)
 
 
+@login_required()
 def transactions_open(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Set initial filter data
     filter_data = {
@@ -426,10 +391,6 @@ def transactions_open(request, *args, **kwargs):
 
 @login_required
 def transaction_row(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)

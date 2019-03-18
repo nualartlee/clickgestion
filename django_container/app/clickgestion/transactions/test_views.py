@@ -108,7 +108,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.test_get = True
-        cls.required_access_level = 1
+        cls.required_permission = ''
         cls.url = 'transaction_pay'
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
@@ -154,7 +154,7 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
         self.log_admin_in()
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
-            {'cancel_button': True,},
+            {'cancel_button': True},
             follow=True,
         )
         self.assertTemplateUsed(response, 'core/index.html')
