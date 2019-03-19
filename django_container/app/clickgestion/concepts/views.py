@@ -63,6 +63,8 @@ def concept_detail(request, *args, **kwargs):
     # Get the concept and form
     concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
     extra_context['concept'] = concept
+    form = concept_form(instance=concept)
+    extra_context['form'] = form
 
     # Get the transaction
     transaction = concept.transaction

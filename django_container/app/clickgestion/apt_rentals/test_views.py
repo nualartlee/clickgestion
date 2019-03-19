@@ -34,40 +34,28 @@ class ConceptDeleteViewTest(CustomTestCase, CustomViewTestCase):
         cls.get_template = 'core/delete.html'
 
 
-#class ConceptDetailViewTest(CustomTestCase, CustomViewTestCase):
-#
-#    @classmethod
-#    def setUpTestData(cls):
-#        super().setUpTestData()
-#        cls.test_get = True
-#        cls.required_permission = ''
-#        cls.url = 'concept_detail'
-#        cls.kwargs = {'concept_code': apps.get_model('concepts.BaseConcept').objects.first().code}
-#        cls.referer = '/'
-#        cls.get_template = 'concepts/concept_detail.html'
-#
-#
-#class ConceptEditlViewTest(CustomTestCase, CustomViewTestCase):
-#
-#    @classmethod
-#    def setUpTestData(cls):
-#        super().setUpTestData()
-#        cls.test_get = True
-#        cls.required_permission = ''
-#        cls.url = cls.apartment_rental.url
-#        cls.kwargs = {'concept_code': apps.get_model('concepts.BaseConcept').objects.first().code}
-#        cls.referer = '/'
-#        cls.get_template = 'concepts/concept_edit.html'
-#
-#
-#class ConceptListViewTest(CustomTestCase, CustomViewTestCase):
-#
-#    @classmethod
-#    def setUpTestData(cls):
-#        super().setUpTestData()
-#        cls.test_get = True
-#        cls.required_permission = ''
-#        cls.url = 'concept_list'
-#        cls.kwargs = {}
-#        cls.referer = '/'
-#        cls.get_template = 'concepts/concept_list.html'
+class ConceptDetailViewTest(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = '{}.add_{}'.format(app, concept)
+        cls.url = '{}_detail'.format(concept)
+        cls.kwargs = {'concept_code': getattr(cls, concept).code}
+        cls.referer = '/'
+        cls.get_template = 'concepts/concept_detail.html'
+
+
+class ConceptEditlViewTest(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = '{}.add_{}'.format(app, concept)
+        cls.url = '{}_edit'.format(concept)
+        cls.kwargs = {'concept_code': getattr(cls, concept).code}
+        cls.referer = '/'
+        cls.get_template = 'concepts/concept_edit.html'
+
