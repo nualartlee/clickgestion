@@ -5,17 +5,12 @@ from clickgestion.deposits.models import DepositReturn
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from clickgestion.core.utilities import invalid_permission_redirect
 import urllib
 from clickgestion.transactions.views import get_concept_and_form_from_kwargs
 from django.utils.translation import gettext
 
 
 def depositreturns_today(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Set initial filter data
     filter_data = {

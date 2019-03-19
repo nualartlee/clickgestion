@@ -1,24 +1,7 @@
-from django.apps import apps
 from django.utils.decorators import available_attrs
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, reverse
 from functools import wraps
-
-
-def invalid_permission_redirect(request):
-    """
-    Return a login or a permission denied if already logged in.
-
-    :param request:
-    :return:
-    """
-    if request.user.is_authenticated:
-        raise PermissionDenied()
-    else:
-        return redirect(
-            reverse('login'),
-            extra_context={'next': request.path},
-        )
 
 
 def custom_permission_required(permission):

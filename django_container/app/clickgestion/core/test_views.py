@@ -3,7 +3,6 @@ from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from unittest import skip
 
 
-@skip
 class TestNotFoundView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
@@ -11,8 +10,8 @@ class TestNotFoundView(CustomTestCase, CustomViewTestCase):
         super().setUpTestData()
         cls.test_get = False
         cls.required_access_level = 2
-        cls.url = 'login'
-        cls.kwargs = {'server_id': 9999}
+        cls.url = 'transaction_row'
+        cls.kwargs = {'transaction_code': 'T0223456456'}
         cls.referer = '/'
         cls.get_template = 'core/404.html'
 
@@ -87,11 +86,18 @@ class TestLogoutView(CustomTestCase, CustomViewTestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
 
 
-@skip
+class TestMessageView(CustomTestCase, CustomViewTestCase):
+
+    def test_message_view(self):
+        response = self.client.get(reverse('message'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/message.html')
+
+
 class TestForbiddenView(CustomTestCase, CustomViewTestCase):
 
     def test_get_custom(self):
         self.log_normaluser_in()
-        response = self.client.get(reverse('<forbiddenview>'), follow=True)
+        response = self.client.get(reverse('cash_desk_close'), follow=True)
         self.assertEqual(response.status_code, 403)
 

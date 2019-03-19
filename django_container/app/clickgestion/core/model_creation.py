@@ -33,11 +33,12 @@ def create_default_models():
     create_nightraterange()
     create_cashfloatdepositsettings()
     create_cashfloatwithdrawalsettings()
+    create_depositreturnsettings()
 
 
 def create_test_models(days=30):
     # Do not repeat
-    if User.objects.filter(username='dani').exists():
+    if User.objects.filter(username='dani').exists():  # pragma: no cover
         print('Test models already created')
         return
 
@@ -348,7 +349,7 @@ def create_depositreturnsettings():
 def create_test_transaction(employee, date):
     fake = Faker()
     notes = None
-    if randrange(100) < 40:
+    if randrange(100) < 40:  # pragma: no cover
         notes = fake.text()
 
     model = Transaction(
@@ -364,25 +365,25 @@ def create_test_transaction(employee, date):
 def create_test_client_transaction(employee, date):
     fake = get_faker()
     apt_number = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         apt_number = randrange(10, 23)*100 + randrange(10)
     client_address = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_address = fake.address()
     client_email = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_email = fake.email()
     client_first_name = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_first_name = fake.first_name()
     client_id = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_id = fake.ssn()
     client_last_name = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_last_name = fake.last_name()
     client_phone_number = None
-    if randrange(100) < 90:
+    if randrange(100) < 90:  # pragma: no cover
         client_phone_number = fake.phone_number()[:14]
     notes = None
 
@@ -438,7 +439,7 @@ def create_test_depositreturn(transaction, returned_deposit, date):
     return model
 
 
-def create_test_depositreturns(date):
+def create_test_depositreturns(date):  # pragma: no cover
     apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
         end_date__year=date.year,
         end_date__month=date.month,
@@ -470,11 +471,11 @@ def create_test_depositreturns(date):
 def create_test_cashclose(date, employee):
     fake = Faker()
     notes = None
-    if randrange(100) < 30:
+    if randrange(100) < 30:  # pragma: no cover
         notes = fake.text(max_nb_chars=256)
-    elif randrange(100) < 30:
+    elif randrange(100) < 30:  # pragma: no cover
         notes = fake.text(max_nb_chars=128)
-    elif randrange(100) < 30:
+    elif randrange(100) < 30:  # pragma: no cover
         notes = fake.text(max_nb_chars=64)
     model = CashClose(
         employee=employee,
@@ -491,7 +492,7 @@ def create_test_cashclose(date, employee):
     return model
 
 
-def create_test_cash_float_deposit(transaction, date):
+def create_test_cashfloatdeposit(transaction, date):
     currency = get_random_currency()
     amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
@@ -509,7 +510,7 @@ def create_test_cash_float_deposit(transaction, date):
     return model
 
 
-def create_test_cash_float_withdrawal(transaction, date):
+def create_test_cashfloatwithdrawal(transaction, date):
     currency = get_random_currency()
     amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
@@ -528,7 +529,7 @@ def create_test_cash_float_withdrawal(transaction, date):
     return model
 
 
-def create_test_random_transaction(date):
+def create_test_random_transaction(date):  # pragma: no cover
 
     selector = randrange(100)
 
@@ -569,9 +570,9 @@ def create_test_random_transaction(date):
         employee = get_cash_employee()
         transaction = create_test_transaction(employee, date)
         if randrange(100) < 25:
-            deposit = create_test_cash_float_deposit(transaction, date)
+            deposit = create_test_cashfloatdeposit(transaction, date)
         else:
-            withdrawal = create_test_cash_float_withdrawal(transaction, date)
+            withdrawal = create_test_cashfloatwithdrawal(transaction, date)
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()
@@ -588,9 +589,9 @@ def create_test_random_transaction(date):
         employee = get_cash_employee()
         transaction = create_test_transaction(employee, date)
         if randrange(100) < 25:
-            deposit = create_test_cash_float_deposit(transaction, date)
+            deposit = create_test_cashfloatdeposit(transaction, date)
         else:
-            withdrawal = create_test_cash_float_withdrawal(transaction, date)
+            withdrawal = create_test_cashfloatwithdrawal(transaction, date)
 
     return transaction
 
@@ -632,7 +633,7 @@ def get_permissions_for_models(models):
     return Permission.objects.filter(name__in=names)
 
 
-def get_faker():
+def get_faker():  # pragma: no cover
     """
     Get a random localized faker
     :return: Faker()
@@ -669,12 +670,13 @@ def get_faker():
 
 
 def get_random_currency():
+    currencies = Currency.objects.all()
     selector = randrange(100)
-    if 0 <= selector <= 90:
+    if 0 <= selector <= 90:  # pragma: no cover
         return Currency.objects.get(code_a='EUR')
-    if 90 < selector <= 98:
+    if 90 < selector <= 98:  # pragma: no cover
         return Currency.objects.get(code_a='GBP')
-    if 98 < selector <= 99:
+    if 98 < selector <= 99:  # pragma: no cover
         return Currency.objects.get(code_a='USD')
-    return Currency.objects.get(code_a='EUR')
+    return Currency.objects.get(code_a='EUR')  # pragma: no cover
 

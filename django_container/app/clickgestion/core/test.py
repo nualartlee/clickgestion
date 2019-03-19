@@ -9,7 +9,7 @@ from clickgestion.core import model_creation
 from django.apps import apps
 
 
-def test_database_setup():
+def test_database_setup():  # pragma: no cover
     # Test if the database is populated
     User = get_user_model()
     try:
