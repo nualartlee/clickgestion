@@ -137,3 +137,37 @@ class CashFloatDepositEditlViewTest(test_views.ConceptEditlViewTest):
 
     app = app
     concept = concept
+
+
+app = 'cash_desk'
+concept = 'cashfloatwithdrawal'
+
+
+class CashFloatWithdrawalActionViewTest(test_views.ConceptActionsViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatWithdrawalNewViewTest(test_views.ConceptNewViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatWithdrawalDeleteViewTest(test_views.ConceptDeleteViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatWithdrawalDetailViewTest(test_views.ConceptDetailViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatWithdrawalEditlViewTest(test_views.ConceptEditlViewTest):
+
+    app = app
+    concept = concept
