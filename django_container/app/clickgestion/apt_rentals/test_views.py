@@ -28,7 +28,13 @@ class AptRentalDetailViewTest(test_views.ConceptDetailViewTest):
     concept = concept
 
 
-class AptRentalEditlViewTest(test_views.ConceptEditlViewTest):
+class AptRentalEditlViewTest(test_views.ConceptEditViewTest):
+
+    app = app
+    concept = concept
+
+
+class AptRentalRowViewTest(test_views.ConceptRowViewTest):
 
     app = app
     concept = concept

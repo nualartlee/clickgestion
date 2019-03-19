@@ -100,20 +100,20 @@ def get_breakdown_by_concept_type(concepts='__all__'):
     return breakdown
 
 
-def get_breakdown_by_user(transaction_set):
+def get_breakdown_by_user(concepts='__all__'):
     """
 
-    :param transaction_set: A set of transactions
-    :return: A list of objects with the breakdown
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
     """
-    pass
+    return True
 
 
 def get_deposits_in_holding(concepts='__all__'):
     """
 
-    :param transaction_set: A set of transactions
-    :return: A list of objects with the breakdown
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
     """
     # Concept models
     base_concept = apps.get_model('concepts.BaseConcept')

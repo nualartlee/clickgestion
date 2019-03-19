@@ -77,20 +77,20 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
         self.assertTrue(self.model_object.get_value())
 
     def test_deposit_returned(self):
-        self.assertFalse(self.apartment_rental_deposit.deposit_returned)
+        self.assertFalse(self.aptrentaldeposit.deposit_returned)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         deposit_return = model_creation.create_test_depositreturn(
-            transaction, self.apartment_rental_deposit, timezone.now())
-        self.assertFalse(self.apartment_rental_deposit.deposit_returned)
+            transaction, self.aptrentaldeposit, timezone.now())
+        self.assertFalse(self.aptrentaldeposit.deposit_returned)
         transaction.closed = True
         transaction.save()
-        self.assertTrue(self.apartment_rental_deposit.deposit_returned)
+        self.assertTrue(self.aptrentaldeposit.deposit_returned)
 
     def test_tax_amount(self):
-        self.assertEqual(0, self.apartment_rental_deposit.tax_amount)
+        self.assertEqual(0, self.aptrentaldeposit.tax_amount)
 
 
 class SingletonModelTest(CustomTestCase):
 
     def test_load(self):
-        self.apartment_rental_deposit.settings.load()
+        self.aptrentaldeposit.settings.load()

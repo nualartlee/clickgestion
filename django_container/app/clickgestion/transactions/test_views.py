@@ -23,7 +23,7 @@ class TestGetAvailableConcepts(CustomTestCase):
         date = timezone.now()
         employee = model_creation.get_sales_employee()
         transaction = model_creation.create_test_client_transaction(employee, date)
-        apt_rental = model_creation.create_test_apartment_rental(transaction, date)
+        aptrental = model_creation.create_test_aptrental(transaction, date)
         transaction.closed = True
         transaction.closed_date = date
         transaction.save()

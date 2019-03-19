@@ -2,7 +2,7 @@ import django_filters
 from django.utils.translation import gettext_lazy
 from clickgestion.concepts.models import BaseConcept
 from crispy_forms.helper import FormHelper
-from django.db.models import IntegerField, Case, When, Count, Q
+
 
 class ConceptFilter(django_filters.FilterSet):
 

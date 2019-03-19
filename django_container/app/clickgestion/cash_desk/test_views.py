@@ -133,7 +133,13 @@ class CashFloatDepositDetailViewTest(test_views.ConceptDetailViewTest):
     concept = concept
 
 
-class CashFloatDepositEditlViewTest(test_views.ConceptEditlViewTest):
+class CashFloatDepositEditViewTest(test_views.ConceptEditViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatDepositRowViewTest(test_views.ConceptRowViewTest):
 
     app = app
     concept = concept
@@ -167,7 +173,13 @@ class CashFloatWithdrawalDetailViewTest(test_views.ConceptDetailViewTest):
     concept = concept
 
 
-class CashFloatWithdrawalEditlViewTest(test_views.ConceptEditlViewTest):
+class CashFloatWithdrawalEditViewTest(test_views.ConceptEditViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatWithdrawalRowViewTest(test_views.ConceptEditViewTest):
 
     app = app
     concept = concept

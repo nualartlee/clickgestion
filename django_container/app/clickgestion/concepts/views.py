@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 
 
 @login_required
-def concept_actions(request, *args, **kwargs):
+def concept_actions(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
     # Get the concept
@@ -24,7 +24,7 @@ def concept_actions(request, *args, **kwargs):
     return render(request, 'concepts/concept_actions.html', extra_context)
 
 
-def concept_delete(request, *args, **kwargs):
+def concept_delete(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
     # Get the concept and form
@@ -54,7 +54,7 @@ def concept_delete(request, *args, **kwargs):
         return render(request, 'core/delete.html', extra_context)
 
 
-def concept_detail(request, *args, **kwargs):
+def concept_detail(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
     # Check permissions
@@ -72,7 +72,7 @@ def concept_detail(request, *args, **kwargs):
     return render(request, 'concepts/concept_detail.html', extra_context)
 
 
-def concept_edit(request, *args, **kwargs):
+def concept_edit(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
     # Check permissions
@@ -174,7 +174,7 @@ class ConceptList(PaginationMixin, ListView):
 
 
 @login_required()
-def concept_refund(request, *args, **kwargs):
+def concept_refund(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
     # Check permissions
@@ -190,7 +190,8 @@ def concept_refund(request, *args, **kwargs):
     return render(request, 'concepts/concept_detail.html', extra_context)
 
 
-def concept_row(request, *args, **kwargs):
+@login_required()
+def concept_row(request, *args, **kwargs):  # pragma: no cover
 
     # Get the concept
     concept_code = kwargs.get('concept_code', None)

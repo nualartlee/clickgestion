@@ -11,7 +11,7 @@ class TestNightRateRange(CustomTestCase, CustomModelTestCase):
         cls.model_attrs = [
             '__str__',
         ]
-        cls.model_object = cls.night_rate_range
+        cls.model_object = cls.nightraterange
 
     def test_get_night_rate_ok(self):
         assert get_night_rate(timezone.datetime.today())
@@ -35,4 +35,4 @@ class TestAptRental(CustomTestCase, CustomModelTestCase):
             'name',
             'nights',
         ]
-        cls.model_object = cls.apartment_rental
+        cls.model_object = cls.aptrental
