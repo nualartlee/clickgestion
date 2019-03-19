@@ -117,7 +117,7 @@ class BaseConcept(models.Model):
         """
         if not self.is_child:
             return getattr(self, self.concept_class)
-        return self
+        return self  # pragma: no cover
 
     @property
     def deposit_returned(self):
@@ -133,7 +133,7 @@ class BaseConcept(models.Model):
         :return: A short single line description of the concept.
         """
         if self.is_child:
-            return self.description_short
+            return self.description_short  # pragma: no cover
         return self.child.description_short
 
     def get_all_permissions(self):
@@ -154,7 +154,7 @@ class BaseConcept(models.Model):
         :return: ConceptValue
         """
         if self.is_child:
-            return self.get_value()
+            return self.get_value()  # pragma: no cover
         return self.child.get_value()
 
     @property
@@ -168,7 +168,7 @@ class BaseConcept(models.Model):
     @property
     def name_plural(self):
         if self.is_child:
-            return self._meta.verbose_name_plural
+            return self._meta.verbose_name_plural  # pragma: no cover
         return self.child._meta.verbose_name_plural
 
     def save(self, *args, **kwargs):
@@ -238,7 +238,7 @@ class BaseConcept(models.Model):
         :return: The concept's base url
         """
         if self.is_child:
-            return self._url.format(self.child.code)
+            return self._url.format(self.child.code)  # pragma: no cover
         return self.child._url.format(self.child.code)
 
 
@@ -266,7 +266,7 @@ class SingletonModel(models.Model):
 
         try:
             return cls.objects.get()
-        except cls.DoesNotExist:
+        except cls.DoesNotExist:  # pragma: no cover
             return cls()
 
 

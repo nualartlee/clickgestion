@@ -19,6 +19,30 @@ class TestCashDeskBalanceView(CustomTestCase, CustomViewTestCase):
         cls.get_template = 'cash_desk/cashclose_detail.html'
 
 
+class TestCashDeskCloseView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        print('creating test models')
+        create_test_models(days=1)
+        cls.test_get = True
+        cls.required_permission = 'cash_desk.add_cashclose'
+        cls.url = 'cash_desk_close'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'cash_desk/cash_desk_close.html'
+
+    def test_post_ok(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/message.html')
+        self.assertEqual(response.status_code, 200)
+
+
 class TestCashcloseDetailView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
@@ -49,7 +73,7 @@ class TestCashcloseDocumentView(CustomTestCase, CustomViewTestCase):
         cls.get_template = 'cash_desk/cashclose_document_a4.html'
 
 
-class TestCashDeskCloseView(CustomTestCase, CustomViewTestCase):
+class TestCashCloseRowView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
     def setUpTestData(cls):
@@ -58,16 +82,23 @@ class TestCashDeskCloseView(CustomTestCase, CustomViewTestCase):
         create_test_models(days=1)
         cls.test_get = True
         cls.required_permission = 'cash_desk.add_cashclose'
-        cls.url = 'cash_desk_close'
+        cls.url = 'cashclose_row'
+        cls.kwargs = {'cashclose_code': CashClose.objects.first().code}
+        cls.referer = '/'
+        cls.get_template = 'cash_desk/cashclose_list.html'
+        cls.get_url = reverse('cashclose_list')
+
+
+class TestCashCloseListView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        print('creating test models')
+        create_test_models(days=1)
+        cls.test_get = True
+        cls.required_permission = 'cash_desk.add_cashclose'
+        cls.url = 'cashclose_list'
         cls.kwargs = {}
         cls.referer = '/'
-        cls.get_template = 'cash_desk/cash_desk_close.html'
-
-    def test_post_ok(self):
-        self.log_admin_in()
-        response = self.client.post(
-            reverse(self.url, kwargs=self.kwargs),
-            follow=True,
-        )
-        self.assertTemplateUsed(response, 'core/message.html')
-        self.assertEqual(response.status_code, 200)
+        cls.get_template = 'cash_desk/cashclose_list.html'

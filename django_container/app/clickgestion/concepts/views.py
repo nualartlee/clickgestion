@@ -3,21 +3,18 @@ from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
 from clickgestion.concepts.filters import ConceptFilter
-from clickgestion.core.utilities import invalid_permission_redirect
+from clickgestion.core.utilities import custom_permission_required
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
 from django.http import QueryDict
 import urllib
+from django.utils.decorators import method_decorator
 
 
 @login_required
 def concept_actions(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the concept
     concept_code = kwargs.get('concept_code', None)
@@ -28,11 +25,8 @@ def concept_actions(request, *args, **kwargs):
     return render(request, 'concepts/concept_actions.html', extra_context)
 
 
-@login_required()
 def concept_delete(request, *args, **kwargs):
     extra_context = {}
-
-    # Check permissions
 
     # Get the concept and form
     concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
@@ -61,7 +55,6 @@ def concept_delete(request, *args, **kwargs):
         return render(request, 'core/delete.html', extra_context)
 
 
-@login_required()
 def concept_detail(request, *args, **kwargs):
     extra_context = {}
 
@@ -78,7 +71,6 @@ def concept_detail(request, *args, **kwargs):
     return render(request, 'concepts/concept_detail.html', extra_context)
 
 
-@login_required()
 def concept_edit(request, *args, **kwargs):
     extra_context = {}
 
@@ -114,6 +106,7 @@ def concept_edit(request, *args, **kwargs):
         return render(request, 'concepts/concept_edit.html', extra_context)
 
 
+@method_decorator(login_required, name='dispatch')
 class ConceptList(PaginationMixin, ListView):
 
     template_name = 'concepts/concept_list.html'
@@ -131,10 +124,6 @@ class ConceptList(PaginationMixin, ListView):
 
     def get(self, request, *args, **kwargs):
         # First
-
-        # Check permissions
-        if not request.user.is_authenticated:
-            return invalid_permission_redirect(request)
 
         # Get arguments
         self.request = request
@@ -200,12 +189,7 @@ def concept_refund(request, *args, **kwargs):
     return render(request, 'concepts/concept_detail.html', extra_context)
 
 
-@login_required()
 def concept_row(request, *args, **kwargs):
-
-    # Check permissions
-    if not request.user.is_authenticated:
-        return invalid_permission_redirect(request)
 
     # Get the concept
     concept_code = kwargs.get('concept_code', None)

@@ -81,6 +81,58 @@ def cash_desk_balance(request, *args, **kwargs):
 
 
 @custom_permission_required('cash_desk.add_cashclose')
+def cash_desk_close(request, *args, **kwargs):
+    extra_context = {}
+
+    # Set the header
+    extra_context['document_header'] = gettext('Cash Desk Balance')
+
+    # Get closed transactions
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
+        .prefetch_related('concepts__value__currency')
+    extra_context['closed_transactions'] = closed_transactions
+
+    # Get closed concepts
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
+        .prefetch_related('value__currency')
+
+    # Get breakdown by concept type
+    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    extra_context['breakdown'] = breakdown
+
+    # Get deposits in holding
+    deposits = totalizers.get_deposits_in_holding()
+    extra_context['deposits'] = deposits
+
+    # Get the totals
+    totals = totalizers.get_value_totals(closed_concepts)
+    extra_context['totals'] = totals
+
+    # POST
+    if request.method == 'POST':
+        form = CashCloseForm(request.POST)
+        if form.is_valid():
+            cashclose = form.instance
+            cashclose.employee = request.user
+            cashclose.save()
+            # Save cashclose on all transactions
+            for transaction in closed_transactions:
+                transaction.cashclose = cashclose
+                transaction.save()
+            # Forward the cash float with deposits
+
+
+            # Message
+            return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
+
+        return render(request, 'cash_desk/cash_desk_close.html', extra_context)  # pragma: no cover
+
+    form = CashCloseForm()
+    extra_context['form'] = form
+    return render(request, 'cash_desk/cash_desk_close.html', extra_context)
+
+
+@custom_permission_required('cash_desk.add_cashclose')
 def cashclose_detail(request, *args, **kwargs):
     extra_context = {}
 
@@ -209,78 +261,4 @@ class CashCloseList(PaginationMixin, ListView):
 
         # Return
         return self.queryset
-
-    def post(self, request, *args, **kwargs):
-
-        print_cashclose = request.POST.get('print_cashclose', None)
-        if print_cashclose:
-            # Get the cashclose
-            cashclose = get_object_or_404(CashClose, code=print_cashclose)
-            # Create an http response
-            resp = HttpResponse(content_type='application/pdf')
-            resp['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(cashclose.code)
-            # Set context
-            context = {
-                'cashclose': cashclose,
-            }
-            # Generate the pdf
-            result = generate_pdf('cash_desk/cashclose_document_a4.html', file_object=resp, context=context)
-            return result
-
-        # Return same
-        request.method = 'GET'
-        return self.get(request, *args, **kwargs)
-
-
-@custom_permission_required('cash_desk.add_cashclose')
-def cash_desk_close(request, *args, **kwargs):
-    extra_context = {}
-
-    # Set the header
-    extra_context['document_header'] = gettext('Cash Desk Balance')
-
-    # Get closed transactions
-    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
-        .prefetch_related('concepts__value__currency')
-    extra_context['closed_transactions'] = closed_transactions
-
-    # Get closed concepts
-    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
-        .prefetch_related('value__currency')
-
-    # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    extra_context['breakdown'] = breakdown
-
-    # Get deposits in holding
-    deposits = totalizers.get_deposits_in_holding()
-    extra_context['deposits'] = deposits
-
-    # Get the totals
-    totals = totalizers.get_value_totals(closed_concepts)
-    extra_context['totals'] = totals
-
-    # POST
-    if request.method == 'POST':
-        form = CashCloseForm(request.POST)
-        if form.is_valid():
-            cashclose = form.instance
-            cashclose.employee = request.user
-            cashclose.save()
-            # Save cashclose on all transactions
-            for transaction in closed_transactions:
-                transaction.cashclose = cashclose
-                transaction.save()
-            # Forward the cash float with deposits
-
-
-            # Message
-            return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
-
-        return render(request, 'cash_desk/cash_desk_close.html', extra_context)
-
-
-    form = CashCloseForm()
-    extra_context['form'] = form
-    return render(request, 'cash_desk/cash_desk_close.html', extra_context)
 

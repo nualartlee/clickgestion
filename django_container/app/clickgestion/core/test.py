@@ -61,6 +61,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
             end_date=timezone.datetime.today() + timezone.timedelta(days=7),
         )
         cls.apartment_rental.save()
+        cls.aptrental = cls.apartment_rental
 
         cls.apartment_rental_deposit = AptRentalDeposit(
             apt_rental=cls.apartment_rental,
@@ -108,9 +109,27 @@ class CustomViewTestCase:  # pragma: no cover
     kwargs = {}
     referer = '/'
     test_get = False
-    get_template = '/'
+    get_code = 200
+    get_template = None
+    get_url = None
     test_post = False
     post_template = '/'
+    testuser = model_creation.create_user('testuser', 'testuser', 'testuser', 't@t.com', [])
+
+    def check_get_response(self, response):
+
+        # Check the code
+        self.assertEqual(response.status_code, self.get_code)
+
+        # Check the template
+        if self.get_template:
+            self.assertTemplateUsed(response, self.get_template)
+
+        # Check the path
+        if self.get_url:
+            self.assertEqual(response.request['PATH_INFO'], self.get_url)
+        else:
+            self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
 
     def test_anonymous_get(self):
         if not self.test_get:
@@ -120,55 +139,55 @@ class CustomViewTestCase:  # pragma: no cover
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
         if self.required_permission is None:
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
-            self.assertTemplateUsed(response, self.get_template)
+            self.check_get_response(response)
         else:
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response.request['PATH_INFO'], reverse('login'))
             self.assertTemplateUsed(response, 'core/login.html')
 
     def test_non_permitted_get(self):
-        if not self.required_permission:
-            print("No permission required")
-            return True
         if not self.test_get:
             print("Not testing GET")
             return
-        codename = self.required_permission.split('.')[1]
-        permission = apps.get_model('auth.Permission').objects.get(codename=codename)
-        self.normaluser.user_permissions.remove(permission)
-        self.normaluser.save()
-        self.log_normaluser_in()
+        if not self.required_permission:
+            print("No permission required")
+            return
+        else:
+            codename = self.required_permission.split('.')[1]
+            permission = apps.get_model('auth.Permission').objects.get(codename=codename)
+            self.testuser.user_permissions.remove(permission)
+            self.testuser.save()
+        self.client.force_login(self.testuser)
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
+
+        #if self.required_permission == 'apt_rentals.add_aptrental':
+        #    import pdb;pdb.set_trace()
+
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'core/403.html')
 
     def test_permitted_get(self):
-        if not self.required_permission:
-            print("No permission required")
-            return True
         if not self.test_get:
             print("Not testing GET")
             return
-        codename = self.required_permission.split('.')[1]
-        permission = apps.get_model('auth.Permission').objects.get(codename=codename)
-        self.normaluser.user_permissions.add(permission)
-        self.normaluser.save()
-        self.log_normaluser_in()
+        if not self.required_permission:
+            print("No permission required")
+            self.normaluser.user_permissions.remove(*self.normaluser.user_permissions.all())
+            self.normaluser.save()
+        else:
+            codename = self.required_permission.split('.')[1]
+            permission = apps.get_model('auth.Permission').objects.get(codename=codename)
+            self.testuser.user_permissions.add(permission)
+            self.testuser.save()
+        self.client.force_login(self.testuser)
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
-        self.assertTemplateUsed(response, self.get_template)
+        self.check_get_response(response)
 
     def test_superuser_get(self):
-        if not self.required_permission:
-            print("No permission required")
-            return True
         if not self.test_get:
             print("Not testing GET")
             return
@@ -176,9 +195,7 @@ class CustomViewTestCase:  # pragma: no cover
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
-        self.assertTemplateUsed(response, self.get_template)
+        self.check_get_response(response)
 
     def repeat_get(self):
         self.test_anonymous_get()
