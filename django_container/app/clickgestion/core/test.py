@@ -52,22 +52,29 @@ class CustomTestCase(TestCase):  # pragma: no cover
 
         # Create aptrentalsettings
         model_creation.create_aptrentalsettings()
-        cls.night_rate_range = model_creation.create_nightraterange()
+        cls.nightraterange = model_creation.create_nightraterange()
 
         # Create an apartment rental
-        cls.apartment_rental = AptRental(
+        cls.aptrental = AptRental(
             transaction=cls.transaction,
             start_date=timezone.datetime.today(),
             end_date=timezone.datetime.today() + timezone.timedelta(days=7),
         )
-        cls.apartment_rental.save()
-        cls.aptrental = cls.apartment_rental
+        cls.aptrental.save()
 
-        cls.apartment_rental_deposit = AptRentalDeposit(
-            apt_rental=cls.apartment_rental,
+        cls.aptrentaldeposit = AptRentalDeposit(
+            apt_rental=cls.aptrental,
             transaction=Transaction.objects.create(employee=cls.normaluser),
         )
-        cls.apartment_rental_deposit.save()
+        cls.aptrentaldeposit.save()
+
+        cls.conceptvalue = apps.get_model('concepts.conceptvalue')( amount=200, currency=cls.currency)
+        cls.conceptvalue.save()
+        cls.cashfloatdeposit = apps.get_model('cash_desk.cashfloatdeposit')(
+            transaction=Transaction.objects.create(employee=cls.normaluser),
+            value=cls.conceptvalue,
+        )
+        cls.cashfloatdeposit.save()
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 

@@ -2,6 +2,7 @@ from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from clickgestion.core.model_creation import create_test_models
 from clickgestion.cash_desk.models import CashClose
+from clickgestion.concepts import test_views
 
 
 class TestCashDeskBalanceView(CustomTestCase, CustomViewTestCase):
@@ -102,3 +103,37 @@ class TestCashCloseListView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'cash_desk/cashclose_list.html'
+
+
+app = 'cash_desk'
+concept = 'cashfloatdeposit'
+
+
+class CashFloatDepositActionViewTest(test_views.ConceptActionsViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatDepositNewViewTest(test_views.ConceptNewViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatDepositDeleteViewTest(test_views.ConceptDeleteViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatDepositDetailViewTest(test_views.ConceptDetailViewTest):
+
+    app = app
+    concept = concept
+
+
+class CashFloatDepositEditlViewTest(test_views.ConceptEditlViewTest):
+
+    app = app
+    concept = concept

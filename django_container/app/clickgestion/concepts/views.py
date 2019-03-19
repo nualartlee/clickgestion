@@ -3,7 +3,6 @@ from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.utils.translation import gettext, gettext_lazy
 from clickgestion.concepts.filters import ConceptFilter
-from clickgestion.core.utilities import custom_permission_required
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
