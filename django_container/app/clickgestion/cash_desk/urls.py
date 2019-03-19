@@ -1,4 +1,3 @@
-from clickgestion.cash_desk import views
 from clickgestion.cash_desk.forms import CashFloatDepositForm, CashFloatWithdrawalForm
 from clickgestion.concepts.views import concept_delete, concept_detail, concept_edit
 from clickgestion.core.utilities import custom_permission_required
@@ -30,19 +29,19 @@ urlpatterns = [
         name='cashfloatdeposit_delete'),
 
     url(r'^withdrawals/new/(?P<transaction_code>T[A-F0-9]{10})$',
-        concept_edit,
+        custom_permission_required('cash_desk.add_cashfloatwithdrawal')(concept_edit),
         {'concept_form': CashFloatWithdrawalForm},
-        name='cashfloat_withdrawal_new'),
+        name='cashfloatwithdrawal_new'),
     url(r'^withdrawals/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)$',
-        concept_detail,
+        custom_permission_required('cash_desk.add_cashfloatwithdrawal')(concept_detail),
         {'concept_form': CashFloatWithdrawalForm},
-        name='cashfloat_withdrawal_detail'),
+        name='cashfloatwithdrawal_detail'),
     url(r'^withdrawals/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/edit/$',
-        concept_edit,
+        custom_permission_required('cash_desk.add_cashfloatwithdrawal')(concept_edit),
         {'concept_form': CashFloatWithdrawalForm},
-        name='cashfloat_withdrawal_edit'),
+        name='cashfloatwithdrawal_edit'),
     url(r'^withdrawal/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$',
-        concept_delete,
+        custom_permission_required('cash_desk.add_cashfloatwithdrawal')(concept_delete),
         {'concept_form': CashFloatWithdrawalForm},
-        name='cashfloat_withdrawal_delete'),
+        name='cashfloatwithdrawal_delete'),
 ]

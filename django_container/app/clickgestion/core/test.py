@@ -68,13 +68,21 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
         cls.aptrentaldeposit.save()
 
-        cls.conceptvalue = apps.get_model('concepts.conceptvalue')( amount=200, currency=cls.currency)
-        cls.conceptvalue.save()
+        conceptvalue = apps.get_model('concepts.conceptvalue')( amount=200, currency=cls.currency)
+        conceptvalue.save()
         cls.cashfloatdeposit = apps.get_model('cash_desk.cashfloatdeposit')(
             transaction=Transaction.objects.create(employee=cls.normaluser),
-            value=cls.conceptvalue,
+            value=conceptvalue,
         )
         cls.cashfloatdeposit.save()
+
+        conceptvalue = apps.get_model('concepts.conceptvalue')( amount=200, currency=cls.currency)
+        conceptvalue.save()
+        cls.cashfloatwithdrawal = apps.get_model('cash_desk.cashfloatwithdrawal')(
+            transaction=Transaction.objects.create(employee=cls.normaluser),
+            value=conceptvalue,
+        )
+        cls.cashfloatwithdrawal.save()
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
