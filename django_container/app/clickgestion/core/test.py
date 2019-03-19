@@ -78,7 +78,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         self.client.force_login(self.normaluser)
 
 
-class CustomModelTestCase: # pragma: no cover
+class CustomModelTestCase:  # pragma: no cover
     """
     Derived class with utility functions to test models
     """
@@ -174,8 +174,8 @@ class CustomViewTestCase:  # pragma: no cover
             return
         if not self.required_permission:
             print("No permission required")
-            self.normaluser.user_permissions.remove(*self.normaluser.user_permissions.all())
-            self.normaluser.save()
+            self.testuser.user_permissions.remove(*self.normaluser.user_permissions.all())
+            self.testuser.save()
         else:
             codename = self.required_permission.split('.')[1]
             permission = apps.get_model('auth.Permission').objects.get(codename=codename)
