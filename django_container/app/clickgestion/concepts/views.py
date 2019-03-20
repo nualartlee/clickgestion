@@ -167,7 +167,7 @@ class ConceptList(PaginationMixin, ListView):
         self.filter = self.filter_type(data)
         self.queryset = self.filter.qs.select_related('transaction') \
             .prefetch_related('value__currency') \
-            .order_by('-id') # 79q 27ms
+            .order_by('-id')  # 79q 27ms
 
         # Return
         return self.queryset

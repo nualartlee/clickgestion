@@ -92,6 +92,14 @@ class Transaction(models.Model):
                 return True
         return False
 
+    def close(self, employee):
+        if self.closed:
+            return
+        self.employee = employee
+        self.closed = True
+        self.closed_date = timezone.now()
+        self.save()
+
     @property
     def description_short(self):
         """

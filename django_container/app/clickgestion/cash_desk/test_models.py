@@ -49,7 +49,7 @@ class TestCashFloatDepositModel(CustomTestCase, CustomModelTestCase):
             'description_short',
             'name',
         ]
-        model = model_creation.create_test_cash_float_deposit(
+        model = model_creation.create_test_cashfloatdeposit(
             model_creation.create_test_transaction(cls.admin, timezone.now()), timezone.now())
         cls.model_object = model
 
@@ -69,6 +69,6 @@ class TestCashFloatWithdrawalModel(CustomTestCase, CustomModelTestCase):
             'description_short',
             'name',
         ]
-        model = model_creation.create_test_cash_float_withdrawal(
+        model = model_creation.create_test_cashfloatwithdrawal(
             model_creation.create_test_transaction(cls.admin, timezone.now()), timezone.now())
         cls.model_object = model
