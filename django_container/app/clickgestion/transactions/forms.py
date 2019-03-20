@@ -55,7 +55,7 @@ class TransactionEditForm(forms.ModelForm):
         super().clean()
         # Should have at least one concept
         if self.instance.concepts.count() == 0:
-            raise forms.ValidationError(gettext_lazy('No concepts'))
+            raise forms.ValidationError(gettext_lazy('No concepts.'))
 
 
 class TransactionPayForm(forms.ModelForm):
