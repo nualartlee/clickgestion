@@ -25,7 +25,7 @@ def get_new_transaction_code():
     # Check if already used
     try:
         Transaction.objects.get(code=code)
-        return get_new_transaction_code()
+        return get_new_transaction_code()  # pragma: no cover
     except Transaction.DoesNotExist:
         return code
 

@@ -37,30 +37,57 @@ class TestGetAvailableConcepts(CustomTestCase):
                 self.assertEqual(c['disabled'], False, msg='{} is not enabled'.format(c['name']))
 
 
-class TestTransactionListView(CustomTestCase, CustomViewTestCase):
+class TestTransactionActionsView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         cls.test_get = True
-        cls.required_access_level = 1
-        cls.url = 'transaction_list'
-        cls.kwargs = {}
+        cls.required_permission = ''
+        cls.url = 'transaction_actions'
+        cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
-        cls.get_template = 'transactions/transaction_list.html'
+        cls.get_template = 'transactions/transaction_actions.html'
 
-    def test_post_print_transaction(self):
-        self.log_admin_in()
-        post_data = {
-            'print_transaction': self.transaction.code,
-        }
-        response = self.client.post(
-            reverse(self.url, kwargs=self.kwargs),
-            post_data,
-            follow=True,
-        )
-        self.assertTemplateUsed(response, 'transactions/transaction_document_a4.html')
-        self.assertEqual(response.status_code, 200)
+
+class TestTransactionConceptsView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_concepts'
+        cls.kwargs = {'transaction_code': cls.transaction.code}
+        cls.referer = '/'
+        cls.get_template = 'concepts/concept_list.html'
+        cls.get_url = reverse('concept_list')
+
+
+class TestTransactionDeleteView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = 'transactions.add_transaction'
+        cls.url = 'transaction_delete'
+        cls.kwargs = {'transaction_code': cls.transaction.code}
+        cls.referer = '/'
+        cls.get_template = 'core/delete.html'
+
+
+class TestTransactionDocumentView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_document'
+        cls.kwargs = {'transaction_code': cls.transaction.code}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_document_a4.html'
 
 
 class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
@@ -69,7 +96,7 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.test_get = True
-        cls.required_access_level = 1
+        cls.required_permission = ''
         cls.url = 'transaction_edit'
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
@@ -100,6 +127,32 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         self.assertEqual(response.status_code, 200)
         with self.assertRaises(Transaction.DoesNotExist):
             Transaction.objects.get(code=self.transaction.code)
+
+
+class TestTransactionListView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_list'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_list.html'
+
+    def test_post_print_transaction(self):
+        self.log_admin_in()
+        post_data = {
+            'print_transaction': self.transaction.code,
+        }
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            post_data,
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_document_a4.html')
+        self.assertEqual(response.status_code, 200)
 
 
 class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
@@ -169,8 +222,23 @@ class TestTransactionsOpenView(CustomTestCase, CustomViewTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.test_get = True
-        cls.required_access_level = 1
+        cls.required_permission = ''
         cls.url = 'transaction_list'
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_list.html'
+
+
+class TestTransactionRowView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_row'
+        cls.kwargs = {'transaction_code': cls.transaction.code}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_list.html'
+        cls.get_url = reverse('transaction_list')
+

@@ -69,33 +69,12 @@ def get_transaction_from_kwargs(**kwargs):
     return transaction
 
 
-def get_concept_and_form_from_kwargs(**kwargs):
-
-    # Get the form
-    concept_form = kwargs.get('concept_form', None)
-
-    # Get the concept class
-    concept_class = concept_form._meta.model
-
-    # If a transaction code is provided, this is a new concept
-    transaction_code = kwargs.get('transaction_code', None)
-    if transaction_code:
-        transaction = get_transaction_from_kwargs(**kwargs)
-        return concept_class(transaction=transaction), concept_form
-
-    # Get the existing concept
-    concept_code = kwargs.get('concept_code', None)
-    concept = get_object_or_404(concept_class, code=concept_code)
-    return concept, concept_form
-
-
 @login_required
 def transaction_actions(request, *args, **kwargs):
     extra_context = {}
 
     # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
     # Return
@@ -123,9 +102,8 @@ def transaction_concepts(request, *args, **kwargs):
 def transaction_delete(request, *args, **kwargs):
     extra_context = {}
 
-    # Get the object
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    # Get the transaction
+    transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
     # Use default delete view
@@ -150,8 +128,7 @@ def transaction_detail(request, *args, **kwargs):
     extra_context = {}
 
     # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
     # Get print signal, will autoprint with js if true
@@ -165,8 +142,7 @@ def transaction_document(request, *args, **kwargs):
     extra_context = {}
 
     # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
     # Return
@@ -321,8 +297,7 @@ def transaction_pay(request, *args, **kwargs):
     extra_context = {}
 
     # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
     # Check that the transaction is open
@@ -393,8 +368,7 @@ def transactions_open(request, *args, **kwargs):
 def transaction_row(request, *args, **kwargs):
 
     # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_transaction_from_kwargs(**kwargs)
 
     # Set initial filter data
     filter_data = {

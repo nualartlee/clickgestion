@@ -1,6 +1,7 @@
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
+from clickgestion.transactions.views import get_transaction_from_kwargs
 from django.utils.translation import gettext, gettext_lazy
 from clickgestion.concepts.filters import ConceptFilter
 from django.views.generic import ListView
@@ -206,13 +207,6 @@ def concept_row(request, *args, **kwargs):  # pragma: no cover
     response = redirect('concept_list')
     response['Location'] += '?{}'.format(params)
     return response
-
-
-def get_transaction_from_kwargs(**kwargs):
-    # Get the transaction
-    transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
-    return transaction
 
 
 def get_concept_and_form_from_kwargs(**kwargs):

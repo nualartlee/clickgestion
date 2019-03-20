@@ -26,16 +26,5 @@ class TransactionPayFormTest(CustomTestCase):
 
     def test_form_ok(self):
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
         form = self.form_type(model_to_dict(transaction), instance=transaction)
-        print(form.errors)
-        import pdb;pdb.set_trace()
         self.assertTrue(form.is_valid())
-
-    def test_form_no_concepts(self):
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        form = self.form_type(model_to_dict(transaction), instance=transaction)
-        print(form.errors)
-        import pdb;pdb.set_trace()
-        self.assertFalse(form.is_valid())
-        self.assertIn('No concepts.', form.non_field_errors())
