@@ -1,9 +1,8 @@
 from django.apps import apps
 from clickgestion.core.utilities import custom_permission_required
 from django.shortcuts import get_object_or_404, render, redirect, reverse
-from django_xhtml2pdf.utils import generate_pdf
 from django.utils.translation import gettext
-from django.http import HttpResponse, QueryDict
+from django.http import QueryDict
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -200,7 +199,7 @@ def transaction_edit(request, *args, **kwargs):
             # Proceed to pay
             return redirect('transaction_pay', transaction_code=transaction.code)
 
-        else:
+        else:  # pragma: no cover
             extra_context['form'] = form
             return render(request, 'transactions/transaction_edit.html', extra_context)
 
@@ -276,27 +275,6 @@ class TransactionList(PaginationMixin, ListView):
         # Return
         return self.queryset
 
-    def post(self, request, *args, **kwargs):
-
-        print_transaction = request.POST.get('print_transaction', None)
-        if print_transaction:
-            # Get the transaction
-            transaction = get_object_or_404(Transaction, code=print_transaction)
-            # Create an http response
-            resp = HttpResponse(content_type='application/pdf')
-            resp['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(transaction.code)
-            # Set context
-            context = {
-                'transaction': transaction,
-            }
-            # Generate the pdf
-            result = generate_pdf('transactions/transaction_document_a4.html', file_object=resp, context=context)
-            return result
-
-        # Return same
-        request.method = 'GET'
-        return self.get(request, *args, **kwargs)
-
 
 @login_required
 def transaction_pay(request, *args, **kwargs):
@@ -308,7 +286,8 @@ def transaction_pay(request, *args, **kwargs):
 
     # Check that the transaction is open
     if transaction.closed:
-        return redirect('message', message=gettext('Transaction Closed'))
+        extra_context['message'] = gettext('Transaction Closed')
+        return render(request, 'core/message.html', extra_context)
 
     # Get required payment fields
 

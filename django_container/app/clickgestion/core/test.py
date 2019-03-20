@@ -159,7 +159,7 @@ class CustomViewTestCase:  # pragma: no cover
 
     def test_anonymous_get(self):
         if not self.test_get:
-            print("Not testing GET")
+            print("           Not testing GET")
             return
         response = self.client.get(
             reverse(self.url, kwargs=self.kwargs),
@@ -173,10 +173,10 @@ class CustomViewTestCase:  # pragma: no cover
 
     def test_non_permitted_get(self):
         if not self.test_get:
-            print("Not testing GET")
+            print("           Not testing GET")
             return
         if not self.required_permission:
-            print("No permission required")
+            print("           No permission required")
             return
         else:
             codename = self.required_permission.split('.')[1]
@@ -196,10 +196,10 @@ class CustomViewTestCase:  # pragma: no cover
 
     def test_permitted_get(self):
         if not self.test_get:
-            print("Not testing GET")
+            print("           Not testing GET")
             return
         if not self.required_permission:
-            print("No permission required")
+            print("           No permission required")
             self.testuser.user_permissions.remove(*self.normaluser.user_permissions.all())
             self.testuser.save()
         else:
@@ -215,7 +215,7 @@ class CustomViewTestCase:  # pragma: no cover
 
     def test_superuser_get(self):
         if not self.test_get:
-            print("Not testing GET")
+            print("           Not testing GET")
             return
         self.log_admin_in()
         response = self.client.get(

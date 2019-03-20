@@ -71,7 +71,7 @@ class TestCashcloseDocumentView(CustomTestCase, CustomViewTestCase):
         cls.url = 'cashclose_document'
         cls.kwargs = {'cashclose_code': CashClose.objects.first().code}
         cls.referer = '/'
-        cls.get_template = 'cash_desk/cashclose_document_a4.html'
+        cls.get_template = 'cash_desk/cashclose_document.html'
 
 
 class TestCashCloseRowView(CustomTestCase, CustomViewTestCase):

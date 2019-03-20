@@ -1,6 +1,7 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from clickgestion.core import model_creation
+from django.forms.models import model_to_dict
 from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.views import get_available_concepts
 from django.utils import timezone
@@ -76,6 +77,20 @@ class TestTransactionDeleteView(CustomTestCase, CustomViewTestCase):
         cls.referer = '/'
         cls.get_template = 'core/delete.html'
 
+    def test_closed(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        self.kwargs = {'transaction_code': transaction.code}
+        self.log_admin_in()
+        response = self.client.get(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/message.html')
+        self.assertEqual(response.status_code, 200)
+
     def test_post_ok(self):
         self.log_admin_in()
         response = self.client.post(
@@ -96,7 +111,7 @@ class TestTransactionDocumentView(CustomTestCase, CustomViewTestCase):
         cls.url = 'transaction_document'
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
-        cls.get_template = 'transactions/transaction_document_a4.html'
+        cls.get_template = 'transactions/transaction_document.html'
 
 
 class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
@@ -125,6 +140,18 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         self.assertTemplateUsed(response, 'core/message.html')
         self.assertEqual(response.status_code, 200)
 
+    def test_post_cancel_button(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            {'cancel_button': True},
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/index.html')
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(Transaction.DoesNotExist):
+            Transaction.objects.get(code=self.transaction.code)
+
     def test_post_pay_button(self):
         self.log_admin_in()
         post_data = {
@@ -139,17 +166,20 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         self.assertTemplateUsed(response, 'transactions/transaction_pay.html')
         self.assertEqual(response.status_code, 200)
 
-    def test_post_cancel_button(self):
+    def test_post_save_button(self):
         self.log_admin_in()
+        post_data = {
+            'cancel_button': False,
+            'pay_button': False,
+            'save_button': True,
+        }
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
-            {'cancel_button': True,},
+            post_data,
             follow=True,
         )
-        self.assertTemplateUsed(response, 'core/index.html')
+        self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
         self.assertEqual(response.status_code, 200)
-        with self.assertRaises(Transaction.DoesNotExist):
-            Transaction.objects.get(code=self.transaction.code)
 
 
 class TestTransactionListView(CustomTestCase, CustomViewTestCase):
@@ -163,19 +193,6 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_list.html'
-
-    def test_post_print_transaction(self):
-        self.log_admin_in()
-        post_data = {
-            'print_transaction': self.transaction.code,
-        }
-        response = self.client.post(
-            reverse(self.url, kwargs=self.kwargs),
-            post_data,
-            follow=True,
-        )
-        self.assertTemplateUsed(response, 'transactions/transaction_document_a4.html')
-        self.assertEqual(response.status_code, 200)
 
 
 class TestTransactionNewView(CustomTestCase, CustomViewTestCase):
@@ -203,6 +220,43 @@ class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_pay.html'
+
+    def test_closed(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        self.kwargs = {'transaction_code': transaction.code}
+        self.log_admin_in()
+        response = self.client.get(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/message.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_bad(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        transaction.apt_number = None
+        transaction.client_first_name = None
+        transaction.client_last_name = None
+        transaction.client_id = None
+        transaction.save()
+        self.kwargs = {'transaction_code': transaction.code}
+
+        post_data = {
+            'confirm_button': True,
+            'cancel_button': False,
+        }
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            post_data,
+            follow=True,
+        )
+        self.assertTemplateUsed(response, self.get_template)
+        self.assertEqual(response.status_code, 200)
 
     def test_post_confirm_button(self):
         self.log_admin_in()
