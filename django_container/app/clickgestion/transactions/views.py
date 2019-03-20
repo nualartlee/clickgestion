@@ -164,7 +164,9 @@ def transaction_edit(request, *args, **kwargs):
 
     # Check that the transaction is open
     if transaction.closed:
-        return redirect('message', message=gettext('Transaction Closed'))
+        extra_context['message'] = gettext('Transaction Closed')
+        #return redirect('message', extra_context)
+        return render(request, 'core/message.html', extra_context)
 
     # Get available concepts to add
     available_concepts = get_available_concepts(request.user, transaction)

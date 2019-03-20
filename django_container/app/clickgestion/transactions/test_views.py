@@ -76,6 +76,15 @@ class TestTransactionDeleteView(CustomTestCase, CustomViewTestCase):
         cls.referer = '/'
         cls.get_template = 'core/delete.html'
 
+    def test_post_ok(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True, HTTP_REFERER='/',
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
+        self.assertEqual(response.status_code, 200)
+
 
 class TestTransactionDocumentView(CustomTestCase, CustomViewTestCase):
 
@@ -101,6 +110,20 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {'transaction_code': cls.transaction.code}
         cls.referer = '/'
         cls.get_template = 'transactions/transaction_edit.html'
+
+    def test_closed(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        self.kwargs = {'transaction_code': transaction.code}
+        self.log_admin_in()
+        response = self.client.get(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True,
+        )
+        self.assertTemplateUsed(response, 'core/message.html')
+        self.assertEqual(response.status_code, 200)
 
     def test_post_pay_button(self):
         self.log_admin_in()
@@ -153,6 +176,20 @@ class TestTransactionListView(CustomTestCase, CustomViewTestCase):
         )
         self.assertTemplateUsed(response, 'transactions/transaction_document_a4.html')
         self.assertEqual(response.status_code, 200)
+
+
+class TestTransactionNewView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_new'
+        cls.kwargs = {}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_edit.html'
+        cls.get_url = 'pass'
 
 
 class TestTransactionPayView(CustomTestCase, CustomViewTestCase):
