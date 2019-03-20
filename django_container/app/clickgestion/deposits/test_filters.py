@@ -6,7 +6,7 @@ from django.utils import timezone
 
 class DepositFilterTest(CustomTestCase):
 
-    def test_returned(self):
+    def test_returned_filter(self):
 
         # None returned
         filter_data = {
@@ -26,4 +26,17 @@ class DepositFilterTest(CustomTestCase):
         deposit_filter = DepositFilter(data=filter_data)
         self.assertTrue(deposit_filter.qs)
 
+        # None pending
+        filter_data = {
+            'returned': False,
+        }
+        deposit_filter = DepositFilter(data=filter_data)
+        self.assertFalse(deposit_filter.qs)
 
+        # One pending
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        deposit_filter = DepositFilter(data=filter_data)
+        self.assertTrue(deposit_filter.qs)
