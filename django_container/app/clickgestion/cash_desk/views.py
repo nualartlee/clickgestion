@@ -5,8 +5,7 @@ from clickgestion.cash_desk.models import CashClose
 from clickgestion.core.utilities import custom_permission_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.translation import gettext, gettext_lazy
-from django_xhtml2pdf.utils import generate_pdf
-from django.http import HttpResponse, QueryDict
+from django.http import QueryDict
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -178,7 +177,7 @@ def cashclose_document(request, *args, **kwargs):
     extra_context['cashclose'] = cashclose
 
     # Return
-    return render(request, 'cash_desk/cashclose_document_a4.html', extra_context)
+    return render(request, 'cash_desk/cashclose_document.html', extra_context)
 
 
 @custom_permission_required('cash_desk.add_cashclose')

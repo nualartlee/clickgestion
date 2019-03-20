@@ -106,10 +106,15 @@ def transaction_delete(request, *args, **kwargs):
     transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
+    # Check that the transaction is open
+    if transaction.closed:
+        extra_context['message'] = gettext('Transaction Closed')
+        return render(request, 'core/message.html', extra_context)
+
     # Use default delete view
     extra_context['header'] = gettext('Delete Transaction?')
     extra_context['message'] = transaction.description_short
-    extra_context['next'] = request.META['HTTP_REFERER']
+    extra_context['next'] = request.META.get('HTTP_REFERER', '/')
 
     # POST
     if request.method == 'POST':
@@ -146,7 +151,7 @@ def transaction_document(request, *args, **kwargs):
     extra_context['transaction'] = transaction
 
     # Return
-    return render(request, 'transactions/transaction_document_a4.html', extra_context)
+    return render(request, 'transactions/transaction_document.html', extra_context)
 
 
 @login_required
@@ -165,7 +170,6 @@ def transaction_edit(request, *args, **kwargs):
     # Check that the transaction is open
     if transaction.closed:
         extra_context['message'] = gettext('Transaction Closed')
-        #return redirect('message', extra_context)
         return render(request, 'core/message.html', extra_context)
 
     # Get available concepts to add
