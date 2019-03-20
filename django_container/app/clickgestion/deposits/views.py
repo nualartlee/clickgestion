@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import urllib
-from clickgestion.transactions.views import get_concept_and_form_from_kwargs
 from django.utils.translation import gettext
 
 
@@ -38,23 +37,6 @@ class DepositList(ConceptList):
 
 
 @login_required()
-def depositreturn_detail(request, *args, **kwargs):
-    extra_context = {}
-
-    # Check permissions
-
-    # Get the concept and form
-    concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
-    extra_context['concept'] = concept
-
-    # Get the transaction
-    transaction = concept.transaction
-    extra_context['transaction'] = transaction
-
-    return render(request, 'concepts/concept_detail.html', extra_context)
-
-
-@login_required()
 def depositreturn_new(request, *args, **kwargs):
     extra_context = {}
 
@@ -80,20 +62,13 @@ def depositreturn_new(request, *args, **kwargs):
             transaction = transaction_model()
 
         # Copy client data from deposit
-        if not transaction.apt_number:
-            transaction.apt_number = concept.transaction.apt_number
-        if not transaction.client_address:
-            transaction.client_address = concept.transaction.client_address
-        if not transaction.client_email:
-            transaction.client_email = concept.transaction.client_email
-        if not transaction.client_first_name:
-            transaction.client_first_name = concept.transaction.client_first_name
-        if not transaction.client_id:
-            transaction.client_id = concept.transaction.client_id
-        if not transaction.client_last_name:
-            transaction.client_last_name = concept.transaction.client_last_name
-        if not transaction.client_phone_number:
-            transaction.client_phone_number = concept.transaction.client_phone_number
+        transaction.apt_number = concept.transaction.apt_number
+        transaction.client_address = concept.transaction.client_address
+        transaction.client_email = concept.transaction.client_email
+        transaction.client_first_name = concept.transaction.client_first_name
+        transaction.client_id = concept.transaction.client_id
+        transaction.client_last_name = concept.transaction.client_last_name
+        transaction.client_phone_number = concept.transaction.client_phone_number
         transaction.employee = request.user
         transaction.save()
 

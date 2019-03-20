@@ -45,13 +45,15 @@ class AptRentalDeposit(BaseConcept):
         verbose_name_plural = gettext_lazy('Apartment Rental Deposits')
 
     def __init__(self, *args, **kwargs):
-        apt_rental = kwargs.pop('apt_rental', None)
+        aptrental = kwargs.pop('aptrental', None)
         super().__init__(*args, **kwargs)
-        if apt_rental:
-            self.adults = apt_rental.adults
-            self.start_date = apt_rental.start_date
-            self.end_date = apt_rental.end_date
-            self.children = apt_rental.children
+        if aptrental:
+            self.adults = aptrental.adults
+            self.start_date = aptrental.start_date
+            self.end_date = aptrental.end_date
+            self.children = aptrental.children
+            if not aptrental.transaction.closed:
+                self.transaction = aptrental.transaction
 
     def __str__(self):
         return self.code
@@ -88,12 +90,14 @@ class AptRentalDeposit(BaseConcept):
         return value_model(amount=total)
 
     def save(self, *args, **kwargs):
-        apt_rental = kwargs.pop('apt_rental', None)
-        if apt_rental:
-            self.adults = apt_rental.adults
-            self.start_date = apt_rental.start_date
-            self.end_date = apt_rental.end_date
-            self.children = apt_rental.children
+        aptrental = kwargs.pop('aptrental', None)
+        if aptrental:
+            self.adults = aptrental.adults
+            self.start_date = aptrental.start_date
+            self.end_date = aptrental.end_date
+            self.children = aptrental.children
+            if not aptrental.transaction.closed:
+                self.transaction = aptrental.transaction
         super().save(*args, **kwargs)
 
 

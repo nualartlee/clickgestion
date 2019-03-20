@@ -63,7 +63,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
         cls.aptrental.save()
 
         cls.aptrentaldeposit = AptRentalDeposit(
-            apt_rental=cls.aptrental,
+            aptrental=cls.aptrental,
             transaction=Transaction.objects.create(employee=cls.normaluser),
         )
         cls.aptrentaldeposit.save()
@@ -83,6 +83,14 @@ class CustomTestCase(TestCase):  # pragma: no cover
             value=conceptvalue,
         )
         cls.cashfloatwithdrawal.save()
+
+        # Create a depositreturn
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(cls.admin)
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        cls.depositreturn = model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
@@ -142,7 +150,10 @@ class CustomViewTestCase:  # pragma: no cover
 
         # Check the path
         if self.get_url:
-            self.assertEqual(response.request['PATH_INFO'], self.get_url)
+            if self.get_url == 'pass':
+                pass
+            else:
+                self.assertEqual(response.request['PATH_INFO'], self.get_url)
         else:
             self.assertEqual(response.request['PATH_INFO'], reverse(self.url, kwargs=self.kwargs))
 

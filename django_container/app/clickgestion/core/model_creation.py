@@ -404,12 +404,18 @@ def create_test_client_transaction(employee, date):
     return model
 
 
-def create_test_aptrental(transaction, date):
-    start_date = date + timezone.timedelta(days=randrange(21))
-    end_date = start_date + timezone.timedelta(days=randrange(1,28))
+def create_test_aptrental(transaction, date, adults=None, children=None, end_date=None, start_date=None):
+    if not adults:
+        adults = randrange(1, 5)
+    if not children:
+        children = randrange(5 - adults)
+    if not start_date:
+        start_date = date + timezone.timedelta(days=randrange(21))
+    if not end_date:
+        end_date = start_date + timezone.timedelta(days=randrange(1, 28))
     model = AptRental(
-        adults=randrange(1, 5),
-        children=randrange(1, 3),
+        adults=adults,
+        children=children,
         start_date=start_date,
         end_date=end_date,
         transaction=transaction,
@@ -419,9 +425,9 @@ def create_test_aptrental(transaction, date):
     return model
 
 
-def create_test_aptrentaldeposit(transaction, apt_rental, date):
+def create_test_aptrentaldeposit(transaction, aptrental, date):
     model = AptRentalDeposit(
-        apt_rental=apt_rental,
+        aptrental=aptrental,
         transaction=transaction,
     )
     model.save()
@@ -581,8 +587,8 @@ def create_test_random_transaction(date):  # pragma: no cover
     if 92 < selector <= 98:
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
-        apt_rental = create_test_aptrental(transaction, date)
-        create_test_aptrentaldeposit(transaction, apt_rental, date)
+        aptrental = create_test_aptrental(transaction, date)
+        create_test_aptrentaldeposit(transaction, aptrental, date)
 
     # Create open house transactions
     if 98 < selector <= 99:

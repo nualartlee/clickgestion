@@ -8,14 +8,14 @@ class DepositFilterTest(CustomTestCase):
 
     def test_returned_filter(self):
 
-        # None returned
+        # Initial returned
         filter_data = {
             'returned': True,
         }
         deposit_filter = DepositFilter(data=filter_data)
-        self.assertFalse(deposit_filter.qs)
+        initial_returned = deposit_filter.qs.count()
 
-        # One returned
+        # One more returned
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
         aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
@@ -24,19 +24,19 @@ class DepositFilterTest(CustomTestCase):
         depositreturn = model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
         transaction.close(self.admin)
         deposit_filter = DepositFilter(data=filter_data)
-        self.assertTrue(deposit_filter.qs)
+        self.assertEqual(deposit_filter.qs.count(), initial_returned + 1)
 
-        # None pending
+        # Initial pending
         filter_data = {
             'returned': False,
         }
         deposit_filter = DepositFilter(data=filter_data)
-        self.assertFalse(deposit_filter.qs)
+        initial_pending = deposit_filter.qs.count()
 
-        # One pending
+        # One more pending
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
         aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
         transaction.close(self.admin)
         deposit_filter = DepositFilter(data=filter_data)
-        self.assertTrue(deposit_filter.qs)
+        self.assertEqual(deposit_filter.qs.count(), initial_pending + 1)
