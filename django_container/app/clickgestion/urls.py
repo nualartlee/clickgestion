@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^transactions/', include('clickgestion.transactions.urls')),
 ]
 
-if settings.DEBUG:
+if settings.DEBUG:  # pragma: no cover
     import debug_toolbar
     urlpatterns.append(url(r'^__debug__/', include(debug_toolbar.urls)))
 

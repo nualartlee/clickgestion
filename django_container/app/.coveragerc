@@ -2,8 +2,14 @@
 omit =
     # omit anything in a .local directory anywhere
     #*/.local/*
+
+    # omit all test files
+    */test*
+
     # omit everything in /usr
     #/usr/*
-    # omit this single file
-    #utils/tirefire.py
+
+    # omit single files
     clickgestion/settings/development.py
+    manage.py
+    django_setup.py
