@@ -117,9 +117,20 @@ def transaction_delete(request, *args, **kwargs):
 
     # POST
     if request.method == 'POST':
-        default_next = reverse('transactions_open')
+
+        # Clear session variables related to this transaction
+        code = request.session.get('refund_transaction_code', None)
+        if transaction.code == code:
+            request.session.pop('refund_transaction_code', None)
+        code = request.session.get('depositreturn_transaction_code', None)
+        if transaction.code == code:
+            request.session.pop('depositreturn_transaction_code', None)
+
+        # Delete the transaction
         transaction.delete()
-        next_page = request.POST.get('next', default_next)
+
+        # Return
+        next_page = request.POST.get('next', reverse('transactions_open'))
         return redirect(next_page)
 
     # GET

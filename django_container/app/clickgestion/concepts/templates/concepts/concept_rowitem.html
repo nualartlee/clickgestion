@@ -30,7 +30,7 @@
     <td>
         {% if concept.transaction.closed %}
 
-            {% if concept.can_return_deposit and request.session.deposit_return_transaction_code %}
+            {% if concept.can_return_deposit and request.session.depositreturn_transaction_code %}
             <a class="badge badge-warning ml-2" href="{% url 'depositreturn_new' concept_code=concept.code %}">
                 {% trans 'Return' %}
             </a>
