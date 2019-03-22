@@ -1,3 +1,4 @@
+from clickgestion.concepts.models import BaseConcept
 from clickgestion.core.test import CustomTestCase, CustomModelTestCase
 from clickgestion.refunds.models import Refund
 from clickgestion.core import model_creation
@@ -41,3 +42,15 @@ class RefundTest(CustomTestCase, CustomModelTestCase):
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         with self.assertRaises(FieldError):
             model_creation.create_test_refund(transaction, aptrental, timezone.now())
+
+    def test_refunded_concept(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        transaction.close(self.admin)
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        refund = model_creation.create_test_refund(
+            transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        baserefund = BaseConcept.objects.get(code=refund.code)
+        self.assertTrue(baserefund.refunded_concept)
+

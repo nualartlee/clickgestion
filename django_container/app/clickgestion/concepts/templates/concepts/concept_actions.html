@@ -9,7 +9,7 @@
     <div class="row justify-content-center">
         <div class="col">
             <!--View Transaction-->
-            <a class="btn btn-outline-primary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'transaction_detail' transaction_code=concept.transaction.code %}">
                 {% trans 'View The Transaction' %}
             </a>
             <!--View Transaction Concepts-->
@@ -20,33 +20,45 @@
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_detail' concept_code=concept.code %}">
                 {% trans "View The Concept's Details" %}
             </a>
-            <!--Return Deposit-->
             {% if concept.can_return_deposit %}
+            <!--Return This Deposit-->
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'depositreturn_new' concept_code=concept.code %}">
                 {% trans "Return The Deposit" %}
             </a>
             {% endif %}
-            <!--View Deposit Return-->
             {% if concept.deposit_return %}
+            <!--View The Deposit Return-->
             <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_row' concept_code=concept.deposit_return.code %}">
                 {% trans "View The Deposit Return" %}
             </a>
             {% endif %}
-            <!--Refund Concept-->
+            {% if concept.returned_deposit %}
+            <!--View The Deposit Returned-->
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_row' concept_code=concept.returned_deposit.code %}">
+                {% trans "View The Deposit Returned" %}
+            </a>
+            {% endif %}
             {% if concept.can_refund %}
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'refund_new' concept_code=concept.code %}">
+            <!--Refund This Concept-->
+            <a class="btn btn-outline-danger btn-large btn-block m-2" href="{% url 'refund_new' concept_code=concept.code %}">
                 {% trans "Refund This Concept" %}
             </a>
             {% endif %}
-            <!--View Refund-->
             {% if concept.refund_concept %}
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_row' concept_code=concept.refund_concept.code %}">
+            <!--View The Refund For This Concept-->
+            <a class="btn btn-outline-warning btn-large btn-block m-2" href="{% url 'concept_row' concept_code=concept.refund_concept.code %}">
                 {% trans "View The Refund" %}
             </a>
             {% endif %}
-            <!--Delete-->
+            {% if concept.refunded_concept %}
+            <!--View The Refunded Concept-->
+            <a class="btn btn-outline-warning btn-large btn-block m-2" href="{% url 'concept_row' concept_code=concept.refunded_concept.code %}">
+                {% trans "View The Refunded Concept" %}
+            </a>
+            {% endif %}
             {% if not concept.transaction.closed %}
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_delete' concept_code=concept.code %}">
+            <!--Delete-->
+            <a class="btn btn-outline-danger btn-large btn-block m-2" href="{% url 'concept_delete' concept_code=concept.code %}">
                 {% trans "Delete This Concept" %}
             </a>
             {% endif %}

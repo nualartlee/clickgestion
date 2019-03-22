@@ -191,6 +191,22 @@ class BaseConcept(models.Model):
                     return r
         return None
 
+    @property
+    def refunded_concept(self):
+        if self.concept_class != 'refund':
+            return None
+        if self.is_child:
+            return self.refunded_concept
+        return self.child.refunded_concept
+
+    @property
+    def returned_deposit(self):
+        if self.concept_class != 'depositreturn':
+            return None
+        if self.is_child:
+            return self.returned_deposit
+        return self.child.returned_deposit
+
     def save(self, *args, **kwargs):
 
         # Save the accounting group

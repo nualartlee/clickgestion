@@ -1,3 +1,4 @@
+from clickgestion.concepts.models import BaseConcept
 from clickgestion.core.test import CustomTestCase, CustomModelTestCase
 from clickgestion.deposits.models import AptRentalDeposit, DepositReturn
 from clickgestion.core import model_creation
@@ -41,6 +42,17 @@ class DepositReturnTest(CustomTestCase, CustomModelTestCase):
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         with self.assertRaises(FieldError):
             model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
+
+    def test_returned_deposit(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        deposit_return = model_creation.create_test_depositreturn(
+            transaction, aptrentaldeposit, timezone.now())
+        basereturn = BaseConcept.objects.get(code=deposit_return.code)
+        self.assertTrue(basereturn.returned_deposit)
 
 
 class AptRentalDepositTest(CustomTestCase, CustomModelTestCase):
