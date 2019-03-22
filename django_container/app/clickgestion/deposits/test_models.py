@@ -39,10 +39,8 @@ class DepositReturnTest(CustomTestCase, CustomModelTestCase):
         self.assertTrue(aptrentaldeposit.deposit_return)
         self.assertFalse(aptrentaldeposit.can_return_deposit)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        deposit_return = model_creation.create_test_depositreturn(
-            transaction, aptrentaldeposit, timezone.now())
-        self.assertRaises(
-            FieldError, model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now()))
+        with self.assertRaises(FieldError):
+            model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
 
 
 class AptRentalDepositTest(CustomTestCase, CustomModelTestCase):

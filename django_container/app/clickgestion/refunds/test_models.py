@@ -39,4 +39,5 @@ class RefundTest(CustomTestCase, CustomModelTestCase):
         self.assertTrue(aptrental.refund_concept)
         self.assertFalse(aptrental.can_refund)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        self.assertRaises(FieldError, model_creation.create_test_refund(transaction, aptrental, timezone.now()))
+        with self.assertRaises(FieldError):
+            model_creation.create_test_refund(transaction, aptrental, timezone.now())

@@ -30,15 +30,17 @@
     <td>
         {% if concept.transaction.closed %}
 
-            {% if concept.can_return_deposit %}
+            {% if concept.can_return_deposit and request.session.deposit_return_transaction_code %}
             <a class="badge badge-warning ml-2" href="{% url 'depositreturn_new' concept_code=concept.code %}">
                 {% trans 'Return' %}
             </a>
             {% endif %}
 
+            {% if concept.can_refund and request.session.refund_transaction_code %}
             <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/refund">
                 {% trans 'Refund' %}
             </a>
+            {% endif %}
 
         {% else %}
 
@@ -49,7 +51,7 @@
         {% endif %}
 
         <a class="badge badge-secondary ml-2" href="#" data-remote="{% url 'concept_actions' concept_code=concept.code %}" data-toggle="modal" data-target="#modal-actions">
-        {% trans 'More' %}
+        {% trans 'View Actions' %}
         </a>
     </td>
 
