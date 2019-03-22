@@ -35,6 +35,7 @@ def create_default_models():
     create_cashfloatdepositsettings()
     create_cashfloatwithdrawalsettings()
     create_depositreturnsettings()
+    create_refundsettings()
 
 
 def create_test_models(days=30):
@@ -610,7 +611,7 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     if 96 < selector <= 99:
         concepts = BaseConcept.objects.all()
         for concept in concepts:
-            if concept.is_refundable:
+            if concept.can_refund:
                 refunded_concept = concept
                 create_test_refund(transaction, refunded_concept, date)
                 break
