@@ -72,7 +72,7 @@ class BaseConcept(models.Model):
     )
     # Human identification code
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
-    # Required to access instances of child classes
+    # Required to access instances of child classes, lower case model name without app
     concept_class = models.CharField(verbose_name=gettext_lazy('Concept Class'), max_length=32, editable=False)
     # Verbose name of the child class (in default language)
     concept_name = models.CharField(verbose_name=gettext_lazy('Concept Name'), max_length=32, editable=False)
@@ -99,12 +99,24 @@ class BaseConcept(models.Model):
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'))
 
     @property
+    def can_refund(self):
+
+        # Get status
+        is_production = self.accounting_group == 'Production'
+        is_not_a_refund = self.concept_class != 'refund'
+        is_closed = self.transaction.closed
+        is_not_refunded = not self.refund_concept
+
+        # Return
+        return is_production and is_not_a_refund and is_closed and is_not_refunded
+
+    @property
     def can_return_deposit(self):
 
         # Get status
         is_deposit = self.concept_class in ['aptrentaldeposit', 'parkingdeposit', ]
         is_closed = self.transaction.closed
-        is_not_returned = not self.deposit_returned
+        is_not_returned = not self.deposit_return
 
         # Return
         return is_deposit and is_closed and is_not_returned
@@ -120,12 +132,12 @@ class BaseConcept(models.Model):
         return self  # pragma: no cover
 
     @property
-    def deposit_returned(self):
+    def deposit_return(self):
         if self.depositreturns.exists():
             for r in self.depositreturns.all():
                 if r.transaction.closed:
-                    return True
-        return False
+                    return r
+        return None
 
     @property
     def description_short(self):
@@ -170,6 +182,14 @@ class BaseConcept(models.Model):
         if self.is_child:
             return self._meta.verbose_name_plural  # pragma: no cover
         return self.child._meta.verbose_name_plural
+
+    @property
+    def refund_concept(self):
+        if self.refunds.exists():
+            for r in self.refunds.all():
+                if r.transaction.closed:
+                    return r
+        return None
 
     def save(self, *args, **kwargs):
 

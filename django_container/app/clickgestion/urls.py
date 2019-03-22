@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^deposits/', include('clickgestion.deposits.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
+    url(r'^refunds/', include('clickgestion.refunds.urls')),
 ]
 
 if settings.DEBUG:  # pragma: no cover

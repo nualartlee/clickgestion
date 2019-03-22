@@ -77,14 +77,14 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
         self.assertTrue(self.model_object.get_value())
 
     def test_deposit_returned(self):
-        self.assertFalse(self.aptrentaldeposit.deposit_returned)
+        self.assertFalse(self.aptrentaldeposit.deposit_return)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         deposit_return = model_creation.create_test_depositreturn(
             transaction, self.aptrentaldeposit, timezone.now())
-        self.assertFalse(self.aptrentaldeposit.deposit_returned)
+        self.assertFalse(self.aptrentaldeposit.deposit_return)
         transaction.closed = True
         transaction.save()
-        self.assertTrue(self.aptrentaldeposit.deposit_returned)
+        self.assertTrue(self.aptrentaldeposit.deposit_return)
 
     def test_tax_amount(self):
         self.assertEqual(0, self.aptrentaldeposit.tax_amount)

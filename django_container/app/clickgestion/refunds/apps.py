@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+from django.utils.translation import gettext_lazy
+
+
+class RefundsConfig(AppConfig):
+    name = 'clickgestion.refunds'
+    verbose_name = gettext_lazy('Refunds')
+

@@ -92,6 +92,13 @@ class CustomTestCase(TestCase):  # pragma: no cover
         transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
         cls.depositreturn = model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
 
+        # Create a refund
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        transaction.close(cls.admin)
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        cls.refund = model_creation.create_test_refund(transaction, aptrental, timezone.now())
+
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
     def log_admin_in(self):

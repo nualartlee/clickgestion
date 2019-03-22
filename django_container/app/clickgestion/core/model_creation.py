@@ -3,13 +3,14 @@ import os
 import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from clickgestion.concepts.models import ConceptValue, Currency
+from clickgestion.concepts.models import BaseConcept, ConceptValue, Currency
 from clickgestion.deposits.models import AptRentalDeposit, AptRentalDepositSettings, DepositReturn, DepositReturnSettings
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
     CashFloatWithdrawal, CashFloatWithdrawalSettings
+from clickgestion.refunds.models import Refund, RefundSettings
 from django.utils import timezone
 from random import randrange
 from faker import Faker
@@ -346,6 +347,36 @@ def create_depositreturnsettings():
     return model
 
 
+def create_refundsettings():
+    try:
+        model = RefundSettings.objects.get()
+    except:
+        model = RefundSettings(
+            accounting_group='Sales',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=True,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='cash'),
+            vat_percent=0,
+        ).save()
+    return model
+
+
 def create_test_transaction(employee, date):
     fake = Faker()
     notes = None
@@ -440,6 +471,15 @@ def create_test_depositreturn(transaction, returned_deposit, date):
         returned_deposit=returned_deposit,
         transaction=transaction,
     )
+    old_transaction = returned_deposit.transaction
+    transaction.client_address = old_transaction.client_address
+    transaction.client_first_name = old_transaction.client_first_name
+    transaction.client_last_name = old_transaction.client_last_name
+    transaction.client_email = old_transaction.client_email
+    transaction.client_phone_number = old_transaction.client_phone_number
+    transaction.client_id = old_transaction.client_id
+    transaction.apt_number = old_transaction.apt_number
+    transaction.save()
     model.save()
     DepositReturn.objects.filter(id=model.id).update(created=date)
     return model
@@ -454,19 +494,10 @@ def create_test_depositreturns(date):  # pragma: no cover
     for deposit in apt_rental_deposits_ending_today:
         if not deposit.transaction.closed:
             continue
-        if deposit.deposit_returned:
+        if deposit.deposit_return:
             continue
         employee = get_sales_employee()
         transaction = create_test_client_transaction(employee, date)
-        old_transaction = deposit.transaction
-        transaction.client_address = old_transaction.client_address
-        transaction.client_first_name = old_transaction.client_first_name
-        transaction.client_last_name = old_transaction.client_last_name
-        transaction.client_email = old_transaction.client_email
-        transaction.client_phone_number = old_transaction.client_phone_number
-        transaction.client_id = old_transaction.client_id
-        transaction.apt_number = old_transaction.apt_number
-
         create_test_depositreturn(transaction, deposit, date)
         transaction.closed = True
         transaction.closed_date = date
@@ -539,67 +570,77 @@ def create_test_random_transaction(date):  # pragma: no cover
 
     selector = randrange(100)
 
-    # Create closed client transactions
-    if selector <= 70:
-        employee = get_sales_employee()
-        transaction = create_test_client_transaction(employee, date)
+    # Create client transactions
+    if selector <= 92:
+        create_test_random_transaction_client(date)
+
+    # Create  house transactions
+    if 92 < selector <= 99:
+        employee = get_cash_employee()
+        transaction = create_test_transaction(employee, date)
+        if randrange(100) < 25:
+            deposit = create_test_cashfloatdeposit(transaction, date)
+        else:
+            withdrawal = create_test_cashfloatwithdrawal(transaction, date)
+
+        # Close transaction
+        random_close_transaction(transaction)
+
+
+def create_test_random_transaction_client(date):  # pragma: no cover
+
+    employee = get_sales_employee()
+    transaction = create_test_client_transaction(employee, date)
+    selector = randrange(100)
+
+    # Apt rental
+    if selector <= 96:
         aptrental = create_test_aptrental(transaction, date)
         create_test_aptrentaldeposit(transaction, aptrental, date)
-        transaction.closed = True
-        transaction.closed_date = date
-        transaction.save()
 
-    # Create closed house transactions
+    # Deposit return
     if 70 < selector <= 80:
-        employee = get_sales_employee()
-        transaction = create_test_client_transaction(employee, date)
         apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, depositreturns=None).reverse()
         if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]
-        old_transaction = apt_rental_deposit.transaction
-        transaction.client_address = old_transaction.client_address
-        transaction.client_first_name = old_transaction.client_first_name
-        transaction.client_last_name = old_transaction.client_last_name
-        transaction.client_email = old_transaction.client_email
-        transaction.client_phone_number = old_transaction.client_phone_number
-        transaction.client_id = old_transaction.client_id
-        transaction.apt_number = old_transaction.apt_number
-
         create_test_depositreturn(transaction, apt_rental_deposit, date)
+
+    # Refund
+    if 96 < selector <= 99:
+        concepts = BaseConcept.objects.all()
+        for concept in concepts:
+            if concept.is_refundable:
+                refunded_concept = concept
+                create_test_refund(transaction, refunded_concept, date)
+                break
+
+    # Close transaction
+    random_close_transaction(transaction)
+
+
+def random_close_transaction(transaction):
+    """
+    Randomly choose if a transaction is closed
+    """
+
+    time_elapsed = (timezone.now() - transaction.created).days
+    closed_chance = 0.5 * time_elapsed + 85
+    selector = randrange(100)
+    if selector < closed_chance:
         transaction.closed = True
-        transaction.closed_date = date
+        transaction.closed_date = transaction.created
         transaction.save()
 
-    # Create closed house transactions
-    if 80 < selector <= 92:
-        employee = get_cash_employee()
-        transaction = create_test_transaction(employee, date)
-        if randrange(100) < 25:
-            deposit = create_test_cashfloatdeposit(transaction, date)
-        else:
-            withdrawal = create_test_cashfloatwithdrawal(transaction, date)
-        transaction.closed = True
-        transaction.closed_date = date
-        transaction.save()
 
-    # Create open client transactions
-    if 92 < selector <= 98:
-        employee = get_sales_employee()
-        transaction = create_test_client_transaction(employee, date)
-        aptrental = create_test_aptrental(transaction, date)
-        create_test_aptrentaldeposit(transaction, aptrental, date)
-
-    # Create open house transactions
-    if 98 < selector <= 99:
-        employee = get_cash_employee()
-        transaction = create_test_transaction(employee, date)
-        if randrange(100) < 25:
-            deposit = create_test_cashfloatdeposit(transaction, date)
-        else:
-            withdrawal = create_test_cashfloatwithdrawal(transaction, date)
-
-    return transaction
+def create_test_refund(transaction, refunded_concept, date):
+    model = Refund(
+        refunded_concept=refunded_concept,
+        transaction=transaction,
+    )
+    model.save()
+    DepositReturn.objects.filter(id=model.id).update(created=date)
+    return model
 
 
 def create_test_users():

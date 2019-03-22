@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
-from django.utils.translation import gettext_lazy
-from clickgestion.concepts.models import BaseConcept, ConceptSettings, ConceptValue
-from django.db import models
 from django.apps import apps
+from clickgestion.concepts.models import BaseConcept, ConceptSettings, ConceptValue
+from django.core.exceptions import FieldError
+from django.utils.translation import gettext_lazy
+from django.db import models
 
 
 class AptRentalDepositSettings(ConceptSettings):
@@ -146,6 +147,9 @@ class DepositReturn(BaseConcept):
         return self._meta.verbose_name
 
     def save(self, *args, **kwargs):
+        if not self.returned_deposit.can_return_deposit:
+            raise FieldError('returned_deposit is not returnable')
+
         value = ConceptValue(
             amount=self.returned_deposit.value.amount,
             credit=False,
