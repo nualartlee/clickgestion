@@ -391,6 +391,7 @@ def create_test_transaction(employee, date):
     model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
     Transaction.objects.filter(id=model.id).update(created=date)
+    model.refresh_from_db()
     return model
 
 
@@ -432,7 +433,8 @@ def create_test_client_transaction(employee, date):
     )
     model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
     model.save()
-    Transaction.objects.filter(id=model.id).update(created=date)
+    Transaction.objects.filter(code=model.code).update(created=date)
+    model.refresh_from_db()
     return model
 
 
@@ -625,8 +627,8 @@ def random_close_transaction(transaction):
     Randomly choose if a transaction is closed
     """
 
-    time_elapsed = (timezone.now() - transaction.created).days
-    closed_chance = 0.5 * time_elapsed + 85
+    days_elapsed = (timezone.now() - transaction.created).days
+    closed_chance = 0.5 * days_elapsed + 85
     selector = randrange(100)
     if selector < closed_chance:
         transaction.closed = True
