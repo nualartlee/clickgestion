@@ -1,0 +1,18 @@
+<div class="row justify-content-center">
+    <div class="formColumn col">
+        {% with widget.subwidgets.0 as widget %}
+        <label class="col-form-label">
+                {{ widget.attrs.fromlabel }}
+        </label>
+        {% include widget.template_name %}
+        {% endwith %}
+    </div>
+    <div class="formColumn col">
+        {% with widget.subwidgets.1 as widget %}
+        <label class="col-form-label">
+            {{ widget.attrs.tolabel }}
+        </label>
+        {% include widget.template_name %}
+        {% endwith %}
+    </div>
+</div>

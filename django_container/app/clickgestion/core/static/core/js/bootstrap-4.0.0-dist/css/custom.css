@@ -1,0 +1,29 @@
+/* Form Control Placeholder Color Override */
+
+/* gray-200 e9ecef */
+/* gray-300 dee2e6 */
+
+.form-control::-webkit-input-placeholder {
+  color: #dee2e6;
+  opacity: 1;
+}
+
+.form-control::-moz-placeholder {
+  color: #dee2e6;
+  opacity: 1;
+}
+
+.form-control:-ms-input-placeholder {
+  color: #dee2e6;
+  opacity: 1;
+}
+
+.form-control::-ms-input-placeholder {
+  color: #dee2e6;
+  opacity: 1;
+}
+
+.form-control::placeholder {
+  color: #dee2e6;
+  opacity: 1;
+}
