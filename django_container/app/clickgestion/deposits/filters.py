@@ -1,14 +1,106 @@
-import django_filters
-from django.utils.translation import gettext_lazy
+from clickgestion.concepts.models import BaseConcept
+from crispy_forms.layout import Column, Field, Row
 from clickgestion.concepts.filters import ConceptFilter
-from crispy_forms.helper import FormHelper
-from django.db.models import IntegerField, Case, When, Count, Q
+import django_filters
+from crispy_forms.helper import FormHelper, Layout
+from django.utils.translation import gettext_lazy
+from django.db.models import Q
 
 
 class DepositFilter(ConceptFilter):
 
     returned = django_filters.BooleanFilter(method='returned_filter')
     returned.field.label = gettext_lazy('Returned')
+
+    concept_name = django_filters.ChoiceFilter(
+        choices=[
+            (x, x) for x in
+            BaseConcept.objects.filter(accounting_group='Deposits').values_list('concept_name', flat=True).distinct()
+        ],
+    )
+    concept_name.field.label = gettext_lazy('Type')
+
+    @property
+    def form(self):
+        form = super().form
+        form.helper = FormHelper()
+        form.helper.form_tag = False
+
+        form.helper.layout = Layout(
+            Row(
+                Column(
+                    Field(
+                        'transaction__apt_number',
+                    ),
+                    css_class='col-2',
+                ),
+                Column(
+                    Field(
+                        'transaction__client_first_name',
+                    ),
+                    css_class='col-5',
+                ),
+                Column(
+                    Field(
+                        'transaction__client_last_name',
+                    ),
+                    css_class='col-5',
+                ),
+                css_class='justify-content-center',
+            ),
+            Row(
+                Column(
+                    Field(
+                        'start_date',
+                    ),
+                    css_class='col-6',
+                ),
+                Column(
+                    Field(
+                        'end_date',
+                    ),
+                    css_class='col-6',
+                ),
+                css_class='justify-content-center',
+            ),
+            Row(
+                Column(
+                    Field(
+                        'concept_name',
+                    ),
+                    css_class='col-4',
+                ),
+                Column(
+                    Field(
+                        'returned',
+                    ),
+                    css_class='col-4',
+                ),
+                Column(
+                    Field(
+                        'transaction__employee',
+                    ),
+                    css_class='col-4',
+                ),
+                css_class='justify-content-center',
+            ),
+            Row(
+                Column(
+                    Field(
+                        'code',
+                    ),
+                    css_class='col-6',
+                ),
+                Column(
+                    Field(
+                        'transaction__closed_date',
+                    ),
+                    css_class='col-6',
+                ),
+                css_class='justify-content-center',
+            ),
+        )
+        return form
 
     def returned_filter(self, queryset, name, value):
 
@@ -24,7 +116,7 @@ class DepositFilter(ConceptFilter):
     def qs(self):
         concepts = super().qs
         return concepts.filter(
-            concept_class__in=['aptrentaldeposit'],
+            accounting_group= 'Deposits',
             transaction__closed=True,
         )
 
