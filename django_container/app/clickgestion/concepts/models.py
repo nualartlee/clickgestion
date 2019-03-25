@@ -196,7 +196,7 @@ class BaseConcept(models.Model):
         if self.concept_class != 'refund':
             return None
         if self.is_child:
-            return self.refunded_concept
+            return self.refunded_concept  # pragma: no cover
         return self.child.refunded_concept
 
     @property
@@ -204,7 +204,7 @@ class BaseConcept(models.Model):
         if self.concept_class != 'depositreturn':
             return None
         if self.is_child:
-            return self.returned_deposit
+            return self.returned_deposit  # pragma: no cover
         return self.child.returned_deposit
 
     def save(self, *args, **kwargs):

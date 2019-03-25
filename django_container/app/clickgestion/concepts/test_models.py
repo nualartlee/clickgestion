@@ -64,6 +64,8 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
             'name',
             'name_plural',
             'refund_concept',
+            'refunded_concept',
+            'returned_deposit',
             'save',
             'settings',
             'tax_amount',
@@ -82,32 +84,49 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
         aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        aptrentaldepositbase = BaseConcept.objects.get(code=aptrentaldeposit.code)
         transaction.close(self.admin)
         self.assertFalse(aptrentaldeposit.deposit_return)
         self.assertTrue(aptrentaldeposit.can_return_deposit)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        deposit_return = model_creation.create_test_depositreturn(
+        depositreturn = model_creation.create_test_depositreturn(
             transaction, aptrentaldeposit, timezone.now())
+        depositreturnbase = BaseConcept.objects.get(code=depositreturn.code)
         self.assertFalse(aptrentaldeposit.deposit_return)
+        self.assertFalse(aptrentaldepositbase.deposit_return)
         self.assertTrue(aptrentaldeposit.can_return_deposit)
+        self.assertTrue(aptrentaldepositbase.can_return_deposit)
         transaction.close(self.admin)
         self.assertTrue(aptrentaldeposit.deposit_return)
+        self.assertTrue(aptrentaldepositbase.deposit_return)
+        self.assertTrue(depositreturn.returned_deposit)
+        self.assertTrue(depositreturnbase.returned_deposit)
         self.assertFalse(aptrentaldeposit.can_return_deposit)
+        self.assertFalse(aptrentaldepositbase.can_return_deposit)
 
     def test_refunded(self):
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentalbase = BaseConcept.objects.get(code=aptrental.code)
         transaction.close(self.admin)
         self.assertFalse(aptrental.refund_concept)
+        self.assertFalse(aptrentalbase.refund_concept)
         self.assertTrue(aptrental.can_refund)
+        self.assertTrue(aptrentalbase.can_refund)
         transaction = model_creation.create_test_transaction(self.admin, timezone.now())
         refund = model_creation.create_test_refund(
             transaction, aptrental, timezone.now())
+        refundbase = BaseConcept.objects.get(code=refund.code)
         self.assertFalse(aptrental.refund_concept)
-        self.assertTrue(aptrental.can_refund)
+        self.assertFalse(aptrentalbase.refund_concept)
+        self.assertTrue(aptrentalbase.can_refund)
         transaction.close(self.admin)
         self.assertTrue(aptrental.refund_concept)
+        self.assertTrue(aptrentalbase.refund_concept)
+        self.assertTrue(refund.refunded_concept)
+        self.assertTrue(refundbase.refunded_concept)
         self.assertFalse(aptrental.can_refund)
+        self.assertFalse(aptrentalbase.can_refund)
 
     def test_tax_amount(self):
         self.assertEqual(0, self.aptrentaldeposit.tax_amount)

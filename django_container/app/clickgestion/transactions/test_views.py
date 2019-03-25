@@ -1,10 +1,11 @@
-from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
-from clickgestion.core import model_creation
-from django.forms.models import model_to_dict
-from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.views import get_available_concepts
+from importlib import import_module
+from clickgestion.core import model_creation
+from django.urls import reverse
+from django.conf import settings
 from django.utils import timezone
+from clickgestion.transactions.models import Transaction
 
 
 class TestGetAvailableConcepts(CustomTestCase):
@@ -92,6 +93,23 @@ class TestTransactionDeleteView(CustomTestCase, CustomViewTestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_ok(self):
+        self.log_admin_in()
+        response = self.client.post(
+            reverse(self.url, kwargs=self.kwargs),
+            follow=True, HTTP_REFERER='/',
+        )
+        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_with_session_data(self):
+        if self.client.session:  # pragma: no cover
+            session = self.client.session
+        else:  # pragma: no cover
+            engine = import_module(settings.SESSION_ENGINE)
+            session = engine.SessionStore()
+        session['refund_transaction_code'] = self.transaction.code
+        session['depositreturn_transaction_code'] = self.transaction.code
+        session.save()
         self.log_admin_in()
         response = self.client.post(
             reverse(self.url, kwargs=self.kwargs),
