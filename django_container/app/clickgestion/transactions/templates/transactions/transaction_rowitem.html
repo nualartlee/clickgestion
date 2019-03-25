@@ -15,25 +15,6 @@
     </th>
     {% endif %}
 
-    <!--CASH CLOSE-->
-    <td>
-        {% if transaction.cashclose %}
-        <a class="btn-link text-dark" href="{% url 'cashclose_row' cashclose_code=transaction.cashclose.code %}">
-            {{ transaction.cashclose.code }}
-        </a>
-        {% endif %}
-    </td>
-
-    <!--DATE-->
-    <td>
-        {% if transaction.closed %}
-        {{ transaction.closed_date|default_if_none:"&nbsp;" }}
-        {% else %}
-        {% trans 'Opened' %} {{ transaction.created|default_if_none:"&nbsp;" }}
-        {% endif %}
-
-    </td>
-
     <!--APT NUMBER-->
     <td>{{ transaction.apt_number|default_if_none:"&nbsp;" }}</td>
 
@@ -60,6 +41,25 @@
 
             {% endfor %}
         </div>
+        {% endif %}
+    </td>
+
+    <!--DATE-->
+    <td>
+        {% if transaction.closed %}
+        {{ transaction.closed_date|default_if_none:"&nbsp;" }}
+        {% else %}
+        {% trans 'Opened' %} {{ transaction.created|default_if_none:"&nbsp;" }}
+        {% endif %}
+
+    </td>
+
+    <!--CASH CLOSE-->
+    <td>
+        {% if transaction.cashclose %}
+        <a class="btn-link text-dark" href="{% url 'cashclose_row' cashclose_code=transaction.cashclose.code %}">
+            {{ transaction.cashclose.code }}
+        </a>
         {% endif %}
     </td>
 

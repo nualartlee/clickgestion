@@ -3,21 +3,24 @@
     <!--TRANSACTION-->
     <th>
         <a class="btn-link text-dark" href="{% url 'transaction_row' transaction_code=concept.transaction.code %}">
-            {{ concept.transaction.code }}
+            {{ concept.code }}
         </a>
     </th>
 
-    <!--CODE-->
-    <td>{{ concept.code|slice:"12:"|default_if_none:"&nbsp;" }}</td>
+    <!--APT-->
+    <td>{{ concept.transaction.apt_number|default_if_none:"&nbsp;" }}</td>
 
     <!--NAME-->
-    <td>{{ concept.name|default_if_none:"&nbsp;" }}</td>
+    <td>{{ concept.transaction.client|default_if_none:"&nbsp;" }}</td>
 
     <!--DESCRIPTION-->
     <td>{{ concept.description_short|default_if_none:"&nbsp;" }}</td>
 
-    <!--DATE-->
-    <td>{{ concept.transaction.closed_date|default_if_none:"&nbsp;" }}</td>
+    <!--START DATE-->
+    <td>{{ concept.start_date|default_if_none:"&nbsp;" }}</td>
+
+    <!--END DATE-->
+    <td>{{ concept.end_date|default_if_none:"&nbsp;" }}</td>
 
     <!--VALUE-->
     <td>
