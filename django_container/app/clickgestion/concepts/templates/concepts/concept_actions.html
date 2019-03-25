@@ -17,7 +17,7 @@
                 {% trans 'View All Concepts On The Same Transaction' %}
             </a>
             <!--View Details-->
-            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{% url 'concept_detail' concept_code=concept.code %}">
+            <a class="btn btn-outline-secondary btn-large btn-block m-2" href="{{ concept.url }}">
                 {% trans "View The Concept's Details" %}
             </a>
             {% if concept.can_return_deposit %}
@@ -58,7 +58,7 @@
             {% endif %}
             {% if not concept.transaction.closed %}
             <!--Delete-->
-            <a class="btn btn-outline-danger btn-large btn-block m-2" href="{% url 'concept_delete' concept_code=concept.code %}">
+            <a class="btn btn-outline-danger btn-large btn-block m-2" href="{{ concept.url }}/delete/">
                 {% trans "Delete This Concept" %}
             </a>
             {% endif %}

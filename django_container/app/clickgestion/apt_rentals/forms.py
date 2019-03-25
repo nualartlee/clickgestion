@@ -3,10 +3,11 @@ from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.apt_rentals.models import AptRental
+from clickgestion.concepts.forms import ConceptForm
 from django.core.exceptions import ValidationError
 
 
-class AptRentalForm(forms.ModelForm):
+class AptRentalForm(ConceptForm):
     start_date = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date'},
@@ -24,6 +25,7 @@ class AptRentalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(

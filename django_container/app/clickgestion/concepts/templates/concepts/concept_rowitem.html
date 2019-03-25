@@ -40,7 +40,7 @@
             {% endif %}
 
             {% if concept.can_refund and request.session.refund_transaction_code %}
-            <a class="badge badge-danger ml-2" href="/concepts/{{ concept.code }}/refund">
+            <a class="badge badge-danger ml-2" href="{% url 'refund_new' concept_code=concept.code %}">
                 {% trans 'Refund' %}
             </a>
             {% endif %}

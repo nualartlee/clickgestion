@@ -180,4 +180,5 @@ CONCEPTS = [
     'cash_desk.cashfloatwithdrawal',
     'deposits.depositreturn',
     'deposits.aptrentaldeposit',
+    'refunds.refund',
 ]
