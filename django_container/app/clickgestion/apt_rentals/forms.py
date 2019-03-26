@@ -106,7 +106,29 @@ class AptRentalForm(ConceptForm):
                 error = gettext_lazy('Departure date is before arrival.')
                 raise ValidationError(error)
 
+        # Assert number of people
+        adults = self.cleaned_data.get('adults')
+        children = self.cleaned_data.get('children')
+        if adults and children:
+            if adults + children > 5:
+                error = gettext_lazy('Five people maximum.')
+                raise ValidationError(error)
+
         return self.cleaned_data
+
+    def clean_adults(self):
+        adults = self.cleaned_data.get('adults')
+        if adults > 4 or adults < 1:
+            error = gettext_lazy('One to four adults only.')
+            raise ValidationError(error)
+        return adults
+
+    def clean_children(self):
+        children = self.cleaned_data.get('children')
+        if children > 4 or children < 0:
+            error = gettext_lazy('Up to four children only.')
+            raise ValidationError(error)
+        return children
 
     def clean_start_date(self):
         start_date = self.cleaned_data.get('start_date')

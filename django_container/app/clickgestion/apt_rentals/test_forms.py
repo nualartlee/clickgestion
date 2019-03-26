@@ -16,6 +16,39 @@ class AptRentalFormTest(CustomTestCase):
         form = AptRentalForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+    def test_form_many_adults(self):
+        form_data = {
+            'adults': 5,
+            'children': 0,
+            'start_date': timezone.now(),
+            'end_date': timezone.now() + timezone.timedelta(days=7),
+        }
+        form = AptRentalForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('One to four adults only.', form.errors['adults'])
+
+    def test_form_many_children(self):
+        form_data = {
+            'adults': 2,
+            'children': 5,
+            'start_date': timezone.now(),
+            'end_date': timezone.now() + timezone.timedelta(days=7),
+        }
+        form = AptRentalForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('Up to four children only.', form.errors['children'])
+
+    def test_form_many_people(self):
+        form_data = {
+            'adults': 3,
+            'children': 3,
+            'start_date': timezone.now(),
+            'end_date': timezone.now() + timezone.timedelta(days=7),
+        }
+        form = AptRentalForm(data=form_data)
+        self.assertIn('Five people maximum.', form.non_field_errors())
+        self.assertFalse(form.is_valid())
+
     def test_form_missing_prices(self):
         form_data = {
             'adults': 2,
