@@ -164,20 +164,17 @@ class TransactionPayForm(forms.ModelForm):
                         css_class='col-12',
                         rows='5',
                     ),
-                    css_class='col-12',
+                    css_class='col-6',
                 ),
-
-            ),
-            Row(
                 Column(
                     Field(
                         'notes',
                         title=gettext_lazy("Additional notes"),
                         placeholder=gettext_lazy("Add a note..."),
                         css_class='col-12',
-                        rows='2',
+                        rows='5',
                     ),
-                    css_class='col-12',
+                    css_class='col-6',
                 ),
 
             ),

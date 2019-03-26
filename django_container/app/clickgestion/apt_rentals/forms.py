@@ -1,3 +1,4 @@
+from django.apps import apps
 from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
@@ -18,6 +19,7 @@ class AptRentalForm(ConceptForm):
             attrs={'type': 'date'},
         ),
     )
+    add_deposit = forms.BooleanField(initial=True)
 
     class Meta:
         model = AptRental
@@ -65,6 +67,16 @@ class AptRentalForm(ConceptForm):
                     css_class='col-6',
                 ),
             ),
+            Row(
+                Column(
+                    Field(
+                        'add_deposit',
+                        title=gettext_lazy("Add Apartment Deposit"),
+                        css_class='col-8',
+                    ),
+                    css_class='col-6',
+                ),
+            ),
         )
 
     def clean(self):
@@ -79,3 +91,12 @@ class AptRentalForm(ConceptForm):
             raise ValidationError(error)
 
         return self.cleaned_data
+
+    def save(self, commit=True):
+        aptrental = super().save(commit=False)
+        if commit:
+            aptrental.save()
+            if self.cleaned_data['add_deposit']:
+                deposit = apps.get_model('deposits.AptRentalDeposit')(aptrental=aptrental)
+                deposit.save()
+        return aptrental

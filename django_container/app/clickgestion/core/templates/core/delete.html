@@ -15,7 +15,7 @@
         <input name="next" value="{{ next }}" type="hidden">
         <div class="row">
             <div class="col">
-                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Click to go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Click to go back' %}" onclick="window.history.back();return false;">{% trans 'Back' %}</button>
             </div>
             <div class="col">
                 <input type="submit" value="{% trans 'Delete' %}"  class="btn btn-danger btn-block" title="{% trans 'Click to delete' %}">

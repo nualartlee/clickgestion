@@ -41,7 +41,11 @@ class CashFloatDeposit(BaseConcept):
 
     @property
     def description_short(self):
-        desc = self._meta.verbose_name + ' ' + self.code
+        desc = '{} {}{}'.format(
+            self._meta.verbose_name,
+            self.value.currency.symbol,
+            self.value.amount,
+        )
         return desc
 
     @property
@@ -80,7 +84,11 @@ class CashFloatWithdrawal(BaseConcept):
 
     @property
     def description_short(self):
-        desc = self._meta.verbose_name + ' ' + self.code
+        desc = '{} {}{}'.format(
+            self._meta.verbose_name,
+            self.value.currency.symbol,
+            self.value.amount,
+        )
         return desc
 
     @property

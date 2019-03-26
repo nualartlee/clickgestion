@@ -1,8 +1,9 @@
 from django.apps import apps
+from clickgestion.concepts.forms import ConceptForm
 from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Row, Column
+from crispy_forms.layout import Layout, Field, HTML, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
 from django.core.exceptions import ValidationError
 
@@ -34,7 +35,7 @@ class CashCloseForm(forms.ModelForm):
         )
 
 
-class CashFloatDepositForm(forms.ModelForm):
+class CashFloatDepositForm(ConceptForm):
 
     currency = forms.ModelChoiceField(
         queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
@@ -51,6 +52,14 @@ class CashFloatDepositForm(forms.ModelForm):
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    HTML('<p>{{ concept.description_short }}</p>'),
+                    css_class='col',
+                ),
+            ),
+        )
 
     def clean_amount(self):
         # Assert that amount is positive
@@ -72,7 +81,7 @@ class CashFloatDepositForm(forms.ModelForm):
         return deposit
 
 
-class CashFloatWithdrawalForm(forms.ModelForm):
+class CashFloatWithdrawalForm(ConceptForm):
 
     currency = forms.ModelChoiceField(
         queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
@@ -89,6 +98,14 @@ class CashFloatWithdrawalForm(forms.ModelForm):
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.layout = Layout(
+            Row(
+                Column(
+                    HTML('<p>{{ concept.description_short }}</p>'),
+                    css_class='col',
+                ),
+            ),
+        )
 
     def clean_amount(self):
         # Assert that amount is positive
