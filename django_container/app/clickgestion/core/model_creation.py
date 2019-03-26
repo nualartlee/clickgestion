@@ -22,13 +22,192 @@ Create default models
 """
 
 
+def create_admin():
+    with open('/run/secrets/django_admin_user') as f:
+        admin_user = f.readline().rstrip('\n')
+    try:
+        admin = User.objects.get(username=admin_user)
+    except:
+        with open('/run/secrets/django_admin_email') as f:
+            admin_email = f.readline().rstrip('\n')
+        with open('/run/secrets/django_admin_pass') as f:
+            admin_pass = f.readline().rstrip('\n')
+        admin = User.objects.create_superuser(admin_user, admin_email, admin_pass)
+    return admin
+
+
+def create_aptrentalsettings():
+    try:
+        model = AptRentalSettings.objects.get()
+    except:
+        model = AptRentalSettings(
+            accounting_group='Production',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=10,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_aptrentaldepositsettings():
+    try:
+        model = AptRentalDepositSettings.objects.get()
+    except:
+        model = AptRentalDepositSettings(
+            accounting_group='Deposits',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=0,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_cashfloatdepositsettings():
+    try:
+        model = CashFloatDepositSettings.objects.get()
+    except:
+        model = CashFloatDepositSettings(
+            accounting_group='Cash',
+            apt_number_required=False,
+            apt_number_visible=False,
+            client_address_required=False,
+            client_address_visible=False,
+            client_email_required=False,
+            client_email_visible=False,
+            client_first_name_required=False,
+            client_first_name_visible=False,
+            client_id_required=False,
+            client_id_visible=False,
+            client_last_name_required=False,
+            client_last_name_visible=False,
+            client_phone_number_required=False,
+            client_phone_number_visible=False,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='Cash Transaction'),
+            vat_percent=0,
+        ).save()
+    return model
+
+
+def create_cashfloatwithdrawalsettings():
+    try:
+        model = CashFloatWithdrawalSettings.objects.get()
+    except:
+        model = CashFloatWithdrawalSettings(
+            accounting_group='Cash',
+            apt_number_required=False,
+            apt_number_visible=False,
+            client_address_required=False,
+            client_address_visible=False,
+            client_email_required=False,
+            client_email_visible=False,
+            client_first_name_required=False,
+            client_first_name_visible=False,
+            client_id_required=False,
+            client_id_visible=False,
+            client_last_name_required=False,
+            client_last_name_visible=False,
+            client_phone_number_required=False,
+            client_phone_number_visible=False,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='Cash Transaction'),
+            vat_percent=0,
+        ).save()
+    return model
+
+
+def create_currency_dollars():
+    code_a = 'USD'
+    try:
+        currency = Currency.objects.get(code_a=code_a)
+    except:
+        currency = Currency.objects.create(
+            name='US Dollar',
+            code_a=code_a,
+            code_n='840',
+            exchange_rate=0.8,
+            symbol=u'$',
+        )
+    return currency
+
+
+def create_currency_euros():
+    code_a = 'EUR'
+    try:
+        currency = Currency.objects.get(code_a=code_a)
+    except:
+        currency = Currency.objects.create(
+            name='Euro',
+            code_a=code_a,
+            code_n='978',
+            default=True,
+            exchange_rate=1,
+            symbol=u'€',
+        )
+    return currency
+
+
+def create_currency_pounds():
+    code_a = 'GBP'
+    try:
+        currency = Currency.objects.get(code_a=code_a)
+    except:
+        currency = Currency.objects.create(
+            name='Pound Sterling',
+            code_a=code_a,
+            code_n='826',
+            exchange_rate=1.2,
+            symbol=u'£',
+        )
+    return currency
+
+
 def create_default_models():
     create_admin()
-    create_sales_group()
-    create_cash_group()
-    create_dollars()
-    create_euros()
-    create_pounds()
+    create_permission_groups()
+    create_currency_dollars()
+    create_currency_euros()
+    create_currency_pounds()
     create_aptrentalsettings()
     create_aptrentaldepositsettings()
     create_nightraterange()
@@ -38,32 +217,34 @@ def create_default_models():
     create_refundsettings()
 
 
-def create_test_models(days=30):
-    # Do not repeat
-    if User.objects.filter(username='dani').exists():  # pragma: no cover
-        print('Test models already created')
-        return
-
-    create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
-    create_test_users()
-
-    # For each day
-    for i in range(days):
-        date = timezone.now() - timezone.timedelta(days=days-i)
-
-        # Create random transactions
-        for _ in range(randrange(1, 9)):
-            create_test_random_transaction(date)
-
-        # Return deposits
-        create_test_depositreturns(date)
-
-        # Close Cash Desk
-        create_test_cashclose(date, get_cash_employee())
-
-    # Create unaccounted random transactions
-    for _ in range(randrange(1, 9)):
-        create_test_random_transaction(date)
+def create_depositreturnsettings():
+    try:
+        model = DepositReturnSettings.objects.get()
+    except:
+        model = DepositReturnSettings(
+            accounting_group='Deposits',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=True,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+            vat_percent=0,
+        ).save()
+    return model
 
 
 def create_group(name, models):
@@ -79,26 +260,63 @@ def create_group(name, models):
     return group
 
 
-def create_cash_group():
-    return create_group('cash', [CashFloatDeposit, CashFloatWithdrawal])
-
-
-def create_sales_group():
-    return create_group('sales', [AptRental, AptRentalDeposit, DepositReturn])
-
-
-def create_admin():
-    with open('/run/secrets/django_admin_user') as f:
-        admin_user = f.readline().rstrip('\n')
+def create_nightraterange():
     try:
-        admin = User.objects.get(username=admin_user)
+        model = NightRateRange.objects.get()
     except:
-        with open('/run/secrets/django_admin_email') as f:
-            admin_email = f.readline().rstrip('\n')
-        with open('/run/secrets/django_admin_pass') as f:
-            admin_pass = f.readline().rstrip('\n')
-        admin = User.objects.create_superuser(admin_user, admin_email, admin_pass)
-    return admin
+        model = NightRateRange.objects.create(
+            start_date=timezone.now() - timezone.timedelta(days=365),
+            end_date=timezone.now() + timezone.timedelta(days=365),
+            monday=10,
+            tuesday=20,
+            wednesday=30,
+            thursday=40,
+            friday=50,
+            saturday=60,
+            sunday=70,
+        )
+    return model
+
+
+def create_permission_groups():
+    models = [CashFloatDeposit, CashFloatWithdrawal]
+    create_group('Cash Employees', models)
+    models = [AptRental, AptRentalDeposit, DepositReturn]
+    create_group('Sales Employees', models)
+    models = [AptRental, AptRentalDeposit, DepositReturn, Refund]
+    create_group('Sales Transaction', models)
+    models = [CashFloatDeposit, CashFloatWithdrawal]
+    create_group('Cash Transaction', models)
+
+
+def create_refundsettings():
+    try:
+        model = RefundSettings.objects.get()
+    except:
+        model = RefundSettings(
+            accounting_group='Sales',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=True,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+            vat_percent=0,
+        ).save()
+    return model
 
 
 def create_superuser(username, first, last, email):
@@ -134,310 +352,6 @@ def create_user(username, first, last, email, groups):
     return user
 
 
-def create_euros():
-    code_a = 'EUR'
-    try:
-        currency = Currency.objects.get(code_a=code_a)
-    except:
-        currency = Currency.objects.create(
-            name='Euro',
-            code_a=code_a,
-            code_n='978',
-            default=True,
-            exchange_rate=1,
-            symbol=u'€',
-        )
-    return currency
-
-
-def create_pounds():
-    code_a = 'GBP'
-    try:
-        currency = Currency.objects.get(code_a=code_a)
-    except:
-        currency = Currency.objects.create(
-            name='Pound Sterling',
-            code_a=code_a,
-            code_n='826',
-            exchange_rate=1.2,
-            symbol=u'£',
-        )
-    return currency
-
-
-def create_dollars():
-    code_a = 'USD'
-    try:
-        currency = Currency.objects.get(code_a=code_a)
-    except:
-        currency = Currency.objects.create(
-            name='US Dollar',
-            code_a=code_a,
-            code_n='840',
-            exchange_rate=0.8,
-            symbol=u'$',
-        )
-    return currency
-
-
-def create_aptrentalsettings():
-    try:
-        model = AptRentalSettings.objects.get()
-    except:
-        model = AptRentalSettings(
-            accounting_group='Production',
-            apt_number_required=False,
-            apt_number_visible=True,
-            client_address_required=False,
-            client_address_visible=True,
-            client_email_required=False,
-            client_email_visible=True,
-            client_first_name_required=True,
-            client_first_name_visible=True,
-            client_id_required=True,
-            client_id_visible=True,
-            client_last_name_required=True,
-            client_last_name_visible=True,
-            client_phone_number_required=False,
-            client_phone_number_visible=True,
-            client_signature_required=False,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            vat_percent=10,
-            permission_group=Group.objects.get(name='sales'),
-        ).save()
-    return model
-
-
-def create_aptrentaldepositsettings():
-    try:
-        model = AptRentalDepositSettings.objects.get()
-    except:
-        model = AptRentalDepositSettings(
-            accounting_group='Deposits',
-            apt_number_required=False,
-            apt_number_visible=True,
-            client_address_required=False,
-            client_address_visible=True,
-            client_email_required=False,
-            client_email_visible=True,
-            client_first_name_required=True,
-            client_first_name_visible=True,
-            client_id_required=True,
-            client_id_visible=True,
-            client_last_name_required=True,
-            client_last_name_visible=True,
-            client_phone_number_required=False,
-            client_phone_number_visible=True,
-            client_signature_required=False,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            vat_percent=0,
-            permission_group=Group.objects.get(name='sales'),
-        ).save()
-    return model
-
-
-def create_nightraterange():
-    try:
-        model = NightRateRange.objects.get()
-    except:
-        model = NightRateRange.objects.create(
-            start_date=timezone.now() - timezone.timedelta(days=365),
-            end_date=timezone.now() + timezone.timedelta(days=365),
-            monday=10,
-            tuesday=20,
-            wednesday=30,
-            thursday=40,
-            friday=50,
-            saturday=60,
-            sunday=70,
-        )
-    return model
-
-
-def create_cashfloatdepositsettings():
-    try:
-        model = CashFloatDepositSettings.objects.get()
-    except:
-        model = CashFloatDepositSettings(
-            accounting_group='Cash',
-            apt_number_required=False,
-            apt_number_visible=False,
-            client_address_required=False,
-            client_address_visible=False,
-            client_email_required=False,
-            client_email_visible=False,
-            client_first_name_required=False,
-            client_first_name_visible=False,
-            client_id_required=False,
-            client_id_visible=False,
-            client_last_name_required=False,
-            client_last_name_visible=False,
-            client_phone_number_required=False,
-            client_phone_number_visible=False,
-            client_signature_required=False,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            permission_group=Group.objects.get(name='cash'),
-            vat_percent=0,
-        ).save()
-    return model
-
-
-def create_cashfloatwithdrawalsettings():
-    try:
-        model = CashFloatWithdrawalSettings.objects.get()
-    except:
-        model = CashFloatWithdrawalSettings(
-            accounting_group='Cash',
-            apt_number_required=False,
-            apt_number_visible=False,
-            client_address_required=False,
-            client_address_visible=False,
-            client_email_required=False,
-            client_email_visible=False,
-            client_first_name_required=False,
-            client_first_name_visible=False,
-            client_id_required=False,
-            client_id_visible=False,
-            client_last_name_required=False,
-            client_last_name_visible=False,
-            client_phone_number_required=False,
-            client_phone_number_visible=False,
-            client_signature_required=False,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            permission_group=Group.objects.get(name='cash'),
-            vat_percent=0,
-        ).save()
-    return model
-
-
-def create_depositreturnsettings():
-    try:
-        model = DepositReturnSettings.objects.get()
-    except:
-        model = DepositReturnSettings(
-            accounting_group='Deposits',
-            apt_number_required=False,
-            apt_number_visible=True,
-            client_address_required=False,
-            client_address_visible=True,
-            client_email_required=False,
-            client_email_visible=True,
-            client_first_name_required=True,
-            client_first_name_visible=True,
-            client_id_required=True,
-            client_id_visible=True,
-            client_last_name_required=True,
-            client_last_name_visible=True,
-            client_phone_number_required=False,
-            client_phone_number_visible=True,
-            client_signature_required=True,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            permission_group=Group.objects.get(name='cash'),
-            vat_percent=0,
-        ).save()
-    return model
-
-
-def create_refundsettings():
-    try:
-        model = RefundSettings.objects.get()
-    except:
-        model = RefundSettings(
-            accounting_group='Sales',
-            apt_number_required=False,
-            apt_number_visible=True,
-            client_address_required=False,
-            client_address_visible=True,
-            client_email_required=False,
-            client_email_visible=True,
-            client_first_name_required=True,
-            client_first_name_visible=True,
-            client_id_required=True,
-            client_id_visible=True,
-            client_last_name_required=True,
-            client_last_name_visible=True,
-            client_phone_number_required=False,
-            client_phone_number_visible=True,
-            client_signature_required=True,
-            employee_signature_required=False,
-            notes_required=False,
-            notes_visible=True,
-            permission_group=Group.objects.get(name='cash'),
-            vat_percent=0,
-        ).save()
-    return model
-
-
-def create_test_transaction(employee, date):
-    fake = Faker()
-    notes = None
-    if randrange(100) < 40:  # pragma: no cover
-        notes = fake.text()
-
-    model = Transaction(
-        employee=employee,
-        notes=notes,
-    )
-    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
-    model.save()
-    Transaction.objects.filter(id=model.id).update(created=date)
-    model.refresh_from_db()
-    return model
-
-
-def create_test_client_transaction(employee, date):
-    fake = get_faker()
-    apt_number = None
-    if randrange(100) < 90:  # pragma: no cover
-        apt_number = randrange(10, 23)*100 + randrange(10)
-    client_address = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_address = fake.address()
-    client_email = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_email = fake.email()
-    client_first_name = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_first_name = fake.first_name()
-    client_id = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_id = fake.ssn()
-    client_last_name = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_last_name = fake.last_name()
-    client_phone_number = None
-    if randrange(100) < 90:  # pragma: no cover
-        client_phone_number = fake.phone_number()[:14]
-    notes = None
-
-    model = Transaction(
-        apt_number=apt_number,
-        employee=employee,
-        client_address=client_address,
-        client_email=client_email,
-        client_first_name=client_first_name,
-        client_id=client_id,
-        client_last_name=client_last_name,
-        client_phone_number=client_phone_number,
-        notes=notes,
-    )
-    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
-    model.save()
-    Transaction.objects.filter(code=model.code).update(created=date)
-    model.refresh_from_db()
-    return model
-
-
 def create_test_aptrental(transaction, date, adults=None, children=None, end_date=None, start_date=None):
     if not adults:
         adults = randrange(1, 5)
@@ -467,45 +381,6 @@ def create_test_aptrentaldeposit(transaction, aptrental, date):
     model.save()
     AptRentalDeposit.objects.filter(id=model.id).update(created=date)
     return model
-
-
-def create_test_depositreturn(transaction, returned_deposit, date):
-    model = DepositReturn(
-        returned_deposit=returned_deposit,
-        transaction=transaction,
-    )
-    old_transaction = returned_deposit.transaction
-    transaction.client_address = old_transaction.client_address
-    transaction.client_first_name = old_transaction.client_first_name
-    transaction.client_last_name = old_transaction.client_last_name
-    transaction.client_email = old_transaction.client_email
-    transaction.client_phone_number = old_transaction.client_phone_number
-    transaction.client_id = old_transaction.client_id
-    transaction.apt_number = old_transaction.apt_number
-    transaction.save()
-    model.save()
-    DepositReturn.objects.filter(id=model.id).update(created=date)
-    return model
-
-
-def create_test_depositreturns(date):  # pragma: no cover
-    apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
-        end_date__year=date.year,
-        end_date__month=date.month,
-        end_date__day=date.day,
-    )
-    for deposit in apt_rental_deposits_ending_today:
-        if not deposit.transaction.closed:
-            continue
-        if deposit.deposit_return:
-            continue
-        employee = get_sales_employee()
-        transaction = create_test_client_transaction(employee, date)
-        create_test_depositreturn(transaction, deposit, date)
-        transaction.closed = True
-        transaction.closed_date = date
-        transaction.save()
-        Transaction.objects.filter(id=transaction.id).update(created=date)
 
 
 def create_test_cashclose(date, employee):
@@ -569,6 +444,116 @@ def create_test_cashfloatwithdrawal(transaction, date):
     return model
 
 
+def create_test_client_transaction(employee, date):
+    fake = get_faker()
+    apt_number = None
+    if randrange(100) < 90:  # pragma: no cover
+        apt_number = randrange(10, 23)*100 + randrange(10)
+    client_address = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_address = fake.address()
+    client_email = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_email = fake.email()
+    client_first_name = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_first_name = fake.first_name()
+    client_id = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_id = fake.ssn()
+    client_last_name = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_last_name = fake.last_name()
+    client_phone_number = None
+    if randrange(100) < 90:  # pragma: no cover
+        client_phone_number = fake.phone_number()[:14]
+    notes = None
+
+    model = Transaction(
+        apt_number=apt_number,
+        employee=employee,
+        client_address=client_address,
+        client_email=client_email,
+        client_first_name=client_first_name,
+        client_id=client_id,
+        client_last_name=client_last_name,
+        client_phone_number=client_phone_number,
+        notes=notes,
+    )
+    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
+    model.save()
+    Transaction.objects.filter(code=model.code).update(created=date)
+    model.refresh_from_db()
+    return model
+
+
+def create_test_depositreturn(transaction, returned_deposit, date):
+    model = DepositReturn(
+        returned_deposit=returned_deposit,
+        transaction=transaction,
+    )
+    old_transaction = returned_deposit.transaction
+    transaction.client_address = old_transaction.client_address
+    transaction.client_first_name = old_transaction.client_first_name
+    transaction.client_last_name = old_transaction.client_last_name
+    transaction.client_email = old_transaction.client_email
+    transaction.client_phone_number = old_transaction.client_phone_number
+    transaction.client_id = old_transaction.client_id
+    transaction.apt_number = old_transaction.apt_number
+    transaction.save()
+    model.save()
+    DepositReturn.objects.filter(id=model.id).update(created=date)
+    return model
+
+
+def create_test_depositreturns(date):  # pragma: no cover
+    apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
+        end_date__year=date.year,
+        end_date__month=date.month,
+        end_date__day=date.day,
+    )
+    for deposit in apt_rental_deposits_ending_today:
+        if not deposit.transaction.closed:
+            continue
+        if deposit.deposit_return:
+            continue
+        employee = get_sales_employee()
+        transaction = create_test_client_transaction(employee, date)
+        create_test_depositreturn(transaction, deposit, date)
+        transaction.closed = True
+        transaction.closed_date = date
+        transaction.save()
+        Transaction.objects.filter(id=transaction.id).update(created=date)
+
+
+def create_test_models(days=30):
+    # Do not repeat
+    if User.objects.filter(username='dani').exists():  # pragma: no cover
+        print('Test models already created')
+        return
+
+    create_superuser('dani', 'Daniel', 'Montalba Pee', 'dani@clickgestion.com')
+    create_test_users()
+
+    # For each day
+    for i in range(days):
+        date = timezone.now() - timezone.timedelta(days=days-i)
+
+        # Create random transactions
+        for _ in range(randrange(1, 9)):
+            create_test_random_transaction(date)
+
+        # Return deposits
+        create_test_depositreturns(date)
+
+        # Close Cash Desk
+        create_test_cashclose(date, get_cash_employee())
+
+    # Create unaccounted random transactions
+    for _ in range(randrange(1, 9)):
+        create_test_random_transaction(date)
+
+
 def create_test_random_transaction(date):  # pragma: no cover
 
     selector = randrange(100)
@@ -622,20 +607,6 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     random_close_transaction(transaction)
 
 
-def random_close_transaction(transaction):
-    """
-    Randomly choose if a transaction is closed
-    """
-
-    days_elapsed = (timezone.now() - transaction.created).days
-    closed_chance = 0.5 * days_elapsed + 85
-    selector = randrange(100)
-    if selector < closed_chance:
-        transaction.closed = True
-        transaction.closed_date = transaction.created
-        transaction.save()
-
-
 def create_test_refund(transaction, refunded_concept, date):
     model = Refund(
         refunded_concept=refunded_concept,
@@ -646,9 +617,26 @@ def create_test_refund(transaction, refunded_concept, date):
     return model
 
 
+def create_test_transaction(employee, date):
+    fake = Faker()
+    notes = None
+    if randrange(100) < 40:  # pragma: no cover
+        notes = fake.text()
+
+    model = Transaction(
+        employee=employee,
+        notes=notes,
+    )
+    model.code = 'T{}{}'.format(date.strftime('%m%d'), model.code[5:])
+    model.save()
+    Transaction.objects.filter(id=model.id).update(created=date)
+    model.refresh_from_db()
+    return model
+
+
 def create_test_users():
-    sgroup = create_sales_group()
-    cgroup = create_cash_group()
+    sgroup = create_group('Sales Employees', [])
+    cgroup = create_group('Cash Employees', [])
     create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup, cgroup])
     create_user('manu', 'Manuel', 'Borges', 'manu@clickgestion.com', [sgroup, cgroup])
     create_user('vanesa', 'Vanesa', 'Perez Del Mar', 'vanesa@clickgestion.com', [sgroup, cgroup])
@@ -662,25 +650,9 @@ def create_test_users():
 
 
 def get_cash_employee():
-    group = create_cash_group()
+    group = create_group('Cash Employees', [])
     users = group.user_set.all()
     return users[randrange(users.count())]
-
-
-def get_sales_employee():
-    group = create_sales_group()
-    users = group.user_set.all()
-    return users[randrange(users.count())]
-
-
-def get_permissions_for_models(models):
-    """
-    Return a queryset of Permissions given a list of model classes
-    :param models: A list of model classes
-    :return: Queryset of Permissions
-    """
-    names = ['Can add {}'.format(model._meta.verbose_name) for model in models]
-    return Permission.objects.filter(name__in=names)
 
 
 def get_faker():  # pragma: no cover
@@ -719,6 +691,22 @@ def get_faker():  # pragma: no cover
         return Faker('fi_FI')
 
 
+def get_sales_employee():
+    group = create_group('Sales Employees', [])
+    users = group.user_set.all()
+    return users[randrange(users.count())]
+
+
+def get_permissions_for_models(models):
+    """
+    Return a queryset of Permissions given a list of model classes
+    :param models: A list of model classes
+    :return: Queryset of Permissions
+    """
+    names = ['Can add {}'.format(model._meta.verbose_name) for model in models]
+    return Permission.objects.filter(name__in=names)
+
+
 def get_random_currency():
     currencies = Currency.objects.all()
     selector = randrange(100)
@@ -729,4 +717,19 @@ def get_random_currency():
     if 98 < selector <= 99:  # pragma: no cover
         return Currency.objects.get(code_a='USD')
     return Currency.objects.get(code_a='EUR')  # pragma: no cover
+
+
+def random_close_transaction(transaction):
+    """
+    Randomly choose if a transaction is closed
+    """
+
+    days_elapsed = (timezone.now() - transaction.created).days
+    closed_chance = 0.5 * days_elapsed + 85
+    selector = randrange(100)
+    if selector < closed_chance:
+        transaction.closed = True
+        transaction.closed_date = transaction.created
+        transaction.save()
+
 

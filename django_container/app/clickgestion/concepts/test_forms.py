@@ -1,6 +1,35 @@
+from clickgestion.concepts.models import BaseConcept
 from clickgestion.core.test import CustomTestCase
-from clickgestion.concepts.forms import ConceptValueForm
+from clickgestion.concepts.forms import ConceptForm, ConceptValueForm
 from django.apps import apps
+
+
+class ConceptFormTest(CustomTestCase):
+
+    form_class = ConceptForm
+
+    def test_form_closed_transaction(self):
+        class testform(self.form_class):
+
+            class Meta:
+                model = type(self.aptrental)
+                fields = '__all__'
+
+        self.transaction.close(self.admin)
+        form = testform(instance=self.aptrental)
+        self.assertFalse(form.is_valid())
+
+    def test_form_no_transaction(self):
+        self.form_class._meta.model = BaseConcept
+        self.form_class._meta.fields = '__all__'
+        form = self.form_class()
+        self.assertFalse(form.is_valid())
+
+    def test_form_open_transaction(self):
+        self.form_class._meta.model = type(self.aptrental)
+        self.form_class._meta.fields = '__all__'
+        form = self.form_class(instance=self.aptrental)
+        self.assertFalse(form.is_valid())
 
 
 class ConceptValueFormTest(CustomTestCase):

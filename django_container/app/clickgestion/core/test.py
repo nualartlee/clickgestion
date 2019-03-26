@@ -33,8 +33,8 @@ class CustomTestCase(TestCase):  # pragma: no cover
     def setUpTestData(cls):
         model_creation.create_default_models()
 
-        sgroup = model_creation.create_sales_group()
-        cgroup = model_creation.create_cash_group()
+        sgroup = model_creation.create_group('Sales Employees', [])
+        cgroup = model_creation.create_group('Cash Employees', [])
         # Create admin user
         cls.admin = model_creation.create_superuser('administrator', 'admin', 'admin', 'admin@admin.com')
         # Create normal user
@@ -46,9 +46,9 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
 
         # Create a default currency
-        cls.currency = model_creation.create_euros()
-        model_creation.create_pounds()
-        model_creation.create_dollars()
+        cls.currency = model_creation.create_currency_euros()
+        model_creation.create_currency_pounds()
+        model_creation.create_currency_dollars()
 
         # Create aptrentalsettings
         model_creation.create_aptrentalsettings()

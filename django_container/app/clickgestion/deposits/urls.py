@@ -26,7 +26,7 @@ urlpatterns = [
         {'concept_form': AptRentalDepositForm},
         name='aptrentaldeposit_delete'),
 
-    url(r'^returns/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$',
+    url(r'^returns/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)$',
         custom_permission_required('deposits.add_depositreturn')(concept_detail),
         {'concept_form': DepositReturnForm},
         name='depositreturn_detail'),

@@ -5,6 +5,7 @@ from clickgestion.transactions.views import get_transaction_from_kwargs
 from django.utils.translation import gettext, gettext_lazy
 from clickgestion.concepts.filters import ConceptFilter
 from django.views.generic import ListView
+from clickgestion.core.views import message
 from django.contrib.auth.decorators import login_required
 from pure_pagination.mixins import PaginationMixin
 from django.http import QueryDict
@@ -85,7 +86,8 @@ def concept_edit(request, *args, **kwargs):  # pragma: no cover
     # Get the transaction
     transaction = concept.transaction
     if transaction.closed:
-        return redirect('message', message=gettext('Transaction Closed'))
+        extra_context['message'] = gettext('Transaction Closed')
+        return message(request, extra_context)
     extra_context['transaction'] = transaction
 
     # POST

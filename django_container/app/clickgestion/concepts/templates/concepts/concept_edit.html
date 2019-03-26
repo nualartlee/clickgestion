@@ -21,7 +21,7 @@
     {% crispy form %}
     <p style="margin-top:50px"></p>
     {% if transaction.closed %}
-        <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Click to go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
+        <button type="button" class="btn btn-secondary col-2" title="{% trans 'Click to go back' %}" onclick="javascript:location.href = '{{ request.META.HTTP_REFERER }}';">{% trans 'Back' %}</button>
     {% else %}
         <input type="submit" value="{% trans 'Save' %}" class="btn btn-secondary col-2"/>
         <a class="btn btn-danger col-2" href="{% url 'transaction_edit' transaction_code=transaction.code %}">{% trans 'Cancel' %}</a>
