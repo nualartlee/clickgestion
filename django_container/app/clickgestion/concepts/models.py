@@ -98,6 +98,9 @@ class BaseConcept(models.Model):
     # VAT percent
     vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'))
 
+    class Meta:
+        ordering = ['id']
+
     @property
     def can_refund(self):
 

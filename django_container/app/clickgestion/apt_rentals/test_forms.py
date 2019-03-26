@@ -31,22 +31,22 @@ class AptRentalFormTest(CustomTestCase):
         form_data = {
             'adults': 2,
             'children': 0,
-            'start_date': timezone.now(),
-            'end_date': timezone.now() - timezone.timedelta(days=1),
+            'start_date': '{}'.format(timezone.now().date()),
+            'end_date': '{}'.format(timezone.now().date() - timezone.timedelta(days=1)),
         }
         form = AptRentalForm(data=form_data)
-        self.assertIn('Departure date is before arrival.', form.errors['end_date'])
+        self.assertIn('Departure date is before arrival.', form.non_field_errors())
         self.assertFalse(form.is_valid())
 
     def test_form_departure_same(self):
         form_data = {
             'adults': 2,
             'children': 0,
-            'start_date': timezone.now(),
-            'end_date': timezone.now(),
+            'start_date': '{}'.format(timezone.now().date()),
+            'end_date': '{}'.format(timezone.now().date()),
         }
         form = AptRentalForm(data=form_data)
-        self.assertIn('Departure date is the same as arrival.', form.errors['end_date'])
+        self.assertIn('Departure date is the same as arrival.', form.non_field_errors())
         self.assertFalse(form.is_valid())
 
     def test_form_no_start(self):

@@ -95,6 +95,17 @@ class AptRentalForm(ConceptForm):
             error = gettext_lazy('Missing prices in selected dates.')
             raise ValidationError(error)
 
+        # Assert that departure is after arrival
+        start_date = self.cleaned_data.get('start_date')
+        end_date = self.cleaned_data.get('end_date')
+        if start_date and end_date:
+            if start_date == end_date:
+                error = gettext_lazy('Departure date is the same as arrival.')
+                raise ValidationError(error)
+            if start_date > end_date:
+                error = gettext_lazy('Departure date is before arrival.')
+                raise ValidationError(error)
+
         return self.cleaned_data
 
     def clean_start_date(self):
@@ -103,19 +114,6 @@ class AptRentalForm(ConceptForm):
             error = gettext_lazy('Arrival date is too far back.')
             raise ValidationError(error)
         return start_date
-
-    def clean_end_date(self):
-        start_date = self.data.get('start_date')
-        end_date = self.cleaned_data.get('end_date')
-        if not start_date:
-            return end_date
-        if start_date.date() == end_date:
-            error = gettext_lazy('Departure date is the same as arrival.')
-            raise ValidationError(error)
-        if start_date.date() > end_date:
-            error = gettext_lazy('Departure date is before arrival.')
-            raise ValidationError(error)
-        return end_date
 
     def save(self, commit=True):
         aptrental = super().save(commit=False)
