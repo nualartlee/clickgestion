@@ -23,10 +23,10 @@ check_errs $EUID "This script must be run as root"
 echo
 echo
 echo makemigrations
-docker-compose exec django python3 manage.py makemigrations
+docker-compose exec django python3 manage.py makemigrations $1
 
 # Migrate
 echo
 echo
 echo migrate
-docker-compose exec django python3 manage.py migrate
+docker-compose exec django python3 manage.py migrate $1

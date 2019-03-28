@@ -1,4 +1,3 @@
-from django.apps import apps
 from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from clickgestion.transactions.views import get_transaction_from_kwargs
