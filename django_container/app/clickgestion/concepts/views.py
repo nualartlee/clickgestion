@@ -59,8 +59,6 @@ def concept_delete(request, *args, **kwargs):  # pragma: no cover
 def concept_detail(request, *args, **kwargs):  # pragma: no cover
     extra_context = {}
 
-    # Check permissions
-
     # Get the concept and form
     concept, concept_form = get_concept_and_form_from_kwargs(**kwargs)
     extra_context['concept'] = concept
@@ -70,6 +68,10 @@ def concept_detail(request, *args, **kwargs):  # pragma: no cover
     # Get the transaction
     transaction = concept.transaction
     extra_context['transaction'] = transaction
+
+    # Redirect to edit if open
+    if not transaction.closed:
+        return redirect(concept.url + '/edit/', concept_code=concept.code)
 
     return render(request, 'concepts/concept_detail.html', extra_context)
 

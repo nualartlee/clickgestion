@@ -119,6 +119,27 @@ class TestTransactionDeleteView(CustomTestCase, CustomViewTestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class TestTransactionDetailView(CustomTestCase, CustomViewTestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.test_get = True
+        cls.required_permission = ''
+        cls.url = 'transaction_detail'
+        cls.transaction.close(cls.admin)
+        cls.kwargs = {'transaction_code': cls.transaction.code}
+        cls.referer = '/'
+        cls.get_template = 'transactions/transaction_detail.html'
+
+    def test_open_transaction(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        self.kwargs = {'transaction_code': transaction.code}
+        self.get_url = 'pass'
+        self.get_template = 'transactions/transaction_edit.html'
+        self.repeat_get()
+
+
 class TestTransactionDocumentView(CustomTestCase, CustomViewTestCase):
 
     @classmethod
@@ -196,7 +217,7 @@ class TestTransactionEditView(CustomTestCase, CustomViewTestCase):
             post_data,
             follow=True,
         )
-        self.assertTemplateUsed(response, 'transactions/transaction_detail.html')
+        self.assertTemplateUsed(response, 'transactions/transaction_list.html')
         self.assertEqual(response.status_code, 200)
 
 

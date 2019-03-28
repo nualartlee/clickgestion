@@ -45,21 +45,16 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
         super().setUpTestData()
         cls.model_attrs = [
             'accounting_group',
+            'can_refund',
+            'can_return_deposit',
+            'child',
             'code',
             'concept_class',
             'concept_name',
             'created',
-            'end_date',
-            'start_date',
-            'transaction',
-            'updated',
-            'value',
-            'vat_percent',
-            'can_refund',
-            'can_return_deposit',
-            'child',
             'deposit_return',
             'description_short',
+            'end_date',
             'is_child',
             'name',
             'name_plural',
@@ -68,10 +63,39 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
             'returned_deposit',
             'save',
             'settings',
+            'start_date',
             'tax_amount',
             'taxable_amount',
+            'transaction',
+            'updated',
             'url',
+            'value',
+            'vat_percent',
         ]
+
+    def test_get_all_permissions(self):
+        if not self.model_object:
+            return
+        self.assertTrue(self.model_object.get_all_permissions())
+
+    def test_get_value(self):
+        if not self.model_object:
+            return
+        self.assertTrue(self.model_object.get_value())
+
+    def test_with_closed_transaction(self):
+        if not self.model_object:
+            return
+        self.model_object.transaction.close(self.admin)
+        self.test_attrs()
+        self.test_get_value()
+
+
+class ConceptModelTest(BaseConceptModelTest):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
         cls.model_object = BaseConcept.objects.first()
 
     def test_get_all_permissions(self):

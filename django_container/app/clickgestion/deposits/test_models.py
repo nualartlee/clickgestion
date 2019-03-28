@@ -1,77 +1,16 @@
-from clickgestion.concepts.models import BaseConcept
-from clickgestion.core.test import CustomTestCase, CustomModelTestCase
 from clickgestion.deposits.models import AptRentalDeposit, DepositReturn
+from clickgestion.concepts.models import BaseConcept
+from clickgestion.concepts.test_models import BaseConceptModelTest
+from django.core.exceptions import FieldError
 from clickgestion.core import model_creation
 from django.utils import timezone
-from django.core.exceptions import FieldError
 
 
-class DepositReturnTest(CustomTestCase, CustomModelTestCase):
-
-    @classmethod
-    def setUpTestData(cls):
-        super().setUpTestData()
-        cls.model_attrs = [
-            '__str__',
-            '_url',
-            '_code_initials',
-            '_concept_class',
-            '_settings_class',
-            '_verbose_name',
-            'description_short',
-            'get_value',
-            'name',
-        ]
-        cls.model_object = DepositReturn(transaction=cls.transaction, returned_deposit=cls.aptrentaldeposit)
-
-    def test_save(self):
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
-        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
-        transaction.close(self.admin)
-        self.assertFalse(aptrentaldeposit.deposit_return)
-        self.assertTrue(aptrentaldeposit.can_return_deposit)
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        deposit_return = model_creation.create_test_depositreturn(
-            transaction, aptrentaldeposit, timezone.now())
-        self.assertFalse(aptrentaldeposit.deposit_return)
-        self.assertTrue(aptrentaldeposit.can_return_deposit)
-        transaction.close(self.admin)
-        self.assertTrue(aptrentaldeposit.deposit_return)
-        self.assertFalse(aptrentaldeposit.can_return_deposit)
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        with self.assertRaises(FieldError):
-            model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
-
-    def test_returned_deposit(self):
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
-        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
-        transaction.close(self.admin)
-        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
-        deposit_return = model_creation.create_test_depositreturn(
-            transaction, aptrentaldeposit, timezone.now())
-        basereturn = BaseConcept.objects.get(code=deposit_return.code)
-        self.assertTrue(basereturn.returned_deposit)
-
-
-class AptRentalDepositTest(CustomTestCase, CustomModelTestCase):
+class AptRentalDepositTest(BaseConceptModelTest):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.model_attrs = [
-            '__str__',
-            '_url',
-            '_code_initials',
-            '_concept_class',
-            '_settings_class',
-            '_verbose_name',
-            'description_short',
-            'get_value',
-            'name',
-            'nights',
-        ]
         cls.model_object = cls.aptrentaldeposit
 
     def test_save_with_aptrental(self):
@@ -108,3 +47,42 @@ class AptRentalDepositTest(CustomTestCase, CustomModelTestCase):
         self.assertEqual(aptrentaldeposit.value.amount, aptrentaldeposit.settings.min)
 
 
+class DepositReturnTest(BaseConceptModelTest):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.aptrentaldeposit.transaction.close(cls.admin)
+        model = DepositReturn(transaction=cls.transaction, returned_deposit=cls.aptrentaldeposit)
+        model.save()
+        cls.model_object = model
+
+    def test_save(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        self.assertFalse(aptrentaldeposit.deposit_return)
+        self.assertTrue(aptrentaldeposit.can_return_deposit)
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        deposit_return = model_creation.create_test_depositreturn(
+            transaction, aptrentaldeposit, timezone.now())
+        self.assertFalse(aptrentaldeposit.deposit_return)
+        self.assertTrue(aptrentaldeposit.can_return_deposit)
+        transaction.close(self.admin)
+        self.assertTrue(aptrentaldeposit.deposit_return)
+        self.assertFalse(aptrentaldeposit.can_return_deposit)
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        with self.assertRaises(FieldError):
+            model_creation.create_test_depositreturn(transaction, aptrentaldeposit, timezone.now())
+
+    def test_returned_deposit(self):
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        aptrental = model_creation.create_test_aptrental(transaction, timezone.now())
+        aptrentaldeposit = model_creation.create_test_aptrentaldeposit(transaction, aptrental, timezone.now())
+        transaction.close(self.admin)
+        transaction = model_creation.create_test_transaction(self.admin, timezone.now())
+        deposit_return = model_creation.create_test_depositreturn(
+            transaction, aptrentaldeposit, timezone.now())
+        basereturn = BaseConcept.objects.get(code=deposit_return.code)
+        self.assertTrue(basereturn.returned_deposit)

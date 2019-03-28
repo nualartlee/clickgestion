@@ -20,7 +20,7 @@ class AptRentalForm(ConceptForm):
             attrs={'type': 'date'},
         ),
     )
-    add_deposit = forms.BooleanField(initial=True, required=False)
+    add_deposit = forms.BooleanField(initial=False, required=False)
 
     class Meta:
         model = AptRental

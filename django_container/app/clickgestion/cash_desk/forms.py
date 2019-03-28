@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, HTML, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 
 class CashCloseForm(forms.ModelForm):
@@ -50,13 +50,23 @@ class CashFloatDepositForm(ConceptForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
+        if self.instance:
+            try:
+                self.fields['currency'].initial = self.instance.value.currency
+                self.fields['amount'].initial = self.instance.value.amount
+            except ObjectDoesNotExist:
+                pass
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
                 Column(
-                    HTML('<p>{{ concept.description_short }}</p>'),
-                    css_class='col',
+                    Field('currency'),
+                    css_class='col-2',
+                ),
+                Column(
+                    Field('amount'),
+                    css_class='col-2',
                 ),
             ),
         )
@@ -96,13 +106,23 @@ class CashFloatWithdrawalForm(ConceptForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
+        if self.instance:
+            try:
+                self.fields['currency'].initial = self.instance.value.currency
+                self.fields['amount'].initial = self.instance.value.amount
+            except ObjectDoesNotExist:
+                pass
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
             Row(
                 Column(
-                    HTML('<p>{{ concept.description_short }}</p>'),
-                    css_class='col',
+                    Field('currency'),
+                    css_class='col-2',
+                ),
+                Column(
+                    Field('amount'),
+                    css_class='col-2',
                 ),
             ),
         )

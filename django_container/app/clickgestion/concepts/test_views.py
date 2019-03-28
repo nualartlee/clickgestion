@@ -97,7 +97,9 @@ class ConceptDetailViewTest(CustomTestCase, CustomViewTestCase):  # pragma: no c
             cls.test_get = True
             cls.required_permission = '{}.add_{}'.format(cls.app, cls.concept)
             cls.url = '{}_detail'.format(cls.concept)
-            cls.kwargs = {'concept_code': getattr(cls, cls.concept).code}
+            concept = getattr(cls, cls.concept)
+            concept.transaction.close(cls.admin)
+            cls.kwargs = {'concept_code': concept.code}
             cls.referer = '/'
             cls.get_template = 'concepts/concept_detail.html'
 

@@ -1,5 +1,6 @@
 from django.apps import apps
 from clickgestion.core.test import CustomTestCase, CustomModelTestCase
+from clickgestion.concepts.test_models import BaseConceptModelTest
 from clickgestion.cash_desk.models import get_new_cashclose_code
 from clickgestion.core import model_creation
 from django.utils import timezone
@@ -34,41 +35,21 @@ class TestCashCloseModel(CustomTestCase, CustomModelTestCase):
         cls.model_object = apps.get_model('cash_desk.CashClose').objects.first()
 
 
-class TestCashFloatDepositModel(CustomTestCase, CustomModelTestCase):
+class TestCashFloatDepositModel(BaseConceptModelTest):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.model_attrs = [
-            '_code_initials',
-            '_concept_class',
-            '_settings_class',
-            '_url',
-            '_verbose_name',
-            '__str__',
-            'description_short',
-            'name',
-        ]
         model = model_creation.create_test_cashfloatdeposit(
             model_creation.create_test_transaction(cls.admin, timezone.now()), timezone.now())
         cls.model_object = model
 
 
-class TestCashFloatWithdrawalModel(CustomTestCase, CustomModelTestCase):
+class TestCashFloatWithdrawalModel(BaseConceptModelTest):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.model_attrs = [
-            '_code_initials',
-            '_concept_class',
-            '_settings_class',
-            '_url',
-            '_verbose_name',
-            '__str__',
-            'description_short',
-            'name',
-        ]
         model = model_creation.create_test_cashfloatwithdrawal(
             model_creation.create_test_transaction(cls.admin, timezone.now()), timezone.now())
         cls.model_object = model

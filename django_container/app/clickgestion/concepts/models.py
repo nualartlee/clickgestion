@@ -8,6 +8,37 @@ from django.contrib.auth.models import Permission
 User = get_user_model()
 
 
+def derive_from_child(func):
+    """
+    Decorator to create base model attributes from child model data.
+
+    """
+    @property
+    def func_wrapper(self, *args, **kwargs):
+
+        if self.is_child:
+            return func(self, *args, **kwargs)
+        return func(self.child, *args, **kwargs)
+
+    return func_wrapper
+
+
+def direct_from_child(func):
+    """
+    Decorator to map attributes of a child model to the base model.
+
+    """
+    @property
+    def func_wrapper(self, *args, **kwargs):
+        if self.is_child:  # pragma: no cover
+            class_name = str(self.__class__)
+            func_name = str(func)
+            raise NotImplementedError('{} Not implemented in {}'.format(func_name, class_name))
+        return getattr(self.child, func.__name__, *args, **kwargs)
+
+    return func_wrapper
+
+
 def get_default_currency():
     """
     Get the default currency
@@ -130,9 +161,9 @@ class BaseConcept(models.Model):
         Get the instance of the child class inheriting from BaseConcept
         :return:
         """
-        if not self.is_child:
-            return getattr(self, self.concept_class)
-        return self  # pragma: no cover
+        if self.is_child:
+            return self  # pragma: no cover
+        return getattr(self, self.concept_class)
 
     @property
     def deposit_return(self):
@@ -142,14 +173,12 @@ class BaseConcept(models.Model):
                     return r
         return None
 
-    @property
+    @direct_from_child
     def description_short(self):
         """
         :return: A short single line description of the concept.
         """
-        if self.is_child:
-            return self.description_short  # pragma: no cover
-        return self.child.description_short
+        pass  # pragma: no cover
 
     def get_all_permissions(self):
         """
@@ -168,9 +197,7 @@ class BaseConcept(models.Model):
         Get the value of the concept (to be used at creation time)
         :return: ConceptValue
         """
-        if self.is_child:
-            return self.get_value()  # pragma: no cover
-        return self.child.get_value()
+        return self.value
 
     @property
     def is_child(self):
@@ -180,11 +207,9 @@ class BaseConcept(models.Model):
     def name(self):
         return gettext_lazy(self.concept_name)
 
-    @property
+    @derive_from_child
     def name_plural(self):
-        if self.is_child:
-            return self._meta.verbose_name_plural  # pragma: no cover
-        return self.child._meta.verbose_name_plural
+        return self._meta.verbose_name_plural  # pragma: no cover
 
     @property
     def refund_concept(self):
@@ -233,27 +258,23 @@ class BaseConcept(models.Model):
                 self.transaction.next_concept_id,
             )
 
-        # Save the value
-        try:
-            value = self.value
-        except ConceptValue.DoesNotExist:
-            value = kwargs.pop('value', None)
-            if not value:
-                value = self.get_value()
+        # Save the value; Priority is given to the value passed in kwargs, else use get_value
+        value = kwargs.pop('value', None)
+        if not value:
+            value = self.get_value()
         value.save()
         self.value = value
+        self.value_id = value.id
 
-        #if self.concept_class == 'depositreturn':
-        #    import pdb;pdb.set_trace()
+        #bc = BaseConcept.objects.first()
+        #import pdb;pdb.set_trace()
 
         # save
         super().save(*args, **kwargs)
 
-    @property
+    @derive_from_child
     def settings(self):
-        if self.is_child:
-            return self._settings_class.objects.get_or_create()[0]
-        return self.child._settings_class.objects.get_or_create()[0]
+        return self._settings_class.objects.get_or_create()[0]
 
     @property
     def tax_amount(self):
@@ -271,14 +292,12 @@ class BaseConcept(models.Model):
         """
         return (self.value.amount * self.vat_percent) / (self.vat_percent + 1)
 
-    @property
+    @derive_from_child
     def url(self):
         """
         :return: The concept's base url
         """
-        if self.is_child:
-            return self._url.format(self.child.code)  # pragma: no cover
-        return self.child._url.format(self.child.code)
+        return self._url.format(self.code)  # pragma: no cover
 
 
 class SingletonModel(models.Model):

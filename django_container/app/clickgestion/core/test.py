@@ -195,9 +195,6 @@ class CustomViewTestCase:  # pragma: no cover
             reverse(self.url, kwargs=self.kwargs),
             HTTP_REFERER=self.referer, follow=True)
 
-        #if self.required_permission == 'apt_rentals.add_aptrental':
-        #    import pdb;pdb.set_trace()
-
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'core/403.html')
 

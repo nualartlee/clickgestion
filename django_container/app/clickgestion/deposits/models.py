@@ -82,13 +82,21 @@ class AptRentalDeposit(BaseConcept):
         """
         :return: ConceptValue: Amount to deposit
         """
+        # Return the saved value if the transaction is closed
+        if self.transaction.closed:
+            return self.value
+        # Get the current value
         total = (self.adults * self.settings.per_adult + self.children * self.settings.per_child) * self.nights
         if total > self.settings.max:
             total = self.settings.max
         if total < self.settings.min:
             total = self.settings.min
         value_model = apps.get_model('concepts.ConceptValue')
-        return value_model(amount=total)
+        try:
+            self.value.amount = total
+        except value_model.DoesNotExist:
+            self.value = value_model(amount=total)
+        return self.value
 
     def save(self, *args, **kwargs):
         aptrental = kwargs.pop('aptrental', None)
@@ -142,6 +150,20 @@ class DepositReturn(BaseConcept):
         desc = '{} {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
         return desc
 
+    def get_value(self):
+
+        value_model = apps.get_model('concepts.ConceptValue')
+        try:
+            return self.value
+        except value_model.DoesNotExist:
+            self.value = ConceptValue(
+                amount=self.returned_deposit.value.amount,
+                credit=False,
+                currency=self.returned_deposit.value.currency,
+            )
+            self.value.save()
+        return self.value
+
     @property
     def name(self):
         return self._meta.verbose_name
@@ -149,14 +171,6 @@ class DepositReturn(BaseConcept):
     def save(self, *args, **kwargs):
         if not self.returned_deposit.can_return_deposit:
             raise FieldError('returned_deposit is not returnable')
-
-        value = ConceptValue(
-            amount=self.returned_deposit.value.amount,
-            credit=False,
-            currency=self.returned_deposit.value.currency,
-        )
-        value.save()
-        self.value = value
         super().save(*args, **kwargs)
 
 

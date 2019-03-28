@@ -146,6 +146,10 @@ def transaction_detail(request, *args, **kwargs):
     transaction = get_transaction_from_kwargs(**kwargs)
     extra_context['transaction'] = transaction
 
+    # Redirect to edit if open
+    if not transaction.closed:
+        return redirect('transaction_edit', transaction_code=transaction.code)
+
     # Get print signal, will autoprint with js if true
     print_transaction = request.GET.get('print', False)
     extra_context['print_transaction'] = print_transaction
@@ -205,7 +209,7 @@ def transaction_edit(request, *args, **kwargs):
 
             # Finish later
             if form.cleaned_data['save_button']:
-                return redirect('transaction_detail', transaction_code=transaction.code)
+                return redirect('transaction_row', transaction_code=transaction.code)
 
             # Proceed to pay
             return redirect('transaction_pay', transaction_code=transaction.code)

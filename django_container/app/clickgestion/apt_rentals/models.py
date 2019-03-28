@@ -129,8 +129,14 @@ class AptRental(BaseConcept):
         """
         :return:ConceptValue: Total price for the stay
         """
-        # Rates are recorded on first save only
-        if not self.rates:
-            self.rates = self.get_current_rates()
+        # Return the saved value if the transaction is closed
+        if self.transaction.closed:
+            return self.value
+        # Get the current value
+        self.rates = self.get_current_rates()
         value_model = apps.get_model('concepts.ConceptValue')
-        return value_model(amount=sum(self.rates))
+        try:
+            self.value.amount = sum(self.rates)
+        except value_model.DoesNotExist:
+            self.value = value_model(amount=sum(self.rates))
+        return self.value
