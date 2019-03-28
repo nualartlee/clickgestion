@@ -15,7 +15,8 @@ class DepositFilter(ConceptFilter):
     concept_name = django_filters.ChoiceFilter(
         choices=[
             (x, x) for x in
-            BaseConcept.objects.filter(accounting_group='Deposits').values_list('concept_name', flat=True).distinct()
+            BaseConcept.objects.filter(
+                accounting_group='Deposits').values_list('concept_name', flat=True).order_by('concept_name').distinct()
         ],
     )
     concept_name.field.label = gettext_lazy('Type')

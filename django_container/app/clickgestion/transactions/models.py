@@ -157,7 +157,8 @@ class Transaction(models.Model):
 
     @property
     def title(self):
-        accounting_groups = self.concepts.values_list('accounting_group', flat=True).distinct()
+        accounting_groups = self.concepts.values_list(
+            'accounting_group', flat=True).order_by('accounting_group').distinct()
         if 'Production' in accounting_groups:
             return gettext_lazy('Invoice')
         if 'Deposits' in accounting_groups:

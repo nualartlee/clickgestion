@@ -81,6 +81,17 @@ class ConceptFilter(django_filters.FilterSet):
     @property
     def form(self):
         form = super().form
+
+        # Highlight applied filters
+        for field in form.fields:
+            for variation in [field, field + '_after', field + '_before']:
+                if variation in form.data:
+                    if form.data[variation]:
+                        if 'class' in form.fields[field].widget.attrs:
+                            form.fields[field].widget.attrs['class'] += ' text-success'
+                        else:
+                            form.fields[field].widget.attrs['class'] = 'text-success'
+
         form.helper = FormHelper()
         form.helper.form_tag = False
 

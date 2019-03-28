@@ -40,7 +40,7 @@ def get_breakdown_by_accounting_group(concepts='__all__'):
        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
 
     # Get the distinct accounting groups
-    groups = [item[0] for item in concepts.values_list('accounting_group').distinct()]
+    groups = [item[0] for item in concepts.values_list('accounting_group').order_by('accounting_group').distinct()]
 
     # Create a list to hold the concept totals
     breakdown = []
@@ -77,7 +77,7 @@ def get_breakdown_by_concept_type(concepts='__all__'):
         concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
 
     # Get the distinct concept types
-    groups = [item[0] for item in concepts.values_list('concept_name').distinct()]
+    groups = [item[0] for item in concepts.values_list('concept_name').order_by('concept_name').distinct()]
 
     # Create a list to hold the concept totals
     breakdown = []
@@ -158,7 +158,7 @@ def get_value_totals(concepts):
     values = concept_value.objects.filter(concept__in=concepts).prefetch_related('currency')
 
     # Get distinct currencies
-    currencies = currency_model.objects.filter(values__in=values).distinct()
+    currencies = currency_model.objects.filter(values__in=values).order_by('id').distinct()
 
     # Totalize per currency
     for currency in currencies:

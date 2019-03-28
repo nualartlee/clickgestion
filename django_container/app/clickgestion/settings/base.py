@@ -176,9 +176,9 @@ PAGINATION_SETTINGS = {
 # Available concepts
 CONCEPTS = [
     'apt_rentals.aptrental',
+    'deposits.aptrentaldeposit',
     'cash_desk.cashfloatdeposit',
     'cash_desk.cashfloatwithdrawal',
     'deposits.depositreturn',
-    'deposits.aptrentaldeposit',
     'refunds.refund',
 ]
