@@ -28,6 +28,8 @@ services:
         environment:
           POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
           POSTGRES_DB: "clickgestion"
+        volumes:
+          - ./postgres_container/var/lib/postgresql/data:/var/lib/postgresql/data
         secrets:
           - postgres_password
         restart: unless-stopped
@@ -37,7 +39,7 @@ services:
     pgadmin4:
         image: "dpage/pgadmin4"
         ports:
-         - "8000:80"
+          - "8000:80"
         secrets:
           - postgres_password
           - certbot_email
