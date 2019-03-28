@@ -22,7 +22,6 @@ do
     echo "Waiting for django container..."
     sleep 3
 done
-done
 
 # Additional delay for assurance
 sleep 5
