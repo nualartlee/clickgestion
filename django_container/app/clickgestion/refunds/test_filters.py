@@ -1,3 +1,6 @@
+"""
+For future use
+
 from clickgestion.core.test import CustomTestCase
 from clickgestion.refunds.filters import RefundFilter
 from clickgestion.core import model_creation
@@ -23,3 +26,6 @@ class RefundFilterTest(CustomTestCase):
         transaction.close(self.admin)
         filter = RefundFilter(data=filter_data)
         self.assertEqual(filter.qs.count(), initial_refunded + 1)
+
+"""
+

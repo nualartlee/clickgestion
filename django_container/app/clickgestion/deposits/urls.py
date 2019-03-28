@@ -6,8 +6,8 @@ from django.conf.urls import url
 
 urlpatterns = [
 
-    url(r'^$', views.DepositList.as_view(),
-        name='deposit_list'),
+    #url(r'^$', views.DepositList.as_view(),
+    #    name='deposit_list'),
 
     url(r'^aptrental/new/(?P<transaction_code>T[A-F0-9]{10})$',
         custom_permission_required('deposits.add_aptrentaldeposit')(concept_edit),
@@ -40,7 +40,8 @@ urlpatterns = [
     url(r'^returns/new/(?P<transaction_code>T[A-F0-9]{10})/$',
         custom_permission_required('deposits.add_depositreturn')(views.depositreturn_new),
         name='depositreturn_new'),
+
     url(r'^returns/today$',
-        custom_permission_required('deposits.add_depositreturn')(views.depositreturns_today),
-        name='depositreturns_today'),
+        custom_permission_required('deposits.add_depositreturn')(views.deposits_due_today),
+        name='deposits_due_today'),
 ]

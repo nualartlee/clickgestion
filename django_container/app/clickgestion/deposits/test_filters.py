@@ -1,3 +1,6 @@
+"""
+For future use
+
 from clickgestion.core.test import CustomTestCase
 from clickgestion.deposits.filters import DepositFilter
 from clickgestion.core import model_creation
@@ -40,3 +43,6 @@ class DepositFilterTest(CustomTestCase):
         transaction.close(self.admin)
         deposit_filter = DepositFilter(data=filter_data)
         self.assertEqual(deposit_filter.qs.count(), initial_pending + 1)
+
+"""
+

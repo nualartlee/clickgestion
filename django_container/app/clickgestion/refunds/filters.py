@@ -1,3 +1,6 @@
+"""
+For future use
+
 import django_filters
 from django.utils.translation import gettext_lazy
 from clickgestion.concepts.filters import ConceptFilter
@@ -15,4 +18,5 @@ class RefundFilter(ConceptFilter):
             transaction__closed=True,
         )
 
+"""
 

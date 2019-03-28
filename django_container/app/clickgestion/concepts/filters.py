@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy
 from clickgestion.concepts.models import BaseConcept
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
+from django.db.models import Q
 
 
 class ConceptFilter(django_filters.FilterSet):
@@ -63,6 +64,22 @@ class ConceptFilter(django_filters.FilterSet):
     )
     concept_name.field.label = gettext_lazy('Type')
 
+    deposit_status = django_filters.BooleanFilter(method='deposit_status_filter')
+    deposit_status.field.label = gettext_lazy('Deposit Status')
+    deposit_status.field.widget.choices = [
+        ('1', '---------'),
+        ('2', gettext_lazy('Returned')),
+        ('3', gettext_lazy('Not Returned'))
+    ]
+
+    refund_status = django_filters.BooleanFilter(method='refund_status_filter')
+    refund_status.field.label = gettext_lazy('Refund Status')
+    refund_status.field.widget.choices = [
+        ('1', '---------'),
+        ('2', gettext_lazy('Refunded')),
+        ('3', gettext_lazy('Not Refunded'))
+    ]
+
     class Meta:
         model = BaseConcept
         fields = [
@@ -77,6 +94,20 @@ class ConceptFilter(django_filters.FilterSet):
             'transaction__closed_date',
             'transaction__employee',
         ]
+
+    def deposit_status_filter(self, queryset, name, value):
+
+        # Returned = 2 = True
+        if value:
+            return queryset \
+                .filter(concept_name__in=['Apartment Rental Deposit'])\
+                .filter(depositreturns__transaction__closed=True)
+
+        # Not returned = 3 = False
+        else:
+            return queryset\
+                .filter(concept_name__in=['Apartment Rental Deposit'])\
+                .filter(Q(depositreturns__transaction__closed=False) | Q(depositreturns__transaction=None))
 
     @property
     def form(self):
@@ -168,5 +199,33 @@ class ConceptFilter(django_filters.FilterSet):
                 ),
                 css_class='justify-content-center',
             ),
+            Row(
+                Column(
+                    Field(
+                        'deposit_status',
+                    ),
+                    css_class='col-4',
+                ),
+                Column(
+                    Field(
+                        'refund_status',
+                    ),
+                    css_class='col-4',
+                ),
+            ),
         )
         return form
+
+    def refund_status_filter(self, queryset, name, value):
+
+        # Refunded = 2 = True
+        if value:
+            return queryset \
+                .filter(refunds__transaction__closed=True)
+
+        # Not refunded = 3 = False
+        else:
+            return queryset \
+                .filter(accounting_group='Production') \
+                .exclude(concept_name='Refund') \
+                .filter(Q(refunds__transaction__closed=False) | Q(refunds__transaction=None))

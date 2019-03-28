@@ -1,14 +1,14 @@
 from django.apps import apps
-from clickgestion.concepts.views import ConceptList
-from clickgestion.refunds.filters import RefundFilter
 from clickgestion.refunds.models import Refund
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.utils import timezone
 import urllib
 from django.utils.translation import gettext
 
+"""
+For future use
 
+from clickgestion.refunds.filters import RefundFilter
 class RefundList(ConceptList):
 
     # ListView.as_view will pass custom arguments here
@@ -19,6 +19,8 @@ class RefundList(ConceptList):
     filter = None
     filter_data = None
     is_filtered = False
+    
+"""
 
 
 @login_required()
@@ -76,7 +78,7 @@ def refund_new(request, *args, **kwargs):
 
         # Set initial filter data and display refundable list
         filter_data = {
-            'refunded': False,
+            'refund_status': False,
         }
         params = urllib.parse.urlencode(filter_data)
         # Return

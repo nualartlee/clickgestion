@@ -6,9 +6,9 @@ from django.conf.urls import url
 
 urlpatterns = [
 
-    url(r'^$',
-        custom_permission_required('refunds.add_refund')(views.RefundList.as_view()),
-        name='refund_list'),
+    #url(r'^$',
+    #    custom_permission_required('refunds.add_refund')(views.RefundList.as_view()),
+    #    name='refund_list'),
 
     url(r'^(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/$',
         custom_permission_required('refunds.add_refund')(concept_detail),

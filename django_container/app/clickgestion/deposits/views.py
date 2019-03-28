@@ -1,29 +1,29 @@
 from django.apps import apps
-from clickgestion.concepts.views import ConceptList
-from clickgestion.deposits.filters import DepositFilter
 from clickgestion.deposits.models import DepositReturn
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 import urllib
 from django.utils.translation import gettext
 
 
-def depositreturns_today(request, *args, **kwargs):
+def deposits_due_today(request, *args, **kwargs):
 
     # Set initial filter data
     filter_data = {
         'end_date_after': timezone.localdate(),
         'end_date_before': timezone.localdate(),
-        'returned': False,
+        'deposit_status': False,
     }
     params = urllib.parse.urlencode(filter_data)
     # Return
-    response = redirect('deposit_list')
+    response = redirect('concept_list')
     response['Location'] += '?{}'.format(params)
     return response
 
 
+"""
+# For future use
 class DepositList(ConceptList):
 
     # ListView.as_view will pass custom arguments here
@@ -34,6 +34,7 @@ class DepositList(ConceptList):
     filter = None
     filter_data = None
     is_filtered = False
+"""
 
 
 @login_required()
@@ -91,10 +92,10 @@ def depositreturn_new(request, *args, **kwargs):
 
         # Set initial filter data and display returnable deposit list
         filter_data = {
-            'returned': False,
+            'deposit_status': False,
         }
         params = urllib.parse.urlencode(filter_data)
         # Return
-        response = redirect('deposit_list')
+        response = redirect('concept_list')
         response['Location'] += '?{}'.format(params)
         return response

@@ -29,6 +29,9 @@ class RefundDetailViewTest(test_views.ConceptDetailViewTest):
     concept = concept
 
 
+"""
+For future use
+
 class RefundListViewTest(CustomTestCase, CustomViewTestCase):
 
     @classmethod
@@ -40,6 +43,8 @@ class RefundListViewTest(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'concepts/concept_list.html'
+
+"""
 
 
 class RefundNewViewTest(test_views.ConceptNewViewTest):

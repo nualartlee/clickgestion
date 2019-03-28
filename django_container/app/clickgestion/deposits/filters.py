@@ -1,3 +1,6 @@
+"""
+For future use
+
 from clickgestion.concepts.models import BaseConcept
 from crispy_forms.layout import Column, Field, Row
 from clickgestion.concepts.filters import ConceptFilter
@@ -117,8 +120,9 @@ class DepositFilter(ConceptFilter):
     def qs(self):
         concepts = super().qs
         return concepts.filter(
-            accounting_group= 'Deposits',
+            accounting_group='Deposits',
             transaction__closed=True,
         )
 
 
+"""

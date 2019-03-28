@@ -47,19 +47,22 @@ class AptRentalDepositRowViewTest(test_views.ConceptRowViewTest):
     concept = concept
 
 
-class DepositReturnsTodayViewTest(CustomTestCase, CustomViewTestCase):
+class DepositDueTodayViewTest(CustomTestCase, CustomViewTestCase):
 
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
         cls.test_get = True
         cls.required_permission = 'deposits.add_depositreturn'
-        cls.url = 'depositreturns_today'
+        cls.url = 'deposits_due_today'
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'concepts/concept_list.html'
-        cls.get_url = reverse('deposit_list')
+        cls.get_url = reverse('concept_list')
 
+
+"""
+For future use
 
 class DepositListViewTest(CustomTestCase, CustomViewTestCase):
 
@@ -72,6 +75,8 @@ class DepositListViewTest(CustomTestCase, CustomViewTestCase):
         cls.kwargs = {}
         cls.referer = '/'
         cls.get_template = 'concepts/concept_list.html'
+        
+"""
 
 app = 'deposits'
 concept = 'depositreturn'
@@ -98,7 +103,7 @@ class DepositreturnNewViewTest(test_views.ConceptNewViewTest):
             cls.kwargs = {'transaction_code': create_test_transaction(cls.admin, timezone.now())}
             cls.referer = '/'
             cls.get_template = 'concepts/concept_list.html'
-            cls.get_url = reverse('deposit_list')
+            cls.get_url = reverse('concept_list')
 
     def test_with_concept(self):
         # Create a deposit
