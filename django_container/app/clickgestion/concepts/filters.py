@@ -49,11 +49,17 @@ class ConceptFilter(django_filters.FilterSet):
     transaction__closed_date.field.widget.template_name = 'core/date-from-to-widget.html'
 
     accounting_group = django_filters.ChoiceFilter(
-        choices=[(x, x) for x in BaseConcept.objects.values_list('accounting_group', flat=True).distinct()],
+        choices=[
+            (x, x) for x in BaseConcept.objects.values_list(
+                'accounting_group', flat=True).order_by('accounting_group').distinct()
+        ],
     )
 
     concept_name = django_filters.ChoiceFilter(
-        choices=[(x, x) for x in BaseConcept.objects.values_list('concept_name', flat=True).distinct()],
+        choices=[
+            (x, x) for x in BaseConcept.objects.values_list(
+                'concept_name', flat=True).order_by('concept_name').distinct()
+        ],
     )
     concept_name.field.label = gettext_lazy('Type')
 
