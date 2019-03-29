@@ -4,53 +4,64 @@
 
 
 {% block content %}
+
 <div class="container">
+    <!--Header-->
+    <div class="row my-4">
+        <h4>{% trans 'Close Cash Desk' %}</h4>
+    </div>
 
-    <!--Cash Balance-->
-    <table class="table table-hover">
-        <thead class="thead-dark">
-        <tr>
-            <th colspan="4" scope="col">{% trans 'Cash Balance' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for value in totals %}
-        <tr>
-            <th scope="row">{{ value.currency.name }}</th>
-            <td></td>
-            <td></td>
-            <td class="text-right">
-                {% include 'concepts/value_total.html' %}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <!-- Table-->
+    <div class="row my-4">
+        <table class="table table-bordered table-sm">
 
-    <p class="mt-4"></p>
-    <p class="mt-4"></p>
-    <p class="mt-4"></p>
-    <form method="post" novalidate>
+            <!--Cash Balance-->
+            <thead class="table-warning">
+            <tr>
+                <th colspan="4">{% trans 'Cash Balance' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for value in cashclose.balance %}
+            <tr>
+                <td style="text-indent: 10%">{{ value.currency.name }}</td>
+                <td colspan="3" class="text-right">
+                    {% include 'concepts/value_total.html' %}
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
 
-        {% crispy form %}
+            <!--Breakdowns-->
+            {% for breakdown in cashclose.breakdowns %}
+            {% include 'concepts/breakdown_rows.html' %}
+            {% endfor %}
 
-    <p class="mt-4"></p>
-    <p class="mt-4"></p>
-    <p class="mt-4"></p>
 
-        <div class="row">
-            <div class="col">
-                <button type="submit" class="btn btn-danger btn-block" title="{% trans 'Confirm and close cash desk' %}" onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}</button>
+        </table>
+    </div>
+
+    <!--Close Form-->
+    <div class="row my-4">
+        <form method="post" class="col p-0" novalidate>
+
+            {% crispy form %}
+
+            <div class="row">
+                <div class="col-3">
+                    <button type="submit" class="btn btn-danger btn-block"
+                            title="{% trans 'Confirm and close cash desk' %}"
+                            onclick='document.getElementById("id_confirm_button").value = "True";form.submit();'>{% trans 'Confirm' %}
+                    </button>
+                </div>
+                <div class="col-3">
+                    <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back' %}"
+                            onclick="window.history.back();return false;">{% trans 'Back' %}
+                    </button>
+                </div>
             </div>
-            <div class="col">
-                <button type="button" class="btn btn-secondary btn-block" title="{% trans 'Go back' %}" onclick="window.history.back();return false;">{% trans 'Back' %}</button>
-            </div>
-            <div class="col">
-            </div>
-            <div class="col">
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
 </div>
 {% endblock %}

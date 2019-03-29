@@ -3,7 +3,7 @@ from clickgestion.concepts.forms import ConceptForm
 from django import forms
 from django.utils.translation import gettext_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, HTML, Row, Column
+from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatWithdrawal
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 

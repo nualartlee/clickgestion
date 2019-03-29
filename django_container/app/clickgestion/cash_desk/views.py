@@ -75,17 +75,25 @@ def cash_desk_close(request, *args, **kwargs):
     closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
         .prefetch_related('value__currency')
 
-    # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    extra_context['breakdown'] = breakdown
+    # Create a dummy cashclose to use the same templates
+    cashclose = {}
+    cashclose['employee'] = {'get_full_name': request.user.get_full_name() }
+    cashclose['created'] = timezone.now()
 
-    # Get deposits in holding
-    deposits = totalizers.get_deposits_in_holding()
-    extra_context['deposits'] = deposits
+    # Get the balance
+    balance = totalizers.get_value_totals(closed_concepts)
+    cashclose['balance'] = balance
 
-    # Get the totals
-    totals = totalizers.get_value_totals(closed_concepts)
-    extra_context['totals'] = totals
+    # Get breakdowns
+    breakdowns = [
+        totalizers.get_deposits_in_holding_breakdown(),
+    ]
+
+    # Collect the breakdowns
+    cashclose['breakdowns'] = breakdowns
+
+    # Pass the dummy cashclose
+    extra_context['cashclose'] = cashclose
 
     # POST
     if request.method == 'POST':
@@ -121,27 +129,6 @@ def cashclose_detail(request, *args, **kwargs):
     cashclose_code = kwargs.get('cashclose_code', None)
     cashclose = get_object_or_404(CashClose, code=cashclose_code)
     extra_context['cashclose'] = cashclose
-
-    ## Get closed transactions
-    #closed_transactions = Transaction.objects.filter(cashclose=cashclose) \
-    #    .prefetch_related('concepts__value__currency')
-    #extra_context['closed_transactions'] = closed_transactions
-
-    ## Get closed concepts
-    #closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
-    #    .prefetch_related('value__currency')
-
-    ## Get breakdown by concept type
-    #breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    #extra_context['breakdown'] = breakdown
-
-    ## Get deposits in holding
-    #deposits = totalizers.get_deposits_in_holding()
-    #extra_context['deposits'] = deposits
-
-    ## Get the totals
-    #totals = totalizers.get_value_totals(closed_concepts)
-    #extra_context['totals'] = totals
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 
