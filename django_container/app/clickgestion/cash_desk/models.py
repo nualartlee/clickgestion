@@ -142,25 +142,39 @@ class CashClose(models.Model):
         return totalizers.get_breakdown_by_accounting_group(self.concepts)
 
     @property
-    def breakdown_by_employee(self):
-        return totalizers.get_breakdown_by_employee(self.concepts)
-
-    @property
     def breakdown_by_concept_type(self):
         return totalizers.get_breakdown_by_concept_type(self.concepts)
 
     @property
+    def breakdowns_by_accounting_group_by_employee(self):
+        return totalizers.get_breakdowns_by_accounting_group_by_employee(self.concepts)
+
+    @property
+    def breakdowns_by_concept_type_by_employee(self):
+        return totalizers.get_breakdowns_by_concept_type_by_employee(self.concepts)
+
+    @property
     def breakdowns(self):
         breakdowns = [
-            {'name': gettext_lazy('Breakdown By Accounting Group'), 'groups': self.breakdown_by_accounting_group},
-            {'name': gettext_lazy('Breakdown By Concept Type'), 'groups': self.breakdown_by_concept_type},
-            {'name': gettext_lazy('Breakdown By Employee'), 'groups': self.breakdown_by_employee},
+            self.deposits_in_holding_breakdown,
+            self.breakdown_by_accounting_group,
+            self.breakdown_by_concept_type,
         ]
+        breakdowns += self.breakdowns_by_accounting_group_by_employee
+        breakdowns += self.breakdowns_by_concept_type_by_employee
         return breakdowns
 
     @property
     def concepts(self):
         return BaseConcept.objects.filter(transaction__cashclose=self)
+
+    @property
+    def deposits_in_holding_breakdown(self):
+        return totalizers.get_deposits_in_holding_breakdown(datetime=self.created)
+
+    @property
+    def deposits_in_holding_totals(self):
+        return totalizers.get_deposits_in_holding_totals(datetime=self.created)
 
 
 

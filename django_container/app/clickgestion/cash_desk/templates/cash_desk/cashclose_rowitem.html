@@ -20,65 +20,23 @@
 
     <!--BALANCE-->
     <td>
-        {% if transaction.concepts.exists %}
         <div class="container">
-            {% for concept in transaction.concepts.all %}
-            <div class="row">
-                <div class="col justify-content-start">
-                    <!-- Button to Open The Filter -->
-                    <button class="btn btn-link text-dark" type="button" data-toggle="modal" data-target="#{{ concept.code }}">
-                        <small>
-                            {{ concept.name }}
-                        </small>
-                    </button>
-                </div>
-                <div class="col text-right justify-content-end">
-                    {% with concept.value as value %}{% include 'concepts/value_sm.html' %}{% endwith %}
-                </div>
-            </div>
-
-
-            <!--Concept Modal-->
-            <div class="modal" id="{{ concept.code }}">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">{{ concept.name }}</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            <div class="container">
-                                {{ concept.description_short }}
-                            </div>
-                        </div>
-
-                        <!-- Modal footer -->
-                        <!--<div class="modal-footer">-->
-                        <!--<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>-->
-                        <!--</div>-->
-
-                    </div>
-                </div>
-            </div>
-
-            {% endfor %}
-        </div>
-        {% endif %}
-    </td>
-
-    <td>
-        {% if transaction.totals %}
-        <div class="container">
-            {% for value in transaction.totals %}
+            {% for value in cashclose.balance %}
             <div class="row justify-content-end">
                 {% include 'concepts/value_bold_sm.html' %}
             </div>
             {% endfor %}
         </div>
-        {% endif %}
+    </td>
+
+    <!--DEPOSITS-->
+    <td>
+        <div class="container">
+            {% for value in cashclose.deposits_in_holding_totals %}
+            <div class="row justify-content-end">
+                {% include 'concepts/value_bold_sm.html' %}
+            </div>
+            {% endfor %}
+        </div>
     </td>
 </tr>
