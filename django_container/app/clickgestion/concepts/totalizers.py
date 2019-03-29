@@ -1,6 +1,9 @@
 from django.apps import apps
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
 from django.db.models import Sum
+
+User = get_user_model()
 
 
 class ConceptGroupTotal:
@@ -100,13 +103,40 @@ def get_breakdown_by_concept_type(concepts='__all__'):
     return breakdown
 
 
-def get_breakdown_by_user(concepts='__all__'):
+def get_breakdown_by_employee(concepts='__all__'):
     """
 
     :param concepts: The queryset of concepts to totalize
     :return: a list of ConceptGroupTotals
     """
-    return True
+    # Concept models
+    base_concept = apps.get_model('concepts.BaseConcept')
+    concept_value = apps.get_model('concepts.ConceptValue')
+
+    # Get the concepts if not provided
+    if concepts == '__all__':
+        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
+
+    # Get the distinct employees
+    groups = [item[0] for item in concepts.values_list('transaction__employee').order_by('transaction__employee').distinct()]
+
+    # Create a list to hold the concept totals
+    breakdown = []
+
+    # Select by group
+    for group in [g for g in groups if g]:
+        group_total = ConceptGroupTotal(
+            name=User.objects.get(id=group).get_full_name(),
+            concepts=concepts.filter(transaction__employee=group).prefetch_related('value__currency'),
+            concept_count=None,
+            totals=None,
+        )
+        group_total.concept_count = group_total.concepts.count()
+        group_total.totals = get_value_totals(group_total.concepts)
+        breakdown.append(group_total)
+
+    # Return the list of totals
+    return breakdown
 
 
 def get_deposits_in_holding(concepts='__all__'):

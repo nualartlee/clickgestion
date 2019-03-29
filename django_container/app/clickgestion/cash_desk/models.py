@@ -142,14 +142,19 @@ class CashClose(models.Model):
         return totalizers.get_breakdown_by_accounting_group(self.concepts)
 
     @property
+    def breakdown_by_employee(self):
+        return totalizers.get_breakdown_by_employee(self.concepts)
+
+    @property
     def breakdown_by_concept_type(self):
         return totalizers.get_breakdown_by_concept_type(self.concepts)
 
     @property
     def breakdowns(self):
         breakdowns = [
-            {'name': gettext_lazy('Breakdown By Concept Type'), 'groups': self.breakdown_by_concept_type},
             {'name': gettext_lazy('Breakdown By Accounting Group'), 'groups': self.breakdown_by_accounting_group},
+            {'name': gettext_lazy('Breakdown By Concept Type'), 'groups': self.breakdown_by_concept_type},
+            {'name': gettext_lazy('Breakdown By Employee'), 'groups': self.breakdown_by_employee},
         ]
         return breakdowns
 

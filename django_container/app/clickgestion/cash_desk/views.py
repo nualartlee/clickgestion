@@ -18,9 +18,6 @@ import urllib
 
 @login_required()
 def cash_desk_balance(request, *args, **kwargs):
-    # 268q 72ms
-    # 236q 59ms
-    # 115q 36ms
     extra_context = {}
 
     # Set the header
@@ -48,19 +45,19 @@ def cash_desk_balance(request, *args, **kwargs):
     # Get breakdowns
     breakdowns = []
 
-    # Get breakdown by concept type
-    groups = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    breakdowns.append({
-        'name': gettext('Breakdown By Concept Type'),
-        'groups': groups,
-    })
+    ## Get breakdown by concept type
+    #groups = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    #breakdowns.append({
+    #    'name': gettext('Breakdown By Concept Type'),
+    #    'groups': groups,
+    #})
 
-    # Get breakdown by accounting group
-    groups = totalizers.get_breakdown_by_accounting_group(closed_concepts)
-    breakdowns.append({
-        'name': gettext('Breakdown By Accounting Group'),
-        'groups': groups,
-    })
+    ## Get breakdown by accounting group
+    #groups = totalizers.get_breakdown_by_accounting_group(closed_concepts)
+    #breakdowns.append({
+    #    'name': gettext('Breakdown By Accounting Group'),
+    #    'groups': groups,
+    #})
 
     # Get deposits in holding
     groups = totalizers.get_deposits_in_holding()
@@ -120,7 +117,6 @@ def cash_desk_close(request, *args, **kwargs):
                 transaction.save()
             # Forward the cash float with deposits
 
-
             # Message
             return render(request, 'core/message.html', {'message': gettext('Cash Desk Closed')})
 
@@ -143,26 +139,26 @@ def cashclose_detail(request, *args, **kwargs):
     cashclose = get_object_or_404(CashClose, code=cashclose_code)
     extra_context['cashclose'] = cashclose
 
-    # Get closed transactions
-    closed_transactions = Transaction.objects.filter(cashclose=cashclose) \
-        .prefetch_related('concepts__value__currency')
-    extra_context['closed_transactions'] = closed_transactions
+    ## Get closed transactions
+    #closed_transactions = Transaction.objects.filter(cashclose=cashclose) \
+    #    .prefetch_related('concepts__value__currency')
+    #extra_context['closed_transactions'] = closed_transactions
 
-    # Get closed concepts
-    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
-        .prefetch_related('value__currency')
+    ## Get closed concepts
+    #closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
+    #    .prefetch_related('value__currency')
 
-    # Get breakdown by concept type
-    breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    extra_context['breakdown'] = breakdown
+    ## Get breakdown by concept type
+    #breakdown = totalizers.get_breakdown_by_concept_type(closed_concepts)
+    #extra_context['breakdown'] = breakdown
 
-    # Get deposits in holding
-    deposits = totalizers.get_deposits_in_holding()
-    extra_context['deposits'] = deposits
+    ## Get deposits in holding
+    #deposits = totalizers.get_deposits_in_holding()
+    #extra_context['deposits'] = deposits
 
-    # Get the totals
-    totals = totalizers.get_value_totals(closed_concepts)
-    extra_context['totals'] = totals
+    ## Get the totals
+    #totals = totalizers.get_value_totals(closed_concepts)
+    #extra_context['totals'] = totals
 
     return render(request, 'cash_desk/cashclose_detail.html', extra_context)
 

@@ -2,7 +2,8 @@
 {% load i18n humanize static %}
 
 {% block document_header_title %}
-<h3><strong>{% if document_header %}{{ document_header }}{% else %}{% trans 'Cash Desk Close' %}{% endif %}</strong></h3>
+<h3><strong>{% if document_header %}{{ document_header }}{% else %}{% trans 'Cash Desk Close' %}{% endif %}</strong>
+</h3>
 {% endblock %}
 
 {% block document_body_top_left %}
@@ -25,33 +26,41 @@
 {% block document_body_content %}
 <!-- Table-->
 <div class="row my-4">
-                 <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-sm">
 
-                 <!--Cash Balance-->
-                 <thead class="table-warning">
-                 <tr>
-                 <th colspan="4">{% trans 'Cash Balance' %}</th>
-                 </tr>
-                 </thead>
-                 <tbody>
-                 {% for value in cashclose.balance %}
-                 <tr>
-                 <td style="text-indent: 10%">{{ value.currency.name }}</td>
-                 <td colspan="3" class="text-right">
-                 {% include 'concepts/value_total.html' %}
-                 </td>
-                 </tr>
-                 {% endfor %}
-                 </tbody>
+        <!--Cash Balance-->
+        <thead class="table-warning">
+        <tr>
+            <th colspan="4">{% trans 'Cash Balance' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for value in cashclose.balance %}
+        <tr>
+            <td style="text-indent: 10%">{{ value.currency.name }}</td>
+            <td colspan="3" class="text-right">
+                {% include 'concepts/value_total.html' %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
 
-                 <!--Breakdowns-->
-                 {% for breakdown in cashclose.breakdowns %}
-                 {% include 'concepts/breakdown_rows.html' %}
-                 {% endfor %}
+        <!--Breakdowns-->
+        {% for breakdown in cashclose.breakdowns %}
+        {% include 'concepts/breakdown_rows.html' %}
+        {% endfor %}
 
 
-                 </table>
-                 </div>
+    </table>
+</div>
+
+{% if cashclose.notes %}
+<!--Notes-->
+<div class="container my-4">
+    <p><strong>{% trans 'Notes' %}:</strong></p>
+    <p>{{ cashclose.notes|default_if_none:"&nbsp;" }}</p>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block document_footer_message %}
