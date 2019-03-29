@@ -43,28 +43,11 @@ def cash_desk_balance(request, *args, **kwargs):
     cashclose['balance'] = balance
 
     # Get breakdowns
-    breakdowns = []
-
-    ## Get breakdown by concept type
-    #groups = totalizers.get_breakdown_by_concept_type(closed_concepts)
-    #breakdowns.append({
-    #    'name': gettext('Breakdown By Concept Type'),
-    #    'groups': groups,
-    #})
-
-    ## Get breakdown by accounting group
-    #groups = totalizers.get_breakdown_by_accounting_group(closed_concepts)
-    #breakdowns.append({
-    #    'name': gettext('Breakdown By Accounting Group'),
-    #    'groups': groups,
-    #})
-
-    # Get deposits in holding
-    groups = totalizers.get_deposits_in_holding()
-    breakdowns.append({
-        'name': gettext('Deposits In Holding'),
-        'groups': groups,
-    })
+    breakdowns = [
+        totalizers.get_deposits_in_holding_breakdown(),
+        totalizers.get_breakdown_by_accounting_group(concepts=closed_concepts),
+        totalizers.get_breakdown_by_concept_type(concepts=closed_concepts),
+    ]
 
     # Collect the breakdowns
     cashclose['breakdowns'] = breakdowns
