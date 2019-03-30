@@ -1,7 +1,5 @@
 from clickgestion.core.test import CustomTestCase
 from clickgestion.transactions.filters import TransactionFilter
-from clickgestion.core import model_creation
-from django.utils import timezone
 
 
 class TestTransactionFilter(CustomTestCase):
@@ -11,5 +9,4 @@ class TestTransactionFilter(CustomTestCase):
         # Initial returned
         filter_data = {
         }
-        filter = TransactionFilter(data=filter_data)
-        #import pdb;pdb.set_trace()
+        self.assertTrue(TransactionFilter(data=filter_data))

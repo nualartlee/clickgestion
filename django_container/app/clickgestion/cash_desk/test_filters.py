@@ -6,11 +6,15 @@ from django.utils import timezone
 class CashCloseFilterTest(CustomTestCase):
 
     def test_filter_ok(self):
+        filter_data = {}
+        filter = CashCloseFilter(data=filter_data)
+        self.assertTrue(filter.is_valid())
+
+    def test_filter_code(self):
+
+        # Initial returned
         filter_data = {
-            'adults': 2,
-            'children': 0,
-            'start_date': timezone.now(),
-            'end_date': timezone.now() + timezone.timedelta(days=7),
+            'notes': 'ma',
         }
         filter = CashCloseFilter(data=filter_data)
         self.assertTrue(filter.is_valid())
