@@ -70,9 +70,9 @@
     </div>
 
 
-    <!-- Filter Modal -->
-    <div class="modal" id="modal-filter">
-        <div class="modal-dialog">
+    <!-- Modal for filter -->
+    <div class="modal fade" id="modal-filter">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
                 <!-- Modal Header -->
@@ -94,7 +94,7 @@
                                 </div>
                                 {% if is_filtered %}
                                 <div class="formColumn col-4">
-                                    <a class="btn btn-outline-danger btn-block" href="{% url 'transaction_list' %}">
+                                    <a class="btn btn-outline-danger btn-block" href="{% url 'cashclose_list' %}">
                                         {% trans 'Clear Filter' %}
                                     </a>
                                 </div>

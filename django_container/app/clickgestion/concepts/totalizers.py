@@ -185,7 +185,7 @@ def get_deposits_in_holding_breakdown(concepts='__all__', datetime=timezone.now(
     :return: a list of ConceptGroupTotals
     """
     breakdown = get_breakdown_by_concept_type(get_deposits_in_holding_concepts(concepts, datetime))
-    breakdown['name'] = gettext_lazy('Deposits In Holding Breakdown')
+    breakdown['name'] = gettext_lazy('Deposits In Holding By Type')
     return breakdown
 
 
