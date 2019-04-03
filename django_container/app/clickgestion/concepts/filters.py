@@ -4,6 +4,7 @@ from clickgestion.concepts.models import BaseConcept
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
 from django.db.models import Q
+from django.conf import settings
 
 
 class ConceptFilter(django_filters.FilterSet):
@@ -100,13 +101,13 @@ class ConceptFilter(django_filters.FilterSet):
         # Returned = 2 = True
         if value:
             return queryset \
-                .filter(concept_name__in=['Apartment Rental Deposit'])\
+                .filter(concept_class__in=settings.DEPOSIT_CONCEPTS)\
                 .filter(depositreturns__transaction__closed=True)
 
         # Not returned = 3 = False
         else:
             return queryset\
-                .filter(concept_name__in=['Apartment Rental Deposit'])\
+                .filter(concept_class__in=settings.DEPOSIT_CONCEPTS)\
                 .filter(Q(depositreturns__transaction__closed=False) | Q(depositreturns__transaction=None))
 
     @property

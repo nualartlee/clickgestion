@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy
 from django.contrib.auth.models import Group
 from django.db import models
 from django.contrib.auth.models import Permission
+from django.conf import settings
 
 User = get_user_model()
 
@@ -148,7 +149,7 @@ class BaseConcept(models.Model):
     def can_return_deposit(self):
 
         # Get status
-        is_deposit = self.concept_class in ['aptrentaldeposit', 'parkingdeposit', ]
+        is_deposit = self.concept_class in settings.DEPOSIT_CONCEPTS
         is_closed = self.transaction.closed
         is_not_returned = not self.deposit_return
 

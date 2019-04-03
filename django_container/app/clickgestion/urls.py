@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^cash-desk/', include('clickgestion.cash_desk.urls')),
     url(r'^deposits/', include('clickgestion.deposits.urls')),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^parking-rentals/', include('clickgestion.parking_rentals.urls')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
     url(r'^refunds/', include('clickgestion.refunds.urls')),
 ]

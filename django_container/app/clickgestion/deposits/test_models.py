@@ -1,4 +1,4 @@
-from clickgestion.deposits.models import AptRentalDeposit, DepositReturn
+from clickgestion.deposits.models import AptRentalDeposit, DepositReturn, ParkingRentalDeposit
 from clickgestion.concepts.models import BaseConcept
 from clickgestion.concepts.test_models import BaseConceptModelTest
 from django.core.exceptions import FieldError
@@ -86,3 +86,16 @@ class DepositReturnTest(BaseConceptModelTest):
             transaction, aptrentaldeposit, timezone.now())
         basereturn = BaseConcept.objects.get(code=deposit_return.code)
         self.assertTrue(basereturn.returned_deposit)
+
+
+class ParkingRentalDepositTest(BaseConceptModelTest):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.model_object = cls.parkingrentaldeposit
+
+    def test_save_with_parkingrental(self):
+        transaction1 = model_creation.create_test_transaction(self.admin, timezone.now())
+        parkingrental = model_creation.create_test_parkingrental(transaction1, timezone.now())
+        self.assertIsNone(ParkingRentalDeposit().save(parkingrental=parkingrental))

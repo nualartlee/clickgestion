@@ -4,12 +4,13 @@ import sys
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from clickgestion.concepts.models import BaseConcept, ConceptValue, Currency
-from clickgestion.deposits.models import AptRentalDeposit, AptRentalDepositSettings, DepositReturn, DepositReturnSettings
+from clickgestion.deposits import models as deposit_models
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
 from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
     CashFloatWithdrawal, CashFloatWithdrawalSettings
+from clickgestion.parking_rentals.models import ParkingRental, ParkingRentalSettings
 from clickgestion.refunds.models import Refund, RefundSettings
 from django.utils import timezone
 from random import randrange
@@ -68,9 +69,9 @@ def create_aptrentalsettings():
 
 def create_aptrentaldepositsettings():
     try:
-        model = AptRentalDepositSettings.objects.get()
+        model = deposit_models.AptRentalDepositSettings.objects.get()
     except:
-        model = AptRentalDepositSettings(
+        model = deposit_models.AptRentalDepositSettings(
             accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
@@ -214,14 +215,16 @@ def create_default_models():
     create_cashfloatdepositsettings()
     create_cashfloatwithdrawalsettings()
     create_depositreturnsettings()
+    create_parkingrentalsettings()
+    create_parkingrentaldepositsettings()
     create_refundsettings()
 
 
 def create_depositreturnsettings():
     try:
-        model = DepositReturnSettings.objects.get()
+        model = deposit_models.DepositReturnSettings.objects.get()
     except:
-        model = DepositReturnSettings(
+        model = deposit_models.DepositReturnSettings(
             accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
@@ -278,12 +281,74 @@ def create_nightraterange():
     return model
 
 
+def create_parkingrentaldepositsettings():
+    try:
+        model = deposit_models.ParkingRentalDepositSettings.objects.get()
+    except:
+        model = deposit_models.ParkingRentalDepositSettings(
+            amount=10.0,
+            accounting_group='Deposits',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=0,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_parkingrentalsettings():
+    try:
+        model = ParkingRentalSettings.objects.get()
+    except:
+        model = ParkingRentalSettings(
+            amount_per_night=5.0,
+            accounting_group='Production',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=10,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
 def create_permission_groups():
     models = [CashFloatDeposit, CashFloatWithdrawal]
     create_group('Cash Employees', models)
-    models = [AptRental, AptRentalDeposit, DepositReturn]
+    models = [AptRental, deposit_models.AptRentalDeposit, ParkingRental, deposit_models.DepositReturn]
     create_group('Sales Employees', models)
-    models = [AptRental, AptRentalDeposit, DepositReturn, Refund]
+    models = [AptRental, deposit_models.AptRentalDeposit, ParkingRental, deposit_models.DepositReturn, Refund]
     create_group('Sales Transaction', models)
     models = [CashFloatDeposit, CashFloatWithdrawal]
     create_group('Cash Transaction', models)
@@ -374,12 +439,12 @@ def create_test_aptrental(transaction, date, adults=None, children=None, end_dat
 
 
 def create_test_aptrentaldeposit(transaction, aptrental, date):
-    model = AptRentalDeposit(
+    model = deposit_models.AptRentalDeposit(
         aptrental=aptrental,
         transaction=transaction,
     )
     model.save()
-    AptRentalDeposit.objects.filter(id=model.id).update(created=date)
+    deposit_models.AptRentalDeposit.objects.filter(id=model.id).update(created=date)
     return model
 
 
@@ -488,7 +553,7 @@ def create_test_client_transaction(employee, date):
 
 
 def create_test_depositreturn(transaction, returned_deposit, date):
-    model = DepositReturn(
+    model = deposit_models.DepositReturn(
         returned_deposit=returned_deposit,
         transaction=transaction,
     )
@@ -502,12 +567,12 @@ def create_test_depositreturn(transaction, returned_deposit, date):
     transaction.apt_number = old_transaction.apt_number
     transaction.save()
     model.save()
-    DepositReturn.objects.filter(id=model.id).update(created=date)
+    deposit_models.DepositReturn.objects.filter(id=model.id).update(created=date)
     return model
 
 
 def create_test_depositreturns(date):  # pragma: no cover
-    apt_rental_deposits_ending_today = AptRentalDeposit.objects.filter(
+    apt_rental_deposits_ending_today = deposit_models.AptRentalDeposit.objects.filter(
         end_date__year=date.year,
         end_date__month=date.month,
         end_date__day=date.day,
@@ -554,6 +619,31 @@ def create_test_models(days=30):
         create_test_random_transaction(date)
 
 
+def create_test_parkingrental(transaction, date, end_date=None, start_date=None):  # pragma: no cover
+    if not start_date:
+        start_date = date + timezone.timedelta(days=randrange(21))
+    if not end_date:
+        end_date = start_date + timezone.timedelta(days=randrange(1, 28))
+    model = ParkingRental(
+        start_date=start_date,
+        end_date=end_date,
+        transaction=transaction,
+    )
+    model.save()
+    ParkingRental.objects.filter(id=model.id).update(created=date)
+    return model
+
+
+def create_test_parkingrentaldeposit(transaction, parkingrental, date):
+    model = deposit_models.ParkingRentalDeposit(
+        parkingrental=parkingrental,
+        transaction=transaction,
+    )
+    model.save()
+    deposit_models.ParkingRentalDeposit.objects.filter(id=model.id).update(created=date)
+    return model
+
+
 def create_test_random_transaction(date):  # pragma: no cover
 
     selector = randrange(100)
@@ -582,13 +672,18 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     selector = randrange(100)
 
     # Apt rental
-    if selector <= 96:
+    if selector <= 70:
         aptrental = create_test_aptrental(transaction, date)
         create_test_aptrentaldeposit(transaction, aptrental, date)
 
-    # Deposit return
+    # Parking rental
     if 70 < selector <= 80:
-        apt_rental_deposits = AptRentalDeposit.objects.filter(transaction__closed=True, depositreturns=None).reverse()
+        parkingrental = create_test_parkingrental(transaction, date)
+        create_test_parkingrentaldeposit(transaction, parkingrental, date)
+
+    # Deposit return
+    if 80 < selector <= 95:
+        apt_rental_deposits = deposit_models.AptRentalDeposit.objects.filter(transaction__closed=True, depositreturns=None).reverse()
         if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]
@@ -613,7 +708,7 @@ def create_test_refund(transaction, refunded_concept, date):
         transaction=transaction,
     )
     model.save()
-    DepositReturn.objects.filter(id=model.id).update(created=date)
+    deposit_models.DepositReturn.objects.filter(id=model.id).update(created=date)
     return model
 
 

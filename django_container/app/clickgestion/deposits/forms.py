@@ -1,4 +1,4 @@
-from clickgestion.deposits.models import AptRentalDeposit, DepositReturn
+from clickgestion.deposits.models import AptRentalDeposit, DepositReturn, ParkingRentalDeposit
 from crispy_forms.layout import Column, HTML, Row
 from clickgestion.apt_rentals.forms import AptRentalForm
 from clickgestion.concepts.forms import ConceptForm
@@ -37,3 +37,16 @@ class DepositReturnForm(ConceptForm):
                 ),
             ),
         )
+
+
+class ParkingRentalDepositForm(AptRentalForm):
+
+    class Meta:
+        model = ParkingRentalDeposit
+        fields = ('end_date', 'start_date')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        add_deposit = self.fields['add_deposit']
+        add_deposit.initial = False
+        add_deposit.widget = HiddenInput()

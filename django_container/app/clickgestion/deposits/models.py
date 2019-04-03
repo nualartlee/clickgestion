@@ -174,3 +174,77 @@ class DepositReturn(BaseConcept):
         super().save(*args, **kwargs)
 
 
+class ParkingRentalDepositSettings(ConceptSettings):
+    """
+    Parking Rental Deposit Settings
+    """
+    # Amount
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+
+    class Meta:
+        verbose_name = gettext_lazy('Parking Rental Deposit Settings')
+        verbose_name_plural = gettext_lazy('Parking Rental Deposit Settings')
+
+
+class ParkingRentalDeposit(BaseConcept):
+    """
+    Transaction Concept
+    Parking rental deposit
+    """
+    # Amount
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+
+    # BaseConcept settings
+    _url = '/deposits/parkingrental/{}'
+    _settings_class = ParkingRentalDepositSettings
+    _code_initials = 'PRD'
+    _concept_class = 'parkingrentaldeposit'
+    _verbose_name = 'Parking Rental Deposit'
+
+    class Meta:
+        verbose_name = gettext_lazy('Parking Rental Deposit')
+        verbose_name_plural = gettext_lazy('Parking Rental Deposits')
+
+    def __init__(self, *args, **kwargs):
+        parkingrental = kwargs.pop('parkingrental', None)
+        super().__init__(*args, **kwargs)
+        if parkingrental:
+            self.start_date = parkingrental.start_date
+            self.end_date = parkingrental.end_date
+            if not parkingrental.transaction.closed:
+                self.transaction = parkingrental.transaction
+
+    def __str__(self):
+        return self.code
+
+    @property
+    def description_short(self):
+        return self.name
+
+    @property
+    def name(self):
+        return self._meta.verbose_name
+
+    def get_value(self):
+        """
+        :return: ConceptValue: Amount to deposit
+        """
+        # Return the saved value if the transaction is closed
+        if self.transaction.closed:
+            return self.value
+        # Get the current value
+        value_model = apps.get_model('concepts.ConceptValue')
+        try:
+            self.value.amount = self.settings.amount
+        except value_model.DoesNotExist:
+            self.value = value_model(amount=self.settings.amount)
+        return self.value
+
+    def save(self, *args, **kwargs):
+        parkingrental = kwargs.pop('parkingrental', None)
+        if parkingrental:
+            self.start_date = parkingrental.start_date
+            self.end_date = parkingrental.end_date
+            if not parkingrental.transaction.closed:
+                self.transaction = parkingrental.transaction
+        super().save(*args, **kwargs)
