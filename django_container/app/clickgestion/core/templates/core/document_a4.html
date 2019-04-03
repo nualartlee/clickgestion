@@ -29,68 +29,83 @@
 
             <!--Document Body Table Trick To Make Space for Headers and Footers-->
             <table class="w-100" style="page-break-before: avoid;">
-              <thead><tr><td>
-                <div class="header-space">&nbsp;</div>
-              </td></tr></thead>
-              <tbody><tr style="page-break-inside: auto;"><td>
+                <thead>
+                <tr>
+                    <td>
+                        <div class="header-space" style="height: 20mm;">&nbsp;</div>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr style="page-break-inside: auto;">
+                    <td>
 
-                    {% block document_body %}
-                    <!--Document Body-->
-                    <div id="pageBody" class="container-fluid">
+                        {% block document_body %}
+                        <!--Document Body-->
+                        <div id="pageBody" class="container-fluid">
 
-                        <div class="container-fluid">
+                            <div class="container-fluid">
 
-                            {% block document_body_top_left %}
-                            <!--Top Left-->
-                            <div class="col">
-                                <div class="row">
-                                    <strong>
-                                        {% trans 'Name' %}
-                                    </strong>
+                                <div class="row my-4">
+
+                                    {% block document_body_top_left %}
+                                    <!--Top Left-->
+                                    <div class="col">
+                                        <div class="row">
+                                            <strong>
+                                                {% trans 'Name' %}
+                                            </strong>
+                                        </div>
+                                        <div class="row">
+                                            {% trans 'Email' %}
+                                        </div>
+                                        <div class="row">
+                                            {% trans 'Phone Number' %}
+                                        </div>
+                                        <div class="row">
+                                            {% trans 'Address' %}
+                                        </div>
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    {% endblock %}
+
+                                    {% block document_body_top_right %}
+                                    <!--Top Right-->
+                                    <div class="row justify-content-end">
+                                        <div class="col text-right">
+                                            <h6><strong>{% trans 'Reference' %}</strong></h6>
+                                            <h6>{% trans 'Date' %}</h6>
+                                            <h6>{% trans 'Employee' %}</h6>
+                                        </div>
+                                    </div>
+                                    {% endblock %}
                                 </div>
-                                <div class="row">
-                                    {% trans 'Email' %}
-                                </div>
-                                <div class="row">
-                                    {% trans 'Phone Number' %}
-                                </div>
-                                <div class="row">
-                                    {% trans 'Address' %}
-                                </div>
-                                <div class="row">
-                                </div>
+
                             </div>
+
+                            {% block document_body_content %}
                             {% endblock %}
 
-                            {% block document_body_top_right %}
-                            <!--Top Right-->
-                            <div class="row justify-content-end">
-                                <div class="col text-right">
-                                    <h6><strong>{% trans 'Reference' %}</strong></h6>
-                                    <h6>{% trans 'Date' %}</h6>
-                                    <h6>{% trans 'Employee' %}</h6>
-                                </div>
+                            {% block document_footer_message %}
+                            <!--Footer message-->
+                            <div class="row justify-content-center my-2">
+                                <h5>{% trans 'Thank You' %}</h5>
                             </div>
                             {% endblock %}
-
-                        </div>
-
-                        {% block document_body_content %}
-                        {% endblock %}
-
-                        {% block document_footer_message %}
-                        <!--Footer message-->
-                        <div class="row justify-content-center my-2">
-                            <h5>{% trans 'Thank You' %}</h5>
                         </div>
                         {% endblock %}
-                    </div>
-                    {% endblock %}
 
-              </td></tr></tbody>
-              <tfoot><tr><td>
-                <div class="footer-space">&nbsp;</div>
-              </td></tr></tfoot>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td>
+                        <div class="footer-space" style="height: 20mm;">&nbsp;</div>
+                    </td>
+                </tr>
+                </tfoot>
             </table>
 
             {% block document_footer %}
