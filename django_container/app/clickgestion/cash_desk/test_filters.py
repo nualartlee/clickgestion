@@ -1,6 +1,5 @@
 from clickgestion.core.test import CustomTestCase
 from clickgestion.cash_desk.filters import CashCloseFilter
-from django.utils import timezone
 
 
 class CashCloseFilterTest(CustomTestCase):

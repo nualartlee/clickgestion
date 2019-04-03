@@ -25,34 +25,28 @@
 
 {% block document_body_content %}
 <!-- Table-->
-<div class="row my-4">
-    <table class="table table-bordered table-sm">
+<table class="table table-bordered table-sm">
 
-        <!--Cash Balance-->
-        <thead class="table-warning">
-        <tr>
-            <th colspan="4">{% trans 'Cash Balance' %}</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for value in cashclose.balance %}
-        <tr>
-            <td style="text-indent: 10%">{{ value.currency.name }}</td>
-            <td colspan="3" class="text-right">
-                {% include 'concepts/value_total.html' %}
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
+    <!--Cash Balance-->
+    <tr class="table-warning">
+        <th colspan="4">{% trans 'Cash Balance' %}</th>
+    </tr>
+    {% for value in cashclose.balance %}
+    <tr>
+        <td style="text-indent: 10%">{{ value.currency.name }}</td>
+        <td colspan="3" class="text-right">
+            {% include 'concepts/value_total.html' %}
+        </td>
+    </tr>
+    {% endfor %}
 
-        <!--Breakdowns-->
-        {% for breakdown in cashclose.breakdowns %}
-        {% include 'concepts/breakdown_rows.html' %}
-        {% endfor %}
+    <!--Breakdowns-->
+    {% for breakdown in cashclose.breakdowns %}
+    {% include 'concepts/breakdown_rows.html' %}
+    {% endfor %}
 
 
-    </table>
-</div>
+</table>
 
 {% if cashclose.notes %}
 <!--Notes-->

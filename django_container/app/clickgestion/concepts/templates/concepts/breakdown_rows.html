@@ -1,16 +1,11 @@
-<thead class="table-warning">
-    <tr>
-        <th colspan="4" scope="col">{{ breakdown.name }}</th>
-    </tr>
-</thead>
+<tr class="table-warning">
+    <th colspan="4" scope="col">{{ breakdown.name }}</th>
+</tr>
 {% for group in breakdown.groups %}
-<thead class="thead-light">
-    <tr>
+    <tr class="thead-light">
         <th style="text-indent: 5%" scope="col">{{ group.name }}</th>
         <th colspan="3" class="text-right">{{ group.concept_count }}</th>
     </tr>
-</thead>
-<tbody>
     {% for value in group.totals %}
     <tr>
         <td style="text-indent: 10%">{{ value.currency.name }}</td>
@@ -19,5 +14,4 @@
         </td>
     </tr>
     {% endfor %}
-</tbody>
 {% endfor %}

@@ -2,108 +2,117 @@
 <div class="row justify-content-center">
 
     <!--A4 Document-->
-    <div id="document-a4" class="card border p-4" style="width: 210mm; min-height: 297mm;">
+    <div class="card p-4" style="width: 210mm; min-height:297mm;">
+        <div id="document-a4" class="container-fluid p-0 m-0" style="width: 100%;">
 
-        {% block document_header %}
-        <!--Document Header-->
-        <div class="card-header bg-transparent border-0">
+            {% block document_header %}
+            <!--Document Header-->
+            <div id="pageHeader" class="container-fluid">
 
-            <div class="row">
-                <div class="col p-0">
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.clickbenidorm.com">
-                        <img alt="ClickBenidorm" src="{% static 'core/img/clickbenidormlogo1.png' %}">
-                    </a>
-                </div>
-                <div class="row justify-content-end">
-                    <div class="col text-right">
-                        {% block document_header_title %}
-                        <h3><strong>{% trans 'Document' %}</strong></h3>
-                        {% endblock %}
+                <div class="row">
+                    <div class="col p-0">
+                        <a target="_blank" rel="noopener noreferrer" href="https://www.clickbenidorm.com">
+                            <img alt="ClickBenidorm" src="{% static 'core/img/clickbenidormlogo1.png' %}">
+                        </a>
                     </div>
-                </div>
-            </div>
-
-        </div>
-        {% endblock %}
-
-        {% block document_body %}
-        <!--Document Body-->
-        <div class="card-body">
-
-            <div class="container-fluid">
-
-                <div class="row my-4">
-
-                    {% block document_body_top_left %}
-                    <!--Top Left-->
-                    <div class="col">
-                        <div class="row">
-                            <strong>
-                                {% trans 'Name' %}
-                            </strong>
-                        </div>
-                        <div class="row">
-                            {% trans 'Email' %}
-                        </div>
-                        <div class="row">
-                            {% trans 'Phone Number' %}
-                        </div>
-                        <div class="row">
-                            {% trans 'Address' %}
-                        </div>
-                        <div class="row">
-                        </div>
-                    </div>
-                    {% endblock %}
-
-                    {% block document_body_top_right %}
-                    <!--Top Right-->
                     <div class="row justify-content-end">
                         <div class="col text-right">
-                            <h6><strong>{% trans 'Reference' %}</strong></h6>
-                            <h6>{% trans 'Date' %}</h6>
-                            <h6>{% trans 'Employee' %}</h6>
+                            {% block document_header_title %}
+                            <h3><strong>{% trans 'Document' %}</strong></h3>
+                            {% endblock %}
                         </div>
                     </div>
-                    {% endblock %}
-
                 </div>
 
-                <p></p>
-
-                {% block document_body_content %}
-                {% endblock %}
-
-            </div>
-
-        </div>
-        {% endblock %}
-
-        {% block document_footer %}
-        <!--Document Footer-->
-        <div class="card-footer bg-transparent border-0">
-
-
-            {% block document_footer_message %}
-            <!--Footer message-->
-            <div class="row justify-content-center my-2">
-                <h5>{% trans 'Thank You' %}</h5>
             </div>
             {% endblock %}
 
-            <!--Business Info-->
-            <div class="row justify-content-center">
-                <a class="text-dark" target="_blank" rel="noopener noreferrer" href="https://www.clickbenidorm.com">www.clickbenidorm.com</a>
+            <!--Document Body Table Trick To Make Space for Headers and Footers-->
+            <table class="w-100" style="page-break-before: avoid;">
+              <thead><tr><td>
+                <div class="header-space">&nbsp;</div>
+              </td></tr></thead>
+              <tbody><tr style="page-break-inside: auto;"><td>
+
+                    {% block document_body %}
+                    <!--Document Body-->
+                    <div id="pageBody" class="container-fluid">
+
+                        <div class="container-fluid">
+
+                            {% block document_body_top_left %}
+                            <!--Top Left-->
+                            <div class="col">
+                                <div class="row">
+                                    <strong>
+                                        {% trans 'Name' %}
+                                    </strong>
+                                </div>
+                                <div class="row">
+                                    {% trans 'Email' %}
+                                </div>
+                                <div class="row">
+                                    {% trans 'Phone Number' %}
+                                </div>
+                                <div class="row">
+                                    {% trans 'Address' %}
+                                </div>
+                                <div class="row">
+                                </div>
+                            </div>
+                            {% endblock %}
+
+                            {% block document_body_top_right %}
+                            <!--Top Right-->
+                            <div class="row justify-content-end">
+                                <div class="col text-right">
+                                    <h6><strong>{% trans 'Reference' %}</strong></h6>
+                                    <h6>{% trans 'Date' %}</h6>
+                                    <h6>{% trans 'Employee' %}</h6>
+                                </div>
+                            </div>
+                            {% endblock %}
+
+                        </div>
+
+                        {% block document_body_content %}
+                        {% endblock %}
+
+                        {% block document_footer_message %}
+                        <!--Footer message-->
+                        <div class="row justify-content-center my-2">
+                            <h5>{% trans 'Thank You' %}</h5>
+                        </div>
+                        {% endblock %}
+                    </div>
+                    {% endblock %}
+
+              </td></tr></tbody>
+              <tfoot><tr><td>
+                <div class="footer-space">&nbsp;</div>
+              </td></tr></tfoot>
+            </table>
+
+            {% block document_footer %}
+            <!--Document Footer-->
+            <div id="pageFooter" class="container-fluid">
+
+                <!--Business Info-->
+                <div class="row justify-content-center">
+                    <a class="text-dark" target="_blank" rel="noopener noreferrer" href="https://www.clickbenidorm.com">www.clickbenidorm.com</a>
+                </div>
+                <div class="row justify-content-center">
+                    <p>
+                        <small>Click Benidorm S.L. | Av. Cuenca 26, 03503, Benidorm, Alicante, Spain</small>
+                    </p>
+                </div>
+
             </div>
-            <div class="row justify-content-center">
-                <p>
-                    <small>Click Benidorm S.L. | Av. Cuenca 26, 03503, Benidorm, Alicante, Spain</small>
-                </p>
-            </div>
+            {% endblock %}
 
         </div>
-        {% endblock %}
 
     </div>
+</div>
 
 </div>

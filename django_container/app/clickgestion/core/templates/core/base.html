@@ -13,6 +13,8 @@
 
         <style>
 
+
+
             @media screen {
 
               /* Hide the cloned print section in screen mode */
@@ -29,11 +31,35 @@
                 display: none;
               }
 
+              /* Create empty space for headers and footers using theader tfooter */
+              .header-space, .footer-space {
+                height: 20mm;
+              }
+
+              #pageHeader {
+                position: fixed;
+                top: 0;
+                height: 15mm;
+              }
+
+              #pageFooter {
+                position: fixed;
+                bottom: 0;
+                height: 15mm;
+              }
+
               /* Set page size */
               @page {
-                  size: 210mm 297mm;
-                  margin:0;
+                  size: A4 portrait;
+                  margin-top: 12mm;
+                  margin-bottom:10mm;
               }
+
+              /* Allow table page breaks */
+              table { page-break-before:avoid !important; page-break-inside:auto !important;}
+              tr th   { page-break-inside:avoid !important; page-break-after:auto !important; }
+              thead { display:table-header-group !important; }
+              tfoot { display:table-footer-group !important; }
 
               /* Show background colors on tables (disabled by default in bootstrap) */
               .table .thead-light th {
@@ -63,10 +89,6 @@
                     printSection.removeChild(printSection.firstChild);
                 }
                 printSection.id = "printSection";
-                printSection.style.position = "absolute";
-                printSection.style.left = "0";
-                printSection.style.top = "0";
-                printSection.style.width = "210mm";
                 document.body.appendChild(printSection);
 
                 printSection.appendChild(domClone);
