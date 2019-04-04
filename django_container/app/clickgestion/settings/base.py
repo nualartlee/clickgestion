@@ -189,6 +189,6 @@ CONCEPTS = [
 # Deposits
 DEPOSIT_CONCEPTS = [
     'aptrentaldeposit',
-    'parkingdeposit',
-    'safedeposit',
+    'parkingrentaldeposit',
+    'saferentaldeposit',
 ]

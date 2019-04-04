@@ -1,20 +1,19 @@
 #!/usr/bin/env python
-import os
-import sys
+from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
+from clickgestion.concepts.models import BaseConcept, ConceptValue, Currency
+from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings, \
+    CashFloatWithdrawal, CashFloatWithdrawalSettings
+from clickgestion.deposits import models as deposit_models
+from faker import Faker
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
-from clickgestion.concepts.models import BaseConcept, ConceptValue, Currency
-from clickgestion.deposits import models as deposit_models
-from clickgestion.transactions.models import Transaction
-from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
 from clickgestion.apt_rentals.models import NightRateRange
-from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings,\
-    CashFloatWithdrawal, CashFloatWithdrawalSettings
 from clickgestion.parking_rentals.models import ParkingRental, ParkingRentalSettings
-from clickgestion.refunds.models import Refund, RefundSettings
-from django.utils import timezone
 from random import randrange
-from faker import Faker
+from clickgestion.refunds.models import Refund, RefundSettings
+from django.conf import settings
+from django.utils import timezone
+from clickgestion.transactions.models import Transaction
 
 User = get_user_model()
 
@@ -572,23 +571,22 @@ def create_test_depositreturn(transaction, returned_deposit, date):
 
 
 def create_test_depositreturns(date):  # pragma: no cover
-    apt_rental_deposits_ending_today = deposit_models.AptRentalDeposit.objects.filter(
+    deposits_ending_today = BaseConcept.objects.filter(
         end_date__year=date.year,
         end_date__month=date.month,
         end_date__day=date.day,
+        concept_class__in=settings.DEPOSIT_CONCEPTS,
     )
-    for deposit in apt_rental_deposits_ending_today:
-        if not deposit.transaction.closed:
+    for deposit in deposits_ending_today:
+        if deposit.can_return_deposit:
             continue
-        if deposit.deposit_return:
-            continue
-        employee = get_sales_employee()
-        transaction = create_test_client_transaction(employee, date)
-        create_test_depositreturn(transaction, deposit, date)
-        transaction.closed = True
-        transaction.closed_date = date
-        transaction.save()
-        Transaction.objects.filter(id=transaction.id).update(created=date)
+            employee = get_sales_employee()
+            transaction = create_test_client_transaction(employee, date)
+            create_test_depositreturn(transaction, deposit, date)
+            transaction.closed = True
+            transaction.closed_date = date
+            transaction.save()
+            Transaction.objects.filter(id=transaction.id).update(created=date)
 
 
 def create_test_models(days=30):
