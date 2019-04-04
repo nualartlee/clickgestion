@@ -11,6 +11,7 @@ from clickgestion.apt_rentals.models import NightRateRange
 from clickgestion.parking_rentals.models import ParkingRental, ParkingRentalSettings
 from random import randrange
 from clickgestion.refunds.models import Refund, RefundSettings
+from clickgestion.safe_rentals.models import SafeRental, SafeRentalSettings
 from django.conf import settings
 from django.utils import timezone
 from clickgestion.transactions.models import Transaction
@@ -217,6 +218,8 @@ def create_default_models():
     create_parkingrentalsettings()
     create_parkingrentaldepositsettings()
     create_refundsettings()
+    create_saferentalsettings()
+    create_saferentaldepositsettings()
 
 
 def create_depositreturnsettings():
@@ -343,14 +346,21 @@ def create_parkingrentalsettings():
 
 
 def create_permission_groups():
-    models = [CashFloatDeposit, CashFloatWithdrawal]
-    create_group('Cash Employees', models)
-    models = [AptRental, deposit_models.AptRentalDeposit, ParkingRental, deposit_models.DepositReturn]
-    create_group('Sales Employees', models)
-    models = [AptRental, deposit_models.AptRentalDeposit, ParkingRental, deposit_models.DepositReturn, Refund]
-    create_group('Sales Transaction', models)
-    models = [CashFloatDeposit, CashFloatWithdrawal]
-    create_group('Cash Transaction', models)
+    cash_models = [CashFloatDeposit, CashFloatWithdrawal]
+    create_group('Cash Employees', cash_models)
+    sales_models = [
+        AptRental,
+        deposit_models.AptRentalDeposit,
+        deposit_models.DepositReturn,
+        ParkingRental,
+        deposit_models.ParkingRentalDeposit,
+        SafeRental,
+        deposit_models.SafeRentalDeposit,
+    ]
+    create_group('Sales Employees', sales_models)
+    sales_models.append(Refund)
+    create_group('Sales Transaction', sales_models)
+    create_group('Cash Transaction', cash_models)
 
 
 def create_refundsettings():
@@ -379,6 +389,68 @@ def create_refundsettings():
             notes_visible=True,
             permission_group=Group.objects.get(name='Sales Transaction'),
             vat_percent=0,
+        ).save()
+    return model
+
+
+def create_saferentaldepositsettings():
+    try:
+        model = deposit_models.SafeRentalDepositSettings.objects.get()
+    except:
+        model = deposit_models.SafeRentalDepositSettings(
+            amount=10.0,
+            accounting_group='Deposits',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=0,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_saferentalsettings():
+    try:
+        model = SafeRentalSettings.objects.get()
+    except:
+        model = SafeRentalSettings(
+            amount_per_night=2.0,
+            accounting_group='Production',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=10,
+            permission_group=Group.objects.get(name='Sales Transaction'),
         ).save()
     return model
 
@@ -670,14 +742,19 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     selector = randrange(100)
 
     # Apt rental
-    if selector <= 70:
+    if selector <= 60:
         aptrental = create_test_aptrental(transaction, date)
         create_test_aptrentaldeposit(transaction, aptrental, date)
 
     # Parking rental
-    if 70 < selector <= 80:
+    if 60 < selector <= 70:
         parkingrental = create_test_parkingrental(transaction, date)
         create_test_parkingrentaldeposit(transaction, parkingrental, date)
+
+    # Safe rental
+    if 70 < selector <= 80:
+        saferental = create_test_saferental(transaction, date)
+        create_test_saferentaldeposit(transaction, saferental, date)
 
     # Deposit return
     if 80 < selector <= 95:
@@ -707,6 +784,31 @@ def create_test_refund(transaction, refunded_concept, date):
     )
     model.save()
     deposit_models.DepositReturn.objects.filter(id=model.id).update(created=date)
+    return model
+
+
+def create_test_saferental(transaction, date, end_date=None, start_date=None):  # pragma: no cover
+    if not start_date:
+        start_date = date + timezone.timedelta(days=randrange(21))
+    if not end_date:
+        end_date = start_date + timezone.timedelta(days=randrange(1, 28))
+    model = SafeRental(
+        start_date=start_date,
+        end_date=end_date,
+        transaction=transaction,
+    )
+    model.save()
+    SafeRental.objects.filter(id=model.id).update(created=date)
+    return model
+
+
+def create_test_saferentaldeposit(transaction, saferental, date):
+    model = deposit_models.SafeRentalDeposit(
+        saferental=saferental,
+        transaction=transaction,
+    )
+    model.save()
+    deposit_models.SafeRentalDeposit.objects.filter(id=model.id).update(created=date)
     return model
 
 

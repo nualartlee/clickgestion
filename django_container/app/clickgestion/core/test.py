@@ -3,11 +3,12 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from clickgestion.transactions.models import Transaction
 from clickgestion.apt_rentals.models import AptRental
-from clickgestion.deposits.models import AptRentalDeposit, ParkingRentalDeposit
+from clickgestion.deposits.models import AptRentalDeposit, ParkingRentalDeposit, SafeRentalDeposit
 from django.utils import timezone
 from clickgestion.core import model_creation
 from django.apps import apps
 from clickgestion.parking_rentals.models import ParkingRental
+from clickgestion.safe_rentals.models import SafeRental
 
 
 def test_database_setup():  # pragma: no cover
@@ -113,6 +114,20 @@ class CustomTestCase(TestCase):  # pragma: no cover
         transaction.close(cls.admin)
         transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
         cls.refund = model_creation.create_test_refund(transaction, aptrental, timezone.now())
+
+        # Create a safe rental
+        cls.saferental = SafeRental(
+            transaction=cls.transaction,
+            start_date=timezone.datetime.today(),
+            end_date=timezone.datetime.today() + timezone.timedelta(days=7),
+        )
+        cls.saferental.save()
+
+        cls.saferentaldeposit = SafeRentalDeposit(
+            saferental=cls.saferental,
+            transaction=Transaction.objects.create(employee=cls.normaluser),
+        )
+        cls.saferentaldeposit.save()
 
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
