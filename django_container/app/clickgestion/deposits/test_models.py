@@ -99,3 +99,16 @@ class ParkingRentalDepositTest(BaseConceptModelTest):
         transaction1 = model_creation.create_test_transaction(self.admin, timezone.now())
         parkingrental = model_creation.create_test_parkingrental(transaction1, timezone.now())
         self.assertIsNone(ParkingRentalDeposit().save(parkingrental=parkingrental))
+
+
+class SafeRentalDepositTest(BaseConceptModelTest):
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.model_object = cls.saferentaldeposit
+
+    def test_save_with_parkingrental(self):
+        transaction1 = model_creation.create_test_transaction(self.admin, timezone.now())
+        saferental = model_creation.create_test_saferental(transaction1, timezone.now())
+        self.assertIsNone(ParkingRentalDeposit().save(saferental=saferental))

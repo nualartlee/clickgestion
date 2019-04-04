@@ -1,4 +1,4 @@
-from clickgestion.deposits.models import AptRentalDeposit, DepositReturn, ParkingRentalDeposit
+from clickgestion.deposits.models import AptRentalDeposit, DepositReturn, ParkingRentalDeposit, SafeRentalDeposit
 from crispy_forms.layout import Column, HTML, Row
 from clickgestion.apt_rentals.forms import AptRentalForm
 from clickgestion.concepts.forms import ConceptForm
@@ -50,3 +50,10 @@ class ParkingRentalDepositForm(AptRentalForm):
         add_deposit = self.fields['add_deposit']
         add_deposit.initial = False
         add_deposit.widget = HiddenInput()
+
+
+class SafeRentalDepositForm(ParkingRentalDepositForm):
+
+    class Meta:
+        model = SafeRentalDeposit
+        fields = ('end_date', 'start_date')

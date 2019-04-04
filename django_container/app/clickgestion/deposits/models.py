@@ -248,3 +248,79 @@ class ParkingRentalDeposit(BaseConcept):
             if not parkingrental.transaction.closed:
                 self.transaction = parkingrental.transaction
         super().save(*args, **kwargs)
+
+
+class SafeRentalDepositSettings(ConceptSettings):
+    """
+    Safe Rental Deposit Settings
+    """
+    # Amount
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+
+    class Meta:
+        verbose_name = gettext_lazy('Safe Rental Deposit Settings')
+        verbose_name_plural = gettext_lazy('Safe Rental Deposit Settings')
+
+
+class SafeRentalDeposit(BaseConcept):
+    """
+    Transaction Concept
+    Safe rental deposit
+    """
+    # Amount
+    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+
+    # BaseConcept settings
+    _url = '/deposits/saferental/{}'
+    _settings_class = SafeRentalDepositSettings
+    _code_initials = 'SRD'
+    _concept_class = 'saferentaldeposit'
+    _verbose_name = 'Safe Rental Deposit'
+
+    class Meta:
+        verbose_name = gettext_lazy('Safe Rental Deposit')
+        verbose_name_plural = gettext_lazy('Safe Rental Deposits')
+
+    def __init__(self, *args, **kwargs):
+        saferental = kwargs.pop('saferental', None)
+        super().__init__(*args, **kwargs)
+        if saferental:
+            self.start_date = saferental.start_date
+            self.end_date = saferental.end_date
+            if not saferental.transaction.closed:
+                self.transaction = saferental.transaction
+
+    def __str__(self):
+        return self.code
+
+    @property
+    def description_short(self):
+        return self.name
+
+    @property
+    def name(self):
+        return self._meta.verbose_name
+
+    def get_value(self):
+        """
+        :return: ConceptValue: Amount to deposit
+        """
+        # Return the saved value if the transaction is closed
+        if self.transaction.closed:
+            return self.value
+        # Get the current value
+        value_model = apps.get_model('concepts.ConceptValue')
+        try:
+            self.value.amount = self.settings.amount
+        except value_model.DoesNotExist:
+            self.value = value_model(amount=self.settings.amount)
+        return self.value
+
+    def save(self, *args, **kwargs):
+        saferental = kwargs.pop('saferental', None)
+        if saferental:
+            self.start_date = saferental.start_date
+            self.end_date = saferental.end_date
+            if not saferental.transaction.closed:
+                self.transaction = saferental.transaction
+        super().save(*args, **kwargs)

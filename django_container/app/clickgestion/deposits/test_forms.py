@@ -57,3 +57,16 @@ class ParkingRentalDepositFormTest(CustomTestCase):
         }
         form = self.form_class(data=form_data)
         self.assertTrue(form.is_valid())
+
+
+class SafeRentalDepositFormTest(CustomTestCase):
+
+    form_class = forms.SafeRentalDepositForm
+
+    def test_form_ok(self):
+        form_data = {
+            'end_date': timezone.now() + timezone.timedelta(days=10),
+            'start_date': timezone.now() + timezone.timedelta(days=3),
+        }
+        form = self.form_class(data=form_data)
+        self.assertTrue(form.is_valid())
