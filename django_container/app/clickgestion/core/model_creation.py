@@ -651,7 +651,6 @@ def create_test_depositreturns(date):  # pragma: no cover
     )
     for deposit in deposits_ending_today:
         if deposit.can_return_deposit:
-            continue
             employee = get_sales_employee()
             transaction = create_test_client_transaction(employee, date)
             create_test_depositreturn(transaction, deposit, date)
