@@ -129,6 +129,11 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
         cls.saferentaldeposit.save()
 
+        # Create a show and ticket sale
+        cls.show = model_creation.create_show('Aqualandia One Day Ticket')
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        cls.ticketsale = model_creation.create_test_ticketsale(transaction, timezone.now())
+
         print("\n\n============ %s ===============\n\n" % cls.__name__)
 
     def log_admin_in(self):

@@ -25,7 +25,7 @@ class SafeRental(BaseConcept):
 
     # BaseConcept settings
     _url = '/safe-rentals/{}'
-    _code_initials = 'PR'
+    _code_initials = 'SR'
     _concept_class = 'saferental'
     _settings_class = SafeRentalSettings
     _verbose_name = 'Safe Rental'

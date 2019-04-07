@@ -13,6 +13,7 @@ from random import randrange
 from clickgestion.refunds.models import Refund, RefundSettings
 from clickgestion.safe_rentals.models import SafeRental, SafeRentalSettings
 from django.conf import settings
+from clickgestion.ticket_sales.models import Show, TicketSale, TicketSaleSettings
 from django.utils import timezone
 from clickgestion.transactions.models import Transaction
 
@@ -220,6 +221,7 @@ def create_default_models():
     create_refundsettings()
     create_saferentalsettings()
     create_saferentaldepositsettings()
+    create_shows()
 
 
 def create_depositreturnsettings():
@@ -455,6 +457,39 @@ def create_saferentalsettings():
     return model
 
 
+def create_show(name, **kwargs):
+    try:
+        show = Show.objects.get(name=name)
+    except:
+        show = Show(name=name)
+        fields = [
+            'per_adult',
+            'per_child',
+            'per_night',
+            'per_senior',
+            'per_unit',
+            'price_per_adult',
+            'price_per_child',
+            'price_per_senior',
+        ]
+        for field in fields:
+            if kwargs.get(field, False):
+                setattr(show, field, kwargs[field])
+        show.save()
+
+    return show
+
+
+def create_shows():
+    create_show('Aqualandia Family Ticket 3', per_unit=True, price_per_adult=89.0)
+    create_show('Aqualandia Family Ticket 4', per_unit=True, price_per_adult=112.0)
+    create_show('Aqualandia One Day Ticket',
+                per_adult=True, price_per_adult=34.0,
+                per_child=True, price_per_child=26.0,
+                per_senior=True, price_per_senior=26.0,
+                )
+
+
 def create_superuser(username, first, last, email):
 
     try:
@@ -467,24 +502,6 @@ def create_superuser(username, first, last, email):
             email=email,
             password=username,
         )
-    return user
-
-
-def create_user(username, first, last, email, groups):
-
-    try:
-        user = User.objects.get(username=username)
-    except:
-        user = User.objects.create_user(
-            first_name=first,
-            last_name=last,
-            username=username,
-            email=email,
-            password=username,
-        )
-        for group in groups:
-            user.groups.add(group)
-        user.save()
     return user
 
 
@@ -741,23 +758,28 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     selector = randrange(100)
 
     # Apt rental
-    if selector <= 60:
+    if selector <= 50:
         aptrental = create_test_aptrental(transaction, date)
         create_test_aptrentaldeposit(transaction, aptrental, date)
 
     # Parking rental
-    if 60 < selector <= 70:
+    if 50 < selector <= 60:
         parkingrental = create_test_parkingrental(transaction, date)
         create_test_parkingrentaldeposit(transaction, parkingrental, date)
 
     # Safe rental
-    if 70 < selector <= 80:
+    if 60 < selector <= 70:
         saferental = create_test_saferental(transaction, date)
         create_test_saferentaldeposit(transaction, saferental, date)
 
+    # Ticket sale
+    if 70 < selector <= 80:
+        ticketsale = create_test_ticketsale(transaction, date)
+
     # Deposit return
     if 80 < selector <= 95:
-        apt_rental_deposits = deposit_models.AptRentalDeposit.objects.filter(transaction__closed=True, depositreturns=None).reverse()
+        apt_rental_deposits = deposit_models.AptRentalDeposit.objects.filter(
+            transaction__closed=True, depositreturns=None).reverse()
         if not apt_rental_deposits:
             return None
         apt_rental_deposit = apt_rental_deposits[0]
@@ -811,6 +833,36 @@ def create_test_saferentaldeposit(transaction, saferental, date):
     return model
 
 
+def create_test_ticketsale(
+        transaction, date, show=None, start_date=None, end_date=None, adults=None, children=None, seniors=None):
+    if not show:
+        shows = Show.objects.all()
+        selector = randrange(shows.count())
+        show = shows[selector]
+    if not start_date:
+        start_date = date + timezone.timedelta(days=randrange(21))
+    if not end_date:
+        end_date = start_date + timezone.timedelta(days=randrange(1, 28))
+    if not adults:
+        adults = randrange(1, 5)
+    if not children:
+        children = randrange(1, 5)
+    if not seniors:
+        seniors = randrange(1, 5)
+    model = TicketSale(
+        transaction=transaction,
+        show=show,
+        start_date=start_date,
+        end_date=end_date,
+        adults=adults,
+        children=children,
+        seniors=seniors,
+    )
+    model.save()
+    deposit_models.SafeRentalDeposit.objects.filter(id=model.id).update(created=date)
+    return model
+
+
 def create_test_transaction(employee, date):
     fake = Faker()
     notes = None
@@ -841,6 +893,54 @@ def create_test_users():
     create_user('natalia', 'Natalia', 'Villa Martinez', 'natalia@clickgestion.com', [sgroup, cgroup])
     create_user('marcos', 'Marcos', 'Ruiz Pantaloni', 'marcos@clickgestion.com', [sgroup, cgroup])
     create_user('suzi', 'Suzan', 'Williams', 'suzi@clickgestion.com', [sgroup, cgroup])
+
+
+def create_ticketsalesettings():
+    try:
+        model = TicketSaleSettings.objects.get()
+    except:
+        model = TicketSaleSettings(
+            accounting_group='Production',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=True,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=21,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_user(username, first, last, email, groups):
+
+    try:
+        user = User.objects.get(username=username)
+    except:
+        user = User.objects.create_user(
+            first_name=first,
+            last_name=last,
+            username=username,
+            email=email,
+            password=username,
+        )
+        for group in groups:
+            user.groups.add(group)
+        user.save()
+    return user
 
 
 def get_cash_employee():
