@@ -222,6 +222,7 @@ def create_default_models():
     create_saferentalsettings()
     create_saferentaldepositsettings()
     create_shows()
+    create_ticketsalesettings()
 
 
 def create_depositreturnsettings():
@@ -358,6 +359,7 @@ def create_permission_groups():
         deposit_models.ParkingRentalDeposit,
         SafeRental,
         deposit_models.SafeRentalDeposit,
+        TicketSale,
     ]
     create_group('Sales Employees', sales_models)
     sales_models.append(Refund)
@@ -487,6 +489,71 @@ def create_shows():
                 per_adult=True, price_per_adult=34.0,
                 per_child=True, price_per_child=26.0,
                 per_senior=True, price_per_senior=26.0,
+                )
+    create_show('AquaNatura Large Family Ticket',
+                per_adult=True, price_per_adult=20.50,
+                per_child=True, price_per_child=17.50,
+                per_senior=True, price_per_senior=17.5,
+                )
+    create_show('AquaNatura Afternoon Ticket',
+                per_adult=True, price_per_adult=24.0,
+                per_child=True, price_per_child=19.0,
+                per_senior=True, price_per_senior=19.0,
+                )
+    create_show('AquaNatura Day Ticket',
+                per_adult=True, price_per_adult=32.0,
+                per_child=True, price_per_child=26.0,
+                per_senior=True, price_per_senior=26.0,
+                )
+    create_show('AquaNatura + TerraNatura One Day Ticket',
+                per_adult=True, price_per_adult=43.0,
+                per_child=True, price_per_child=35.0,
+                per_senior=True, price_per_senior=35.0,
+                )
+    create_show('AquaNatura + TerraNatura One Day Ticket Large Family',
+                per_adult=True, price_per_adult=30.0,
+                per_child=True, price_per_child=23.50,
+                per_senior=True, price_per_senior=23.50,
+                )
+    create_show('AquaNatura + TerraNatura Two Day Ticket',
+                per_adult=True, price_per_adult=45.0,
+                per_child=True, price_per_child=37.0,
+                per_senior=True, price_per_senior=37.0,
+                )
+    create_show('AquaNatura + TerraNatura Two Day Ticket Large Family',
+                per_adult=True, price_per_adult=31.0,
+                per_child=True, price_per_child=25.0,
+                per_senior=True, price_per_senior=25.0,
+                )
+    create_show('Benidorm Palace Ticket & Drink',
+                per_adult=True, price_per_adult=32.0,
+                per_child=True, price_per_child=20.0,
+                )
+    create_show('Benidorm Palace Ticket & Menu',
+                per_adult=True, price_per_adult=52.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show('Benidorm Palace Ticket & Plus Menu',
+                per_adult=True, price_per_adult=62.0,
+                )
+    create_show('Profibolta Pool', per_unit=True, price_per_adult=2.0)
+    create_show('TerraNatura Large Family Ticket',
+                per_adult=True, price_per_adult=20.50,
+                per_child=True, price_per_child=17.50,
+                per_senior=True, price_per_senior=17.5,
+                )
+    create_show('TerraNatura Afternoon Ticket',
+                per_adult=True, price_per_adult=24.0,
+                per_child=True, price_per_child=19.0,
+                per_senior=True, price_per_senior=19.0,
+                )
+    create_show('TerraNatura Day Ticket',
+                per_adult=True, price_per_adult=32.0,
+                per_child=True, price_per_child=26.0,
+                per_senior=True, price_per_senior=26.0,
+                )
+    create_show('Taxi Service',
+                variable_price=True, price_per_adult=10.0,
                 )
 
 
@@ -909,7 +976,7 @@ def create_ticketsalesettings():
             client_email_visible=True,
             client_first_name_required=True,
             client_first_name_visible=True,
-            client_id_required=True,
+            client_id_required=False,
             client_id_visible=True,
             client_last_name_required=True,
             client_last_name_visible=True,

@@ -34,6 +34,8 @@ class Show(models.Model):
     price_per_child = models.FloatField(verbose_name=gettext_lazy('Price Per Child'), blank=True, null=True)
     # Price per senior
     price_per_senior = models.FloatField(verbose_name=gettext_lazy('Price Per Senior'), blank=True, null=True)
+    # Price can be set on transaction
+    variable_price = models.BooleanField(verbose_name=gettext_lazy('Variable Price'), default=False)
     # Last update timestamp
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 

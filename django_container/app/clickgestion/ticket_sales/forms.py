@@ -1,4 +1,4 @@
-from crispy_forms.bootstrap import AppendedText
+from crispy_forms.bootstrap import AppendedText, PrependedAppendedText, PrependedText
 from django.apps import apps
 from django import forms
 from django.utils.translation import gettext_lazy
@@ -11,16 +11,19 @@ from django.core.exceptions import ValidationError
 
 
 class TicketSalesForm(ConceptForm):
+    end_date = forms.DateField(
+        widget=forms.DateInput(
+            attrs={'type': 'date'},
+        ),
+    )
+    price_per_adult = forms.FloatField(min_value=0, disabled=True, required=False)
+    price_per_child = forms.FloatField(min_value=0, disabled=True, required=False)
+    price_per_senior = forms.FloatField(min_value=0, disabled=True, required=False)
     show = forms.ModelChoiceField(
         queryset=apps.get_model('ticket_sales.show').objects.filter(enabled=True),
         initial=apps.get_model('ticket_sales.show').objects.filter(enabled=True).first(),
     )
     start_date = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-        ),
-    )
-    end_date = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
@@ -77,30 +80,50 @@ class TicketSalesForm(ConceptForm):
             ),
             Row(
                 Column(
-                    AppendedText(
+                    Field(
                         'adults',
-                        '{}{}'.format(self.show.currency.symbol, self.show.price_per_adult),
-                        title=self.fields['adults'].widget.title,
-                        label=self.fields['adults'].label,
-                        css_class='col-6',
+                        title=gettext_lazy('Number of adults') if self.show.per_adult
+                        else gettext_lazy('Number of units'),
+                        css_class='col-auto',
+                    ),
+                    AppendedText(
+                        'price_per_adult',
+                        self.show.currency.symbol,
+                        title=gettext_lazy('Price per adult') if self.show.per_adult else
+                        gettext_lazy('Price per unit') if self.show.per_unit else
+                        gettext_lazy('Price'),
+                        css_class='col-auto',
+                        value=self.show.price_per_adult,
                     ),
                     css_class='col-2',
                 ),
                 Column(
-                    AppendedText(
+                    Field(
                         'children',
-                        '{}{}'.format(self.show.currency.symbol, self.show.price_per_child),
-                        title=gettext_lazy("Number of children"),
-                        css_class='col-6',
+                        title=gettext_lazy('Number of children'),
+                        css_class='col-auto',
+                    ),
+                    AppendedText(
+                        'price_per_child',
+                        self.show.currency.symbol,
+                        title=gettext_lazy('Price per child'),
+                        css_class='col-auto',
+                        value=self.show.price_per_child,
                     ),
                     css_class='col-2',
                 ),
                 Column(
-                    AppendedText(
+                    Field(
                         'seniors',
-                        '{}{}'.format(self.show.currency.symbol, self.show.price_per_senior),
-                        title=gettext_lazy("Number of seniors"),
-                        css_class='col-6',
+                        title=gettext_lazy('Number of seniors'),
+                        css_class='col-auto',
+                    ),
+                    AppendedText(
+                        'price_per_senior',
+                        self.show.currency.symbol,
+                        title=gettext_lazy('Price per senior'),
+                        css_class='col-auto',
+                        value=self.show.price_per_senior,
                     ),
                     css_class='col-2',
                 ),
@@ -113,16 +136,17 @@ class TicketSalesForm(ConceptForm):
         start_date = self.cleaned_data.get('start_date')
         end_date = self.cleaned_data.get('end_date')
         if start_date and end_date:
-            if self.instance.show.per_night:
+            if self.show.per_night:
                 if start_date > end_date:
                     error = gettext_lazy('End date is before start.')
                     raise ValidationError(error)
 
-        # Assert number of people
-        adults = self.cleaned_data.get('adults')
-        children = self.cleaned_data.get('children')
-        if adults and children:
-            if adults + children == 0:
+        # Assert number
+        adults = self.cleaned_data.get('adults', 0)
+        children = self.cleaned_data.get('children', 0)
+        seniors = self.cleaned_data.get('seniors', 0)
+        if not self.show.per_unit:
+            if adults + children + seniors <= 0:
                 error = gettext_lazy('No people')
                 raise ValidationError(error)
 
@@ -130,7 +154,11 @@ class TicketSalesForm(ConceptForm):
 
     def clean_adults(self):
         adults = self.cleaned_data.get('adults')
-        if adults < 0:
+        if self.show.per_unit:
+            minimum = 1
+        else:
+            minimum = 0
+        if adults < minimum:
             error = gettext_lazy('Invalid value')
             raise ValidationError(error)
         return adults
@@ -142,6 +170,13 @@ class TicketSalesForm(ConceptForm):
             raise ValidationError(error)
         return children
 
+    def clean_seniors(self):
+        seniors = self.cleaned_data.get('seniors')
+        if seniors < 0:
+            error = gettext_lazy('Invalid value')
+            raise ValidationError(error)
+        return seniors
+
     def clean_start_date(self):
         start_date = self.cleaned_data.get('start_date')
         if self.fields['start_date'].required:
@@ -152,6 +187,10 @@ class TicketSalesForm(ConceptForm):
 
     def save(self, commit=True):
         ticketsale = super().save(commit=False)
+        if self.show.variable_price:
+            ticketsale.show.price_per_adult = self.cleaned_data['price_per_adult']
+            ticketsale.show.price_per_child = self.cleaned_data['price_per_child']
+            ticketsale.show.price_per_senior = self.cleaned_data['price_per_senior']
         if commit:
             ticketsale.save()
         return ticketsale
@@ -161,31 +200,44 @@ class TicketSalesForm(ConceptForm):
         Sets which form fields are required according to the show
         """
 
-        # Hide start date
+        # Start date
         if not (self.show.date_required or self.show.per_night):
             self.fields['start_date'].widget = forms.HiddenInput()
             self.fields['start_date'].required = False
-        # Hide end date
+
+        # End date
         if not self.show.per_night:
             self.fields['end_date'].widget = forms.HiddenInput()
             self.fields['end_date'].required = False
-        # Hide adults
+
+        # Adults
         if self.show.per_transaction:
             self.fields['adults'].widget = forms.HiddenInput()
             self.fields['adults'].required = False
-        # Set unit label
         if self.show.per_unit:
             self.fields['adults'].label = gettext_lazy('Units')
-            self.fields['adults'].widget.title = gettext_lazy('Number of units')
-        # Set adult label
         if self.show.per_adult:
-            self.fields['adults'].widget.label = gettext_lazy('Adults')
-            self.fields['adults'].widget.title = gettext_lazy('Number of adults')
-        # Hide children
-        if not self.show.per_child:
+            self.fields['adults'].label = gettext_lazy('Adults')
+        if self.show.variable_price:
+            self.fields['price_per_adult'].disabled = False
+        self.fields['price_per_adult'].label = ''
+
+        # Children
+        if self.show.per_child:
+            self.fields['price_per_child'].label = ''
+            if self.show.variable_price:
+                self.fields['price_per_child'].disabled = False
+        else:
             self.fields['children'].widget = forms.HiddenInput()
             self.fields['children'].required = False
-        # Hide seniors
-        if not self.show.per_senior:
+            self.fields['price_per_child'].widget = forms.HiddenInput()
+
+        # Seniors
+        if self.show.per_senior:
+            self.fields['price_per_senior'].label = ''
+            if self.show.variable_price:
+                self.fields['price_per_senior'].disabled = False
+        else:
             self.fields['seniors'].widget = forms.HiddenInput()
             self.fields['seniors'].required = False
+            self.fields['price_per_senior'].widget = forms.HiddenInput()
