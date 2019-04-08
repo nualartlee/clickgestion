@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.apps import apps
-from clickgestion.concepts.models import BaseConcept, ConceptSettings
+from clickgestion.concepts.models import BaseConcept, ConceptSettings, Currency, get_default_currency
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 
@@ -8,8 +8,14 @@ from django.db import models
 class Show(models.Model):
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    # Currency
+    currency = models.ForeignKey(
+        'concepts.Currency', verbose_name=gettext_lazy('Currency'), default=get_default_currency,
+        on_delete=models.PROTECT, related_name='shows')
     # A specific date is required
     date_required = models.BooleanField(verbose_name=gettext_lazy('Date Required'), default=False)
+    # Enabled
+    enabled = models.BooleanField(verbose_name=gettext_lazy('Enabled'), default=True)
     # Name
     name = models.CharField(verbose_name=gettext_lazy('Name'), max_length=64)
     # Tickets are booked per adult
@@ -86,6 +92,13 @@ class TicketSale(BaseConcept):
         verbose_name = gettext_lazy('Ticket Sale')
         verbose_name_plural = gettext_lazy('Ticket Sales')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            show = self.show
+        except Show.DoesNotExist:
+            self.show = Show.objects.filter(enabled=True).first()
+
     def __str__(self):
         return self.code
 
@@ -152,3 +165,8 @@ class TicketSale(BaseConcept):
         except value_model.DoesNotExist:
             self.value = value_model(amount=amount)
         return self.value
+
+    def save(self):
+        if not self.show.per_night:
+            self.end_date = self.start_date
+        super().save()

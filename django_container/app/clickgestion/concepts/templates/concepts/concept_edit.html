@@ -23,7 +23,7 @@
     {% if transaction.closed %}
         <button type="button" class="btn btn-secondary col-2" title="{% trans 'Click to go back' %}" onclick="window.history.back();return false;">{% trans 'Back' %}</button>
     {% else %}
-        <input type="submit" value="{% trans 'Save' %}" class="btn btn-secondary col-2"/>
+        <button type="submit" class="btn btn-secondary col-2" title="{% trans 'Add this concept to the transaction' %}" onclick='document.getElementById("id_final_submit").value = "True";form.submit();'>{% trans 'Save' %}</button>
         <a class="btn btn-danger col-2" href="{% url 'transaction_edit' transaction_code=transaction.code %}">{% trans 'Cancel' %}</a>
     {% endif %}
     </form>

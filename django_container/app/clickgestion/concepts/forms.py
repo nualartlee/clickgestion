@@ -5,6 +5,12 @@ from django.core.exceptions import ValidationError
 
 
 class ConceptForm(forms.ModelForm):
+    # This flag controls the final submit, set as false to update fields dynamically and reload the form
+    final_submit = forms.BooleanField(
+        initial=True,
+        required=False,
+        widget=forms.HiddenInput()
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

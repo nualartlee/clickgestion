@@ -93,14 +93,19 @@ def concept_edit(request, *args, **kwargs):  # pragma: no cover
 
     # POST
     if request.method == 'POST':
-        form = concept_form(request.POST, instance=concept)
-        if form.is_valid():
-            form.save()
-            return redirect('transaction_edit', transaction_code=transaction.code)
 
-        else:
-            extra_context['form'] = form
-            return render(request, 'concepts/concept_edit.html', extra_context)
+        # Check final_submit flag
+        final_submit = request.POST.get('final_submit', 'True') == 'True'
+
+        form = concept_form(request.POST, instance=concept)
+
+        if form.is_valid():
+            if final_submit:
+                form.save()
+                return redirect('transaction_edit', transaction_code=transaction.code)
+
+        extra_context['form'] = form
+        return render(request, 'concepts/concept_edit.html', extra_context)
 
     # GET
     else:
