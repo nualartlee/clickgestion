@@ -19,6 +19,7 @@ class TicketSaleNewViewTest(test_views.ConceptNewViewTest):
 
     def test_post_show_change(self):
         form_data = {
+            'company': self.show.company.id,
             'show': self.show.id,
             'adults': 2,
             'children': 0,

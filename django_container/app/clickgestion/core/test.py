@@ -129,8 +129,9 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
         cls.saferentaldeposit.save()
 
-        # Create a show and ticket sale
-        cls.show = model_creation.create_show('Aqualandia One Day Ticket')
+        # Create a company, show and ticket sale
+        cls.showcompany = model_creation.create_showcompany('Aqualandia & Mundomar')
+        cls.show = model_creation.create_show(cls.showcompany, 'Aqualandia One Day Ticket')
         transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
         cls.ticketsale = model_creation.create_test_ticketsale(transaction, timezone.now())
 

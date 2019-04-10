@@ -5,7 +5,32 @@ from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 
 
+class ShowCompany(models.Model):
+    # Creation timestamp
+    created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
+    # Enabled
+    enabled = models.BooleanField(verbose_name=gettext_lazy('Enabled'), default=True)
+    # Name
+    name = models.CharField(verbose_name=gettext_lazy('Name'), max_length=64, unique=True)
+    # Last update timestamp
+    updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
+
+    class Meta:
+        verbose_name = gettext_lazy('Tour/Show Company')
+        verbose_name_plural = gettext_lazy('Tour/Show Companies')
+
+    def __str__(self):
+        return self.name
+
+
 class Show(models.Model):
+    # Company
+    company = models.ForeignKey(
+        'ticket_sales.ShowCompany',
+        verbose_name=gettext_lazy('Company'),
+        on_delete=models.CASCADE,
+        related_name='shows',
+    )
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     # Currency
@@ -17,7 +42,7 @@ class Show(models.Model):
     # Enabled
     enabled = models.BooleanField(verbose_name=gettext_lazy('Enabled'), default=True)
     # Name
-    name = models.CharField(verbose_name=gettext_lazy('Name'), max_length=64)
+    name = models.CharField(verbose_name=gettext_lazy('Name'), max_length=64, unique=True)
     # Tickets are booked per adult
     per_adult = models.BooleanField(verbose_name=gettext_lazy('Book Per Adult'), default=False)
     # Tickets are booked per child

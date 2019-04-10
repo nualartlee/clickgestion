@@ -2,7 +2,7 @@ from clickgestion.concepts.models import BaseConcept
 from django.shortcuts import get_object_or_404, render, redirect, reverse
 from clickgestion.transactions.views import get_transaction_from_kwargs
 from django.utils.translation import gettext, gettext_lazy
-from clickgestion.concepts.filters import ConceptFilter
+#from clickgestion.concepts.filters import ConceptFilter
 from django.views.generic import ListView
 from clickgestion.core.views import message
 from django.contrib.auth.decorators import login_required
@@ -127,7 +127,6 @@ class ConceptList(PaginationMixin, ListView):
     queryset = None
     header = gettext_lazy('Concepts')
     request = None
-    filter_type = ConceptFilter
     filter = None
     filter_data = None
     is_filtered = False
@@ -173,7 +172,8 @@ class ConceptList(PaginationMixin, ListView):
         # Add filters by permission
 
         # Filter the queryset
-        self.filter = self.filter_type(data)
+        from clickgestion.concepts.filters import ConceptFilter
+        self.filter = ConceptFilter(data)
         self.queryset = self.filter.qs.select_related('transaction') \
             .prefetch_related('value__currency') \
             .order_by('-id')  # 79q 27ms

@@ -7,5 +7,6 @@ class TicketSaleAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Show)
+admin.site.register(models.ShowCompany)
 admin.site.register(models.TicketSale, TicketSaleAdmin)
 admin.site.register(models.TicketSaleSettings)

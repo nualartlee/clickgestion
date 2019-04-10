@@ -1,10 +1,12 @@
+from django.apps import apps
 import django_filters
 from django.utils.translation import gettext_lazy
-from clickgestion.concepts.models import BaseConcept
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
 from django.db.models import Q
 from django.conf import settings
+
+BaseConcept = apps.get_model('concepts.baseconcept')
 
 
 class ConceptFilter(django_filters.FilterSet):

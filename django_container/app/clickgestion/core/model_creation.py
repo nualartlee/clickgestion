@@ -13,7 +13,7 @@ from random import randrange
 from clickgestion.refunds.models import Refund, RefundSettings
 from clickgestion.safe_rentals.models import SafeRental, SafeRentalSettings
 from django.conf import settings
-from clickgestion.ticket_sales.models import Show, TicketSale, TicketSaleSettings
+from clickgestion.ticket_sales.models import Show, ShowCompany, TicketSale, TicketSaleSettings
 from django.utils import timezone
 from clickgestion.transactions.models import Transaction
 
@@ -459,11 +459,11 @@ def create_saferentalsettings():
     return model
 
 
-def create_show(name, **kwargs):
+def create_show(company, name, **kwargs):
     try:
         show = Show.objects.get(name=name)
     except:
-        show = Show(name=name)
+        show = Show(company=company, name=name)
         fields = [
             'per_adult',
             'per_child',
@@ -482,77 +482,101 @@ def create_show(name, **kwargs):
     return show
 
 
+def create_showcompany(name, **kwargs):
+    try:
+        showcompany = ShowCompany.objects.get(name=name)
+    except:
+        showcompany = ShowCompany(name=name)
+        showcompany.save()
+
+    return showcompany
+
+
 def create_shows():
-    create_show('Aqualandia Family Ticket 3', per_unit=True, price_per_adult=89.0)
-    create_show('Aqualandia Family Ticket 4', per_unit=True, price_per_adult=112.0)
-    create_show('Aqualandia One Day Ticket',
+    # Aqualandia & Mundomar
+    showcompany = create_showcompany('Aqualandia & Mundomar')
+    create_show(showcompany, 'Aqualandia Family Ticket 3', per_unit=True, price_per_adult=89.0)
+    create_show(showcompany, 'Aqualandia Family Ticket 4', per_unit=True, price_per_adult=112.0)
+    create_show(showcompany, 'Aqualandia One Day Ticket',
                 per_adult=True, price_per_adult=34.0,
                 per_child=True, price_per_child=26.0,
                 per_senior=True, price_per_senior=26.0,
                 )
-    create_show('AquaNatura Large Family Ticket',
+
+    # AquaNatura & TerraNatura
+    showcompany = create_showcompany('AquaNatura & TerraNatura')
+    create_show(showcompany, 'AquaNatura Large Family Ticket',
                 per_adult=True, price_per_adult=20.50,
                 per_child=True, price_per_child=17.50,
                 per_senior=True, price_per_senior=17.5,
                 )
-    create_show('AquaNatura Afternoon Ticket',
+    create_show(showcompany, 'AquaNatura Afternoon Ticket',
                 per_adult=True, price_per_adult=24.0,
                 per_child=True, price_per_child=19.0,
                 per_senior=True, price_per_senior=19.0,
                 )
-    create_show('AquaNatura Day Ticket',
+    create_show(showcompany, 'AquaNatura Day Ticket',
                 per_adult=True, price_per_adult=32.0,
                 per_child=True, price_per_child=26.0,
                 per_senior=True, price_per_senior=26.0,
                 )
-    create_show('AquaNatura + TerraNatura One Day Ticket',
+    create_show(showcompany, 'AquaNatura + TerraNatura One Day Ticket',
                 per_adult=True, price_per_adult=43.0,
                 per_child=True, price_per_child=35.0,
                 per_senior=True, price_per_senior=35.0,
                 )
-    create_show('AquaNatura + TerraNatura One Day Ticket Large Family',
+    create_show(showcompany, 'AquaNatura + TerraNatura One Day Ticket Large Family',
                 per_adult=True, price_per_adult=30.0,
                 per_child=True, price_per_child=23.50,
                 per_senior=True, price_per_senior=23.50,
                 )
-    create_show('AquaNatura + TerraNatura Two Day Ticket',
+    create_show(showcompany, 'AquaNatura + TerraNatura Two Day Ticket',
                 per_adult=True, price_per_adult=45.0,
                 per_child=True, price_per_child=37.0,
                 per_senior=True, price_per_senior=37.0,
                 )
-    create_show('AquaNatura + TerraNatura Two Day Ticket Large Family',
+    create_show(showcompany, 'AquaNatura + TerraNatura Two Day Ticket Large Family',
                 per_adult=True, price_per_adult=31.0,
                 per_child=True, price_per_child=25.0,
                 per_senior=True, price_per_senior=25.0,
                 )
-    create_show('Benidorm Palace Ticket & Drink',
-                per_adult=True, price_per_adult=32.0,
-                per_child=True, price_per_child=20.0,
-                )
-    create_show('Benidorm Palace Ticket & Menu',
-                per_adult=True, price_per_adult=52.0,
-                per_child=True, price_per_child=25.0,
-                )
-    create_show('Benidorm Palace Ticket & Plus Menu',
-                per_adult=True, price_per_adult=62.0,
-                )
-    create_show('Profibolta Pool', per_unit=True, price_per_adult=2.0)
-    create_show('TerraNatura Large Family Ticket',
+    create_show(showcompany, 'TerraNatura Large Family Ticket',
                 per_adult=True, price_per_adult=20.50,
                 per_child=True, price_per_child=17.50,
                 per_senior=True, price_per_senior=17.5,
                 )
-    create_show('TerraNatura Afternoon Ticket',
+    create_show(showcompany, 'TerraNatura Afternoon Ticket',
                 per_adult=True, price_per_adult=24.0,
                 per_child=True, price_per_child=19.0,
                 per_senior=True, price_per_senior=19.0,
                 )
-    create_show('TerraNatura Day Ticket',
+    create_show(showcompany, 'TerraNatura Day Ticket',
                 per_adult=True, price_per_adult=32.0,
                 per_child=True, price_per_child=26.0,
                 per_senior=True, price_per_senior=26.0,
                 )
-    create_show('Taxi Service',
+
+    # Benidorm Palace
+    showcompany = create_showcompany('Benidorm Palace')
+    create_show(showcompany, 'Benidorm Palace Ticket & Drink',
+                per_adult=True, price_per_adult=32.0,
+                per_child=True, price_per_child=20.0,
+                )
+    create_show(showcompany, 'Benidorm Palace Ticket & Menu',
+                per_adult=True, price_per_adult=52.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'Benidorm Palace Ticket & Plus Menu',
+                per_adult=True, price_per_adult=62.0,
+                )
+
+    # Profibolta
+    showcompany = create_showcompany('Profibolta')
+    create_show(showcompany, 'Profibolta Pool', per_unit=True, price_per_adult=2.0)
+
+    # Taxi
+    showcompany = create_showcompany('Taxi')
+    create_show(showcompany, 'Taxi Service',
                 variable_price=True, price_per_adult=10.0,
                 )
 
