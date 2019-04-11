@@ -21,9 +21,10 @@ class TicketSalesForm(ConceptForm):
             attrs={'type': 'date'},
         ),
     )
-    price_per_adult = forms.FloatField(min_value=0, disabled=True, required=False)
-    price_per_child = forms.FloatField(min_value=0, disabled=True, required=False)
-    price_per_senior = forms.FloatField(min_value=0, disabled=True, required=False)
+    price_per_adult = forms.DecimalField(min_value=0, disabled=True, required=False)
+    price_per_child = forms.DecimalField(min_value=0, disabled=True, required=False)
+    price_per_senior = forms.DecimalField(min_value=0, disabled=True, required=False)
+    price_per_unit = forms.DecimalField(min_value=0, disabled=True, required=False)
     show = forms.ModelChoiceField(
         queryset=None,
         initial=None,
@@ -37,7 +38,8 @@ class TicketSalesForm(ConceptForm):
 
     class Meta:
         model = TicketSale
-        fields = ('adults', 'children', 'end_date', 'seniors', 'show', 'start_date')
+        fields = ('adults', 'children', 'end_date', 'price_per_adult', 'price_per_child', 'price_per_senior',
+                  'price_per_unit', 'seniors', 'show', 'start_date')
 
     def __init__(self, *args, **kwargs):
         self.selected_company = None
@@ -45,8 +47,8 @@ class TicketSalesForm(ConceptForm):
         self.selected_show = None
         self.show_choices = None
         self.helper = FormHelper()
-        updated_args = self.set_choices_and_update_args(*args, **kwargs)
-        super().__init__(*updated_args, **kwargs)
+        updated_args, updated_kwargs = self.set_choices_and_update_args(*args, **kwargs)
+        super().__init__(*updated_args, **updated_kwargs)
         self.set_fields()
         self.set_layout()
 
@@ -106,15 +108,15 @@ class TicketSalesForm(ConceptForm):
                 raise ValidationError(error)
         return start_date
 
-    def save(self, commit=True):
-        ticketsale = super().save(commit=False)
-        if self.selected_show.variable_price:
-            ticketsale.show.price_per_adult = self.cleaned_data['price_per_adult']
-            ticketsale.show.price_per_child = self.cleaned_data['price_per_child']
-            ticketsale.show.price_per_senior = self.cleaned_data['price_per_senior']
-        if commit:
-            ticketsale.save()
-        return ticketsale
+    #def save(self, commit=True):
+    #    ticketsale = super().save(commit=False)
+    #    if self.selected_show.variable_price:
+    #        ticketsale.show.price_per_adult = self.cleaned_data['price_per_adult']
+    #        ticketsale.show.price_per_child = self.cleaned_data['price_per_child']
+    #        ticketsale.show.price_per_senior = self.cleaned_data['price_per_senior']
+    #    if commit:
+    #        ticketsale.save()
+    #    return ticketsale
 
     def set_choices_and_update_args(self, *args, **kwargs):
         """
@@ -135,8 +137,10 @@ class TicketSalesForm(ConceptForm):
         # Get the form data if given
         if len(args) > 0:
             updated_data = args[0].copy()
+        elif kwargs.get('data', None):
+            updated_data = kwargs['data'].copy()
         else:
-            return args
+            return args, kwargs
 
         # Update show choices according to selected company
         if 'company' in updated_data:
@@ -156,8 +160,14 @@ class TicketSalesForm(ConceptForm):
                 updated_data['show'] = '{}'.format(self.selected_show.id)
 
         # Return updated args
-        updated_args = (updated_data, args[1:])
-        return updated_args
+        if len(args) > 0:
+            updated_args = (updated_data, args[1:])
+            updated_kwargs = kwargs
+        else:
+            updated_args = args
+            updated_kwargs = kwargs
+            updated_kwargs['data'] = updated_data
+        return updated_args, updated_kwargs
 
     def set_company_choices(self):
 

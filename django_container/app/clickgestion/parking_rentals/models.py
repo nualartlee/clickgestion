@@ -10,7 +10,8 @@ class ParkingRentalSettings(ConceptSettings):
     Parking Rental Concept Settings
     """
     # Amount per night
-    amount_per_night = models.FloatField(verbose_name=gettext_lazy('Amount Per Night'), default=10)
+    amount_per_night = models.DecimalField(verbose_name=gettext_lazy('Amount Per Night'),
+                                           default=10, decimal_places=2, max_digits=12)
 
     class Meta:
         verbose_name = gettext_lazy('Parking Rental Settings')

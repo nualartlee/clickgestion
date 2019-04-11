@@ -12,13 +12,13 @@ from django.utils.encoding import python_2_unicode_compatible
 class NightRateRange(models.Model):
     start_date = models.DateField(verbose_name=gettext_lazy('Start Date'))
     end_date = models.DateField(verbose_name=gettext_lazy('End Date'))
-    monday = models.FloatField(verbose_name=gettext_lazy('Monday'))
-    tuesday = models.FloatField(verbose_name=gettext_lazy('Tuesday'))
-    wednesday = models.FloatField(verbose_name=gettext_lazy('Wednesday'))
-    thursday = models.FloatField(verbose_name=gettext_lazy('Thursday'))
-    friday = models.FloatField(verbose_name=gettext_lazy('Friday'))
-    saturday = models.FloatField(verbose_name=gettext_lazy('Saturday'))
-    sunday = models.FloatField(verbose_name=gettext_lazy('Sunday'))
+    monday = models.DecimalField(verbose_name=gettext_lazy('Monday'), default=0, decimal_places=2, max_digits=12)
+    tuesday = models.DecimalField(verbose_name=gettext_lazy('Tuesday'), default=0, decimal_places=2, max_digits=12)
+    wednesday = models.DecimalField(verbose_name=gettext_lazy('Wednesday'), default=0, decimal_places=2, max_digits=12)
+    thursday = models.DecimalField(verbose_name=gettext_lazy('Thursday'), default=0, decimal_places=2, max_digits=12)
+    friday = models.DecimalField(verbose_name=gettext_lazy('Friday'), default=0, decimal_places=2, max_digits=12)
+    saturday = models.DecimalField(verbose_name=gettext_lazy('Saturday'), default=0, decimal_places=2, max_digits=12)
+    sunday = models.DecimalField(verbose_name=gettext_lazy('Sunday'), default=0, decimal_places=2, max_digits=12)
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
 
@@ -78,7 +78,8 @@ class AptRental(BaseConcept):
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
     # Ordered list of daily rates
-    rates = ArrayField(models.FloatField(), verbose_name=gettext_lazy('Array Of Rates'))
+    rates = ArrayField(models.DecimalField(default=0, decimal_places=2, max_digits=12),
+                       verbose_name=gettext_lazy('Array Of Rates'))
 
     # BaseConcept settings
     _url = '/apt-rentals/{}'

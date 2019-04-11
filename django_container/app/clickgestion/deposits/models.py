@@ -11,13 +11,15 @@ class AptRentalDepositSettings(ConceptSettings):
     Apartment Rental Deposit Settings
     """
     # Maximum deposit amount
-    max = models.FloatField(verbose_name=gettext_lazy('Maximum Amount'), default=300)
+    max = models.DecimalField(verbose_name=gettext_lazy('Maximum Amount'), default=300, decimal_places=2, max_digits=12)
     # Minimum deposit amount
-    min = models.FloatField(verbose_name=gettext_lazy('Minimum Amount'), default=50)
+    min = models.DecimalField(verbose_name=gettext_lazy('Minimum Amount'), default=50, decimal_places=2, max_digits=12)
     # Amount per adult/night
-    per_adult = models.FloatField(verbose_name=gettext_lazy('Amount Per Adult/Night'), default=10)
+    per_adult = models.DecimalField(verbose_name=gettext_lazy('Amount Per Adult/Night'),
+                                    default=10, decimal_places=2, max_digits=12)
     # Amount per child/night
-    per_child = models.FloatField(verbose_name=gettext_lazy('Amount Per Child/Night'), default=5)
+    per_child = models.DecimalField(verbose_name=gettext_lazy('Amount Per Child/Night'),
+                                    default=5, decimal_places=2, max_digits=12)
 
     class Meta:
         verbose_name = gettext_lazy('Apartment Rental Deposit Settings')
@@ -179,7 +181,7 @@ class ParkingRentalDepositSettings(ConceptSettings):
     Parking Rental Deposit Settings
     """
     # Amount
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+    amount = models.DecimalField(verbose_name=gettext_lazy('Amount'), default=10, decimal_places=2, max_digits=12)
 
     class Meta:
         verbose_name = gettext_lazy('Parking Rental Deposit Settings')
@@ -192,7 +194,7 @@ class ParkingRentalDeposit(BaseConcept):
     Parking rental deposit
     """
     # Amount
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+    amount = models.DecimalField(verbose_name=gettext_lazy('Amount'), default=10, decimal_places=2, max_digits=12)
 
     # BaseConcept settings
     _url = '/deposits/parkingrental/{}'
@@ -255,7 +257,7 @@ class SafeRentalDepositSettings(ConceptSettings):
     Safe Rental Deposit Settings
     """
     # Amount
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+    amount = models.DecimalField(verbose_name=gettext_lazy('Amount'), default=10, decimal_places=2, max_digits=12)
 
     class Meta:
         verbose_name = gettext_lazy('Safe Rental Deposit Settings')
@@ -268,7 +270,7 @@ class SafeRentalDeposit(BaseConcept):
     Safe rental deposit
     """
     # Amount
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'), default=10)
+    amount = models.DecimalField(verbose_name=gettext_lazy('Amount'), default=10, decimal_places=2, max_digits=12)
 
     # BaseConcept settings
     _url = '/deposits/saferental/{}'

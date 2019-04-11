@@ -60,7 +60,8 @@ class Currency(models.Model):
     code_n = models.CharField(max_length=3, verbose_name=gettext_lazy('Numeric Code'), blank=True, null=True)
     enabled = models.BooleanField(default=True, verbose_name=gettext_lazy('Enabled'))
     default = models.BooleanField(default=False, verbose_name=gettext_lazy('Default'))
-    exchange_rate = models.FloatField(verbose_name=gettext_lazy('Exchange Rate'), blank=True, null=True)
+    exchange_rate = models.DecimalField(verbose_name=gettext_lazy('Exchange Rate'),
+                                        default=0, decimal_places=2, max_digits=12)
     symbol = models.CharField(max_length=3, verbose_name=gettext_lazy('Symbol'), blank=True, null=True)
 
     class Meta:
@@ -76,7 +77,7 @@ class ConceptValue(models.Model):
     """
     The amount of a given currency that a concept credits or debits
     """
-    amount = models.FloatField(verbose_name=gettext_lazy('Amount'))
+    amount = models.DecimalField(verbose_name=gettext_lazy('Amount'), default=0, decimal_places=2, max_digits=12)
     # Creation timestamp
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
     credit = models.BooleanField(verbose_name=gettext_lazy('Credit'), default=True)
@@ -128,7 +129,8 @@ class BaseConcept(models.Model):
         ConceptValue, verbose_name=gettext_lazy('Value'), on_delete=models.CASCADE, related_name='concept',
     )
     # VAT percent
-    vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'))
+    vat_percent = models.DecimalField(verbose_name=gettext_lazy('VAT Percent'),
+                                      default=0, decimal_places=2, max_digits=12)
 
     class Meta:
         ordering = ['id']
@@ -364,7 +366,8 @@ class ConceptSettings(SingletonModel):
     # Last update timestamp
     updated = models.DateTimeField(verbose_name=gettext_lazy('Updated'), auto_now=True)
     # VAT percent
-    vat_percent = models.FloatField(verbose_name=gettext_lazy('VAT Percent'), default=0)
+    vat_percent = models.DecimalField(verbose_name=gettext_lazy('VAT Percent'),
+                                      default=0, decimal_places=2, max_digits=12)
 
     class Meta:
         abstract = True

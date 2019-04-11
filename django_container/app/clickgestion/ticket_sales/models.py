@@ -54,11 +54,17 @@ class Show(models.Model):
     # Tickets are booked per unit
     per_unit = models.BooleanField(verbose_name=gettext_lazy('Book Per Unit'), default=False)
     # Price per adult
-    price_per_adult = models.FloatField(verbose_name=gettext_lazy('Price Per Adult'), blank=True, null=True)
+    price_per_adult = models.DecimalField(verbose_name=gettext_lazy('Price Per Adult'),
+                                          default=10, decimal_places=2, max_digits=12)
     # Price per child
-    price_per_child = models.FloatField(verbose_name=gettext_lazy('Price Per Child'), blank=True, null=True)
+    price_per_child = models.DecimalField(verbose_name=gettext_lazy('Price Per Child'),
+                                          default=10, decimal_places=2, max_digits=12)
     # Price per senior
-    price_per_senior = models.FloatField(verbose_name=gettext_lazy('Price Per Senior'), blank=True, null=True)
+    price_per_senior = models.DecimalField(verbose_name=gettext_lazy('Price Per Senior'),
+                                           default=10, decimal_places=2, max_digits=12)
+    # Price per unit
+    price_per_unit = models.DecimalField(verbose_name=gettext_lazy('Price Per Unit'),
+                                         default=10, decimal_places=2, max_digits=12)
     # Price can be set on transaction
     variable_price = models.BooleanField(verbose_name=gettext_lazy('Variable Price'), default=False)
     # Last update timestamp
@@ -95,9 +101,33 @@ class TicketSale(BaseConcept):
     Ticket sale
     """
     # Number of adults
-    adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=1)
+    adults = models.SmallIntegerField(verbose_name=gettext_lazy('Adults'), default=2)
     # Number of children
     children = models.SmallIntegerField(verbose_name=gettext_lazy('Children'), default=0)
+    # A specific date is required
+    date_required = models.BooleanField(verbose_name=gettext_lazy('Date Required'), default=False)
+    # Tickets are booked per adult
+    per_adult = models.BooleanField(verbose_name=gettext_lazy('Book Per Adult'), default=False)
+    # Tickets are booked per child
+    per_child = models.BooleanField(verbose_name=gettext_lazy('Book Per Child'), default=False)
+    # Tickets are booked per night
+    per_night = models.BooleanField(verbose_name=gettext_lazy('Book Per Night'), default=False)
+    # Tickets are booked per senior
+    per_senior = models.BooleanField(verbose_name=gettext_lazy('Book Per Senior'), default=False)
+    # Tickets are booked per unit
+    per_unit = models.BooleanField(verbose_name=gettext_lazy('Book Per Unit'), default=False)
+    # Price per adult
+    price_per_adult = models.DecimalField(verbose_name=gettext_lazy('Price Per Adult'),
+                                          default=0, decimal_places=2, max_digits=12)
+    # Price per child
+    price_per_child = models.DecimalField(verbose_name=gettext_lazy('Price Per Child'),
+                                          default=0, decimal_places=2, max_digits=12)
+    # Price per senior
+    price_per_senior = models.DecimalField(verbose_name=gettext_lazy('Price Per Senior'),
+                                           default=0, decimal_places=2, max_digits=12)
+    # Price per unit
+    price_per_unit = models.DecimalField(verbose_name=gettext_lazy('Price Per Unit'),
+                                         default=0, decimal_places=2, max_digits=12)
     # Number of seniors
     seniors = models.SmallIntegerField(verbose_name=gettext_lazy('Seniors'), default=0)
     # The show
@@ -107,6 +137,8 @@ class TicketSale(BaseConcept):
         on_delete=models.CASCADE,
         related_name='tickets',
     )
+    # Number of units
+    units = models.SmallIntegerField(verbose_name=gettext_lazy('Units'), default=1)
 
     # BaseConcept settings
     _url = '/ticket-sales/{}'
@@ -137,25 +169,25 @@ class TicketSale(BaseConcept):
     def description_short(self):
         desc = '{} {} '.format(self.name, self.show.name)
         # Date required
-        if self.show.date_required or self.show.per_night:
+        if self.date_required or self.per_night:
             desc += ':{}'.format(self.start_date.strftime('%a, %d %b %Y'))
         # Per night
-        if self.show.per_night:
+        if self.per_night:
             desc += ' - {}'.format(self.start_date.strftime('%a, %d %b %Y'))
         # Per transaction
-        if self.show.per_transaction:
+        if not (self.per_adult or self.per_child or self.per_senior or self.per_unit):
             pass
-        # Per unit (use adults)
-        if self.show.per_unit:
-            desc += ' {}'.format(gettext_lazy('Units: %(units)s') % {'units': self.adults})
+        # Per unit
+        if self.per_unit:
+            desc += ' {}'.format(gettext_lazy('Units: %(units)s') % {'units': self.units})
         # Per adult
-        if self.show.per_adult:
+        if self.per_adult:
             desc += ' {}'.format(gettext_lazy('Adults: %(units)s') % {'units': self.adults})
         # Per child
-        if self.show.per_child:
+        if self.per_child:
             desc += ' {}'.format(gettext_lazy('Children: %(units)s') % {'units': self.children})
         # Per senior
-        if self.show.per_senior:
+        if self.per_senior:
             desc += ' {}'.format(gettext_lazy('Seniors: %(units)s') % {'units': self.seniors})
         return desc
 
@@ -169,22 +201,25 @@ class TicketSale(BaseConcept):
 
         # Per night
         amount = 0
-        if self.show.per_night:
+        if self.per_night:
             nights = (self.end_date - self.start_date).days
         else:
             nights = 1
         # Per transaction
-        if self.show.per_transaction:
-            amount += self.show.price_per_adult * nights
-        # Per adult or unit (use adults)
-        if self.show.per_adult or self.show.per_unit:
-            amount += self.show.price_per_adult * self.adults * nights
+        if not (self.per_adult or self.per_child or self.price_per_senior or self.per_unit):
+            amount += self.price_per_unit * nights
+        # Per unit
+        if self.per_unit:
+            amount += self.price_per_unit * self.units * nights
+        # Per adult
+        if self.per_adult:
+            amount += self.price_per_adult * self.adults * nights
         # Per child
-        if self.show.per_child:
-            amount += self.show.price_per_child * self.children * nights
+        if self.per_child:
+            amount += self.price_per_child * self.children * nights
         # Per senior
-        if self.show.per_senior:
-            amount += self.show.price_per_senior * self.seniors * nights
+        if self.per_senior:
+            amount += self.price_per_senior * self.seniors * nights
 
         value_model = apps.get_model('concepts.ConceptValue')
         try:
@@ -194,6 +229,22 @@ class TicketSale(BaseConcept):
         return self.value
 
     def save(self):
-        if not self.show.per_night:
+
+        self.date_required = self.show.date_required
+        self.per_adult = self.show.per_adult
+        self.per_child = self.show.per_child
+        self.per_night = self.show.per_night
+        self.per_senior = self.show.per_senior
+
+        if not self.price_per_adult:
+            self.price_per_adult = self.show.price_per_adult
+        if not self.price_per_child:
+            self.price_per_child = self.show.price_per_child
+        if not self.price_per_senior:
+            self.price_per_senior = self.show.price_per_senior
+        if not self.price_per_unit:
+            self.price_per_unit = self.show.price_per_unit
+
+        if not self.per_night:
             self.end_date = self.start_date
         super().save()

@@ -495,8 +495,8 @@ def create_showcompany(name, **kwargs):
 def create_shows():
     # Aqualandia & Mundomar
     showcompany = create_showcompany('Aqualandia & Mundomar')
-    create_show(showcompany, 'Aqualandia Family Ticket 3', per_unit=True, price_per_adult=89.0)
-    create_show(showcompany, 'Aqualandia Family Ticket 4', per_unit=True, price_per_adult=112.0)
+    create_show(showcompany, 'Aqualandia Family Ticket 3', per_unit=True, price_per_unit=89.0)
+    create_show(showcompany, 'Aqualandia Family Ticket 4', per_unit=True, price_per_unit=112.0)
     create_show(showcompany, 'Aqualandia One Day Ticket',
                 per_adult=True, price_per_adult=34.0,
                 per_child=True, price_per_child=26.0,
@@ -572,12 +572,36 @@ def create_shows():
 
     # Profibolta
     showcompany = create_showcompany('Profibolta')
-    create_show(showcompany, 'Profibolta Pool', per_unit=True, price_per_adult=2.0)
+    create_show(showcompany, 'Profibolta Pool', per_unit=True, price_per_unit=2.0)
 
     # Taxi
     showcompany = create_showcompany('Taxi')
     create_show(showcompany, 'Taxi Service',
-                variable_price=True, price_per_adult=10.0,
+                variable_price=True, price_per_unit=10.0,
+                )
+    # Localtours
+    showcompany = create_showcompany('Localtours')
+    create_show(showcompany, 'Guadalest',
+                per_adult=True, price_per_adult=33.0,
+                per_child=True, price_per_child=16.0,
+                )
+    create_show(showcompany, 'Costa Blanca Bustour',
+                per_adult=True, price_per_adult=49.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'Costa Blanca Jeep Tour',
+                per_adult=True, price_per_adult=59.0,
+                per_child=True, price_per_child=30.0,
+                )
+    create_show(showcompany, 'Costa Blanca Jeep Tour Exclusive 4 Pers.',
+                per_unit=True, price_per_adult=225.0,
+                )
+    create_show(showcompany, 'Jeep Safari Authentic',
+                per_adult=True, price_per_adult=65.0,
+                per_child=True, price_per_child=35.0,
+                )
+    create_show(showcompany, 'Jeep Safari Authentic Exclusive 4 Pers.',
+                per_unit=True, price_per_unit=225.0,
                 )
 
 
