@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings, Currency, get_default_currency
+from decimal import Decimal
 from django.utils.translation import gettext, gettext_lazy
 from django.db import models
 
@@ -153,10 +154,10 @@ class TicketSale(BaseConcept):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        try:
-            show = self.show
-        except Show.DoesNotExist:
-            self.show = Show.objects.filter(enabled=True).first()
+        #try:
+        #    show = self.show
+        #except Show.DoesNotExist:
+        #    self.show = Show.objects.filter(enabled=True).first()
 
     def __str__(self):
         return self.code
@@ -200,13 +201,13 @@ class TicketSale(BaseConcept):
             return self.value
 
         # Per night
-        amount = 0
+        amount = Decimal(0)
         if self.per_night:
-            nights = (self.end_date - self.start_date).days
+            nights = Decimal((self.end_date - self.start_date).days)
         else:
-            nights = 1
+            nights = Decimal(1)
         # Per transaction
-        if not (self.per_adult or self.per_child or self.price_per_senior or self.per_unit):
+        if not (self.per_adult or self.per_child or self.per_senior or self.per_unit):
             amount += self.price_per_unit * nights
         # Per unit
         if self.per_unit:
@@ -235,15 +236,16 @@ class TicketSale(BaseConcept):
         self.per_child = self.show.per_child
         self.per_night = self.show.per_night
         self.per_senior = self.show.per_senior
+        self.per_unit = self.show.per_unit
 
-        if not self.price_per_adult:
-            self.price_per_adult = self.show.price_per_adult
-        if not self.price_per_child:
-            self.price_per_child = self.show.price_per_child
-        if not self.price_per_senior:
-            self.price_per_senior = self.show.price_per_senior
-        if not self.price_per_unit:
-            self.price_per_unit = self.show.price_per_unit
+        #if not self.price_per_adult:
+        #    self.price_per_adult = self.show.price_per_adult
+        #if not self.price_per_child:
+        #    self.price_per_child = self.show.price_per_child
+        #if not self.price_per_senior:
+        #    self.price_per_senior = self.show.price_per_senior
+        #if not self.price_per_unit:
+        #    self.price_per_unit = self.show.price_per_unit
 
         if not self.per_night:
             self.end_date = self.start_date
