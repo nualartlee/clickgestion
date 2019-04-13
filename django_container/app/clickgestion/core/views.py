@@ -36,13 +36,13 @@ def forbidden(request, exception):
     return response
 
 
-def message(request):
+def message(request, context):
     """
     Simple message view
 
     Add 'header' and 'message' to context for rendering
     """
-    return render(request, 'core/message.html')
+    return render(request, 'core/message.html', context)
 
 
 def notfound(request, exception):

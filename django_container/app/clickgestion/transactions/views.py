@@ -64,7 +64,9 @@ def get_available_concepts(employee, transaction):
 def get_transaction_from_kwargs(**kwargs):
     # Get the transaction
     transaction_code = kwargs.get('transaction_code', None)
-    transaction = get_object_or_404(Transaction, code=transaction_code)
+    transaction = get_object_or_404(
+        Transaction.objects.prefetch_related('concepts__value__currency'),
+        code=transaction_code)
     return transaction
 
 
