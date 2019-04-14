@@ -1,4 +1,4 @@
-from crispy_forms.bootstrap import AppendedText, PrependedAppendedText, PrependedText
+from crispy_forms.bootstrap import AppendedText
 from django.apps import apps
 import copy
 from django import forms
@@ -7,18 +7,14 @@ from django.forms.fields import FileField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Row, Column
 from clickgestion.ticket_sales.models import TicketSale
-from clickgestion.concepts.forms import ConceptForm
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import MinValueValidator
 
 
 class TicketSalesForm(forms.Form):
-    # This flag controls the final submit, set as false to update fields dynamically and reload the form
-    final_submit = forms.BooleanField(
-        initial=True,
-        required=False,
-        widget=forms.HiddenInput()
-    )
+    adults = forms.IntegerField(validators=[MinValueValidator(0)])
+    children = forms.IntegerField(validators=[MinValueValidator(0)])
     company = forms.ModelChoiceField(
         queryset=apps.get_model('ticket_sales.showcompany').objects.none(),
         empty_label=None,
@@ -28,14 +24,17 @@ class TicketSalesForm(forms.Form):
             attrs={'type': 'date'},
         ),
     )
+    # This flag controls the final submit, set as false to update fields dynamically and reload the form
+    final_submit = forms.BooleanField(
+        initial=True,
+        required=False,
+        widget=forms.HiddenInput()
+    )
     price_per_adult = forms.DecimalField(min_value=0, disabled=True, required=False)
     price_per_child = forms.DecimalField(min_value=0, disabled=True, required=False)
     price_per_senior = forms.DecimalField(min_value=0, disabled=True, required=False)
     price_per_unit = forms.DecimalField(min_value=0, disabled=True, required=False)
-    adults = forms.IntegerField()
-    children = forms.IntegerField()
-    seniors = forms.IntegerField()
-    units = forms.IntegerField()
+    seniors = forms.IntegerField(validators=[MinValueValidator(0)])
     show = forms.ModelChoiceField(
         queryset=apps.get_model('ticket_sales.show').objects.none(),
         empty_label=None,
@@ -44,12 +43,13 @@ class TicketSalesForm(forms.Form):
         widget=forms.DateInput(
             attrs={'type': 'date'},
         ),
+        validators=[MinValueValidator((timezone.now() - timezone.timedelta(days=30)).date())],
     )
+    units = forms.IntegerField(validators=[MinValueValidator(1)])
 
+    # Passing this form as a ModelForm to make it compatible with default concept views
     class Meta:
         model = TicketSale
-        fields = ('adults', 'children', 'end_date', 'price_per_adult', 'price_per_child', 'price_per_senior',
-                  'price_per_unit', 'seniors', 'show', 'start_date', 'units')
     _meta = Meta
 
     def __init__(self, *args, **kwargs):
@@ -86,100 +86,32 @@ class TicketSalesForm(forms.Form):
             return self.cleaned_data
 
         # Assert that start date is before end
-        start_date = self.cleaned_data.get('start_date')
-        end_date = self.cleaned_data.get('end_date')
-        if start_date and end_date:
-            if self.selected_show.per_night:
-                if start_date > end_date:
-                    error = gettext_lazy('End date is before start.')
-                    raise ValidationError(error)
+        end_date = self.cleaned_data.get('end_date', None)
+        start_date = self.cleaned_data.get('start_date', None)
+        if end_date and start_date and self.selected_show.per_night:
+            try:
+                MinValueValidator(start_date + timezone.timedelta(days=1))(end_date)
+            except ValidationError as e:
+                self.add_error('end_date', e)
 
         # Assert people
-        adults = self.cleaned_data.get('adults', 0)
-        children = self.cleaned_data.get('children', 0)
-        seniors = self.cleaned_data.get('seniors', 0)
+        adults = self.cleaned_data.get('adults')
+        children = self.cleaned_data.get('children')
+        seniors = self.cleaned_data.get('seniors')
         people = 0
-        if self.selected_show.per_adult:
+        if self.selected_show.per_adult and adults:
             people += adults
-        if self.selected_show.per_child:
+        if self.selected_show.per_child and children:
             people += children
-        if self.selected_show.per_senior:
+        if self.selected_show.per_senior and seniors:
             people += seniors
         if not (self.selected_show.per_unit or self.selected_show.per_transaction):
             if people <= 0:
-                error = gettext_lazy('No people')
+                error = gettext_lazy('No people.')
                 raise ValidationError(error)
 
         # Return
         return self.cleaned_data
-
-    def clean_adults(self):
-
-        # Pass if not final submit
-        if not self.cleaned_data.get('final_submit', False):
-            return
-
-        adults = self.cleaned_data.get('adults')
-        if self.selected_show.per_adult:
-            if adults < 0:
-                error = gettext_lazy('Invalid value')
-                raise ValidationError(error)
-        return adults
-
-    def clean_children(self):
-
-        # Pass if not final submit
-        if not self.cleaned_data.get('final_submit', False):
-            return
-
-        children = self.cleaned_data.get('children')
-        if self.selected_show.per_child:
-            if children < 0:
-                error = gettext_lazy('Invalid value')
-                raise ValidationError(error)
-        return children
-
-    def clean_seniors(self):
-
-        # Pass if not final submit
-        if not self.cleaned_data.get('final_submit', False):
-            return
-
-        seniors = self.cleaned_data.get('seniors')
-        if self.selected_show.per_senior:
-            if seniors < 0:
-                error = gettext_lazy('Invalid value')
-                raise ValidationError(error)
-        return seniors
-
-    def clean_start_date(self):
-        start_date = self.cleaned_data.get('start_date')
-        if self.fields['start_date'].required:
-            if start_date < (timezone.now() - timezone.timedelta(days=30)).date():
-                error = gettext_lazy('Ticket date is too far back.')
-                raise ValidationError(error)
-        return start_date
-
-    #@property
-    #def current_post_data(self):
-    #    """
-    #    Use form validation to safely get the current user input data.
-
-    #    :return:
-    #    """
-    #    self.cleaned_data = {}
-    #    self._clean_fields()
-    #    return self.cleaned_data
-    #    ## Form validation only executes if form is bound and _errors are None
-    #    #self.is_bound = True
-    #    #self._errors = None
-    #    ## Validate
-    #    ##super().is_valid()
-    #    ## Clear errors (we only want data)
-    #    #self._errors = {}
-    #    ## Save the data
-    #    #self._current_post_data = self.cleaned_data
-    #return self._current_post_data
 
     def get_field_value(self, name):
         """
@@ -190,13 +122,14 @@ class TicketSalesForm(forms.Form):
         """
 
         field = self.fields[name]
-        value = None
         if field.disabled:
             value = self.get_initial_for_field(field, name)
         else:
             value = field.widget.value_from_datadict(self.data, self.files, self.add_prefix(name))
+
         try:
-            if isinstance(field, FileField):
+
+            if isinstance(field, FileField):  # pragma: no cover
                 initial = self.get_initial_for_field(field, name)
 
                 if value is forms.widgets.FILE_INPUT_CONTRADICTION:
@@ -218,10 +151,10 @@ class TicketSalesForm(forms.Form):
             else:
                 value = field.to_python(value)
 
-        except ValidationError as e:
+        except ValidationError:
             pass
-        # Clear errors (we only want the value)
-        self._errors = {}
+        ## Clear errors (we only want the value)
+        #self._errors = {}
 
         return value
 
@@ -250,25 +183,21 @@ class TicketSalesForm(forms.Form):
         self.is_bound = True
         self._errors = None
         valid = super().is_valid()
-        #initial = self.initial
-        #data = self.data
-        #cleaned_data = self.cleaned_data
-        #import pdb;pdb.set_trace()
         if not self.cleaned_data.get('final_submit', False):
             self._errors = None
             return False
         return valid
 
-    def remove_input_data(self, field):
-        """
-        Removes stored user input from the form submission.
+    #def remove_input_data(self, field):
+    #    """
+    #    Removes stored user input from the form submission.
 
-        :param field:
-        :return:
-        """
-        data_copy = copy.deepcopy(self.data)
-        data_copy.pop(field, None)
-        self.data = data_copy
+    #    :param field:
+    #    :return:
+    #    """
+    #    data_copy = copy.deepcopy(self.data)
+    #    data_copy.pop(field, None)
+    #    self.data = data_copy
 
     def save(self):
         if self.instance:
@@ -288,12 +217,12 @@ class TicketSalesForm(forms.Form):
         Selection and choices for fields are set according to post data, and post data is updated to be consistent.
         """
         # Set initial company choices
-        self.set_company_choices()
+        self.set_choices_for_company()
 
         # Set show choices
-        self.set_show_choices()
+        self.set_choices_for_show()
 
-    def set_company_choices(self):
+    def set_choices_for_company(self):
 
         # Get available companies
         self.company_choices = apps.get_model('ticket_sales.showcompany'). \
@@ -315,8 +244,31 @@ class TicketSalesForm(forms.Form):
         # Update form input
         self.add_input_data('company', self.selected_company)
 
+    def set_choices_for_show(self):
+
+        # Get available shows
+        self.show_choices = apps.get_model('ticket_sales.show') \
+            .objects.filter(enabled=True, company=self.selected_company).order_by('name')
+
+        # Set field queryset
+        self.fields['show'].queryset = self.show_choices
+
+        # Set default selection
+        self.selected_show = self.show_choices.first()
+        if self.instance_show:
+            self.selected_show = self.instance_show
+
+        # Update selection according to form input
+        show = self.get_field_value('show')
+        if show and show in self.show_choices:
+            self.selected_show = show
+
+        # Update form input
+        self.add_input_data('show', self.selected_show)
+
     def set_current_values(self):
 
+        # Set values to initial if no input is available
         for key in self.initial:
             if key not in self.data:
                 self.add_input_data(key, self.initial[key])
@@ -326,30 +278,34 @@ class TicketSalesForm(forms.Form):
         # Set initial values from instance if the same show is selected
         if self.instance_show == self.selected_show:
             values = {
-                'company': self.instance_show.company.id,
-                'show': self.instance_show.id,
                 'adults': self.instance.adults,
                 'children': self.instance.children,
-                'seniors': self.instance.seniors,
-                'units': self.instance.units,
+                'company': self.instance_show.company.id,
+                'end_date': self.instance.end_date,
                 'price_per_adult': self.instance.price_per_adult,
                 'price_per_child': self.instance.price_per_child,
                 'price_per_senior': self.instance.price_per_senior,
                 'price_per_unit': self.instance.price_per_unit,
+                'seniors': self.instance.seniors,
+                'show': self.instance_show.id,
+                'start_date': self.instance.start_date,
+                'units': self.instance.units,
             }
         # Set initial values from selected show
         else:
             values = {
-                'company': self.selected_show.company,
-                'show': self.selected_show,
                 'adults': 2 if self.selected_show.per_adult else 0,
                 'children': 0,
-                'seniors': 0,
-                'units': 1 if self.selected_show.per_unit else 0,
+                'company': self.selected_show.company,
+                'end_date': None,
                 'price_per_adult': self.selected_show.price_per_adult,
                 'price_per_child': self.selected_show.price_per_child,
                 'price_per_senior': self.selected_show.price_per_senior,
                 'price_per_unit': self.selected_show.price_per_unit,
+                'seniors': 0,
+                'show': self.selected_show,
+                'start_date': None,
+                'units': 1,
             }
         self.initial.update(values)
 
@@ -385,17 +341,17 @@ class TicketSalesForm(forms.Form):
                     Field(
                         'start_date',
                         title=gettext_lazy("Tour/Show date"),
-                        css_class='col-8',
+                        css_class='col-12',
                     ),
-                    css_class='col-6',
+                    css_class='col-3',
                 ),
                 Column(
                     Field(
                         'end_date',
                         title=gettext_lazy("End date"),
-                        css_class='col-8',
+                        css_class='col-12',
                     ),
-                    css_class='col-6',
+                    css_class='col-3',
                 ),
             ),
             Row(
@@ -541,27 +497,3 @@ class TicketSalesForm(forms.Form):
                 self.fields['price_per_unit'].widget = forms.HiddenInput()
                 self.fields['price_per_unit'].required = False
                 self.fields['price_per_unit'].disabled = True
-
-    def set_show_choices(self):
-
-        # Get available shows
-        self.show_choices = apps.get_model('ticket_sales.show') \
-            .objects.filter(enabled=True, company=self.selected_company).order_by('name')
-
-        # Set field queryset
-        self.fields['show'].queryset = self.show_choices
-
-        # Set default selection
-        self.selected_show = self.show_choices.first()
-        if self.instance_show:
-            self.selected_show = self.instance_show
-
-        # Update selection according to form input
-        show = self.get_field_value('show')
-        if show and show in self.show_choices:
-            self.selected_show = show
-
-        # Update form input
-        self.add_input_data('show', self.selected_show)
-
-
