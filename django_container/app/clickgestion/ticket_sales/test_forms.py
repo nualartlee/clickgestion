@@ -73,7 +73,7 @@ class TicketSalesFormTest(CustomTestCase):
         }
         form = TicketSalesForm(data=form_data)
         message = '\nShow: {}\nForm Data: {}\nErrors: {}\n'.format(show.name, form_data, form.errors)
-        self.assertIn('End date is before start.', form.non_field_errors(), msg=message)
+        self.assertIn('Ensure this value is greater than', form.errors['end_date'][0], msg=message)
         self.assertFalse(form.is_valid(), msg=message)
 
     def test_form_no_start(self, show=None):

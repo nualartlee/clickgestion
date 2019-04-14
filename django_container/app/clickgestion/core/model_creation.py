@@ -3,6 +3,7 @@ from clickgestion.apt_rentals.models import AptRental, AptRentalSettings
 from clickgestion.concepts.models import BaseConcept, ConceptValue, Currency
 from clickgestion.cash_desk.models import CashClose, CashFloatDeposit, CashFloatDepositSettings, \
     CashFloatWithdrawal, CashFloatWithdrawalSettings
+from decimal import Decimal
 from clickgestion.deposits import models as deposit_models
 from faker import Faker
 from django.contrib.auth import get_user_model
@@ -473,6 +474,8 @@ def create_show(company, name, **kwargs):
             'price_per_adult',
             'price_per_child',
             'price_per_senior',
+            'price_per_unit',
+            'variable_price',
         ]
         for field in fields:
             if kwargs.get(field, False):
@@ -493,6 +496,36 @@ def create_showcompany(name, **kwargs):
 
 
 def create_shows():
+    # Amigo24
+    showcompany = create_showcompany('Amigo24')
+    create_show(showcompany, 'Double Scooter Day',
+                per_night=True,
+                price_per_unit=20,
+                )
+    create_show(showcompany, 'Double Scooter Week',
+                per_unit=True, price_per_unit=100,
+                date_required=True,
+                )
+    create_show(showcompany, 'Double Scooter Month',
+                per_unit=True, price_per_unit=300,
+                date_required=True,
+                )
+    create_show(showcompany, 'Scooter 3 Wheels Day',
+                per_night=True,
+                price_per_unit=10,
+                )
+    create_show(showcompany, 'Scooter 3 Wheels Week',
+                per_unit=True, price_per_unit=45,
+                date_required=True,
+                )
+    create_show(showcompany, 'Scooter 4 Wheels Day',
+                per_night=True,
+                price_per_unit=10,
+                )
+    create_show(showcompany, 'Scooter 4 Wheels Week',
+                per_unit=True, price_per_unit=50,
+                date_required=True,
+                )
     # Aqualandia & Mundomar
     showcompany = create_showcompany('Aqualandia & Mundomar')
     create_show(showcompany, 'Aqualandia Family Ticket 3', per_unit=True, price_per_unit=89.0)
@@ -569,15 +602,61 @@ def create_shows():
     create_show(showcompany, 'Benidorm Palace Ticket & Plus Menu',
                 per_adult=True, price_per_adult=62.0,
                 )
-
-    # Profibolta
-    showcompany = create_showcompany('Profibolta')
-    create_show(showcompany, 'Profibolta Pool', per_unit=True, price_per_unit=2.0)
-
-    # Taxi
-    showcompany = create_showcompany('Taxi')
-    create_show(showcompany, 'Taxi Service',
-                variable_price=True, price_per_unit=10.0,
+    # Boarding Pass
+    showcompany = create_showcompany('Boarding Pass')
+    create_show(showcompany, 'Print Service',
+                price_per_unit=10,
+                variable_price=True,
+                )
+    # Excursiones Maritimas
+    showcompany = create_showcompany('Excursiones Maritimas')
+    create_show(showcompany, 'Benidorm Island Return',
+                per_adult=True, price_per_adult=15,
+                per_child=True, price_per_child=12,
+                )
+    create_show(showcompany, 'Submarine View (Benidorm Island)',
+                per_adult=True, price_per_adult=14,
+                per_child=True, price_per_child=11,
+                )
+    # IMED
+    showcompany = create_showcompany('IMED')
+    create_show(showcompany, 'Services',
+                price_per_unit=100,
+                variable_price=True,
+                )
+    # Karting Benidorm
+    showcompany = create_showcompany('Karting Benidorm')
+    create_show(showcompany, 'Adult 8 Minutes',
+                per_unit=True, price_per_unit=21,
+                )
+    create_show(showcompany, 'Junior 8 Minutes',
+                per_unit=True, price_per_unit=18,
+                )
+    create_show(showcompany, 'Double 8 Minutes',
+                per_unit=True, price_per_unit=22,
+                )
+    create_show(showcompany, 'Double 8 Minutes',
+                per_unit=True, price_per_unit=22,
+                )
+    create_show(showcompany, 'Fast Race',
+                per_unit=True, price_per_unit=35,
+                )
+    create_show(showcompany, 'Race Experience',
+                per_unit=True, price_per_unit=35,
+                )
+    # Karting Finestrat
+    showcompany = create_showcompany('Karting Finestrat')
+    create_show(showcompany, 'Mini Prix',
+                per_unit=True, price_per_unit=40,
+                )
+    create_show(showcompany, 'Grand Prix',
+                per_unit=True, price_per_unit=50,
+                )
+    create_show(showcompany, 'Grand Prix + Barbeque',
+                per_unit=True, price_per_unit=50,
+                )
+    create_show(showcompany, 'Super Prix',
+                per_unit=True, price_per_unit=60,
                 )
     # Localtours
     showcompany = create_showcompany('Localtours')
@@ -602,6 +681,88 @@ def create_shows():
                 )
     create_show(showcompany, 'Jeep Safari Authentic Exclusive 4 Pers.',
                 per_unit=True, price_per_unit=225.0,
+                )
+    create_show(showcompany, 'Viva España Orange Express',
+                per_adult=True, price_per_adult=44.0,
+                per_child=True, price_per_child=29.0,
+                )
+    create_show(showcompany, 'FA: Valencia City',
+                per_adult=True, price_per_adult=54.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'FB: Valencia City & Oceanografic',
+                per_adult=True, price_per_adult=69.0,
+                per_child=True, price_per_child=49.0,
+                )
+    create_show(showcompany, 'FC: Solo/Only Oceanografic',
+                per_adult=True, price_per_adult=64.0,
+                per_child=True, price_per_child=43.0,
+                )
+    create_show(showcompany, 'FD: Valencia Shopping - Por Libre',
+                per_adult=True, price_per_adult=45.0,
+                per_child=True, price_per_child=20.0,
+                )
+    create_show(showcompany, 'Discovery Bustour',
+                per_adult=True, price_per_adult=59.0,
+                per_child=True, price_per_child=33.0,
+                )
+    create_show(showcompany, 'Alicante Shopping',
+                per_adult=True, price_per_adult=39.0,
+                per_child=True, price_per_child=20.0,
+                )
+    create_show(showcompany, 'Costarama / Tabarca Island Incl',
+                per_adult=True, price_per_adult=59.0,
+                per_child=True, price_per_child=35.0,
+                )
+    create_show(showcompany, 'Naturama Elche - Alicante',
+                per_adult=True, price_per_adult=49.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'Fallas Valencia',
+                per_adult=True, price_per_adult=39.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'Murcia City',
+                per_adult=True, price_per_adult=49.0,
+                per_child=True, price_per_child=25.0,
+                )
+    create_show(showcompany, 'Moros y Cristianos Alcoy Sin Silla',
+                per_adult=True, price_per_adult=39.0,
+                per_child=True, price_per_child=20.0,
+                )
+    create_show(showcompany, 'Other',
+                per_adult=True, price_per_adult=49.0,
+                per_child=True, price_per_child=25.0,
+                variable_price=True,
+                )
+    # Marco Polo
+    showcompany = create_showcompany('Marco Polo')
+    create_show(showcompany, 'Jeep Safari',
+                per_adult=True, price_per_adult=62,
+                per_child=True, price_per_child=35,
+                )
+    create_show(showcompany, 'Jeep Safari Self Drive',
+                per_unit=True, price_per_unit=200,
+                )
+    create_show(showcompany, 'Paintball',
+                per_adult=True, price_per_adult=23,
+                per_child=True, price_per_child=15,
+                )
+    create_show(showcompany, 'Paintball + Transport',
+                per_unit=True, price_per_unit=30,
+                )
+    create_show(showcompany, 'Catamaran Sailing Altea',
+                per_adult=True, price_per_adult=55,
+                per_child=True, price_per_child=33,
+                )
+    # Profibolta
+    showcompany = create_showcompany('Profibolta')
+    create_show(showcompany, 'Profibolta Pool', per_unit=True, price_per_unit=2.0)
+
+    # Taxi
+    showcompany = create_showcompany('Taxi')
+    create_show(showcompany, 'Taxi Service',
+                variable_price=True, price_per_unit=10.0,
                 )
 
 
@@ -949,32 +1110,65 @@ def create_test_saferentaldeposit(transaction, saferental, date):
 
 
 def create_test_ticketsale(
-        transaction, date, show=None, start_date=None, end_date=None, adults=None, children=None, seniors=None):
+        transaction, date, show=None, start_date=None, end_date=None,
+        adults=None, children=None, seniors=None, units=None):
     if not show:
         shows = Show.objects.all()
         selector = randrange(shows.count())
         show = shows[selector]
-    if not start_date:
-        start_date = date + timezone.timedelta(days=randrange(21))
-    if not end_date:
-        end_date = start_date + timezone.timedelta(days=randrange(1, 28))
-    if not adults:
-        adults = randrange(1, 5)
-    if not children:
-        children = randrange(1, 5)
-    if not seniors:
-        seniors = randrange(1, 5)
-    model = TicketSale(
-        transaction=transaction,
-        show=show,
-        start_date=start_date,
-        end_date=end_date,
-        adults=adults,
-        children=children,
-        seniors=seniors,
-    )
+    kwargs = {
+        'show': show,
+        'transaction': transaction,
+        'per_adult': show.per_adult,
+        'per_child': show.per_child,
+        'per_night': show.per_night,
+        'per_senior': show.per_senior,
+        'per_unit': show.per_unit,
+    }
+    if show.date_required or show.per_night:
+        if not start_date:
+            start_date = date + timezone.timedelta(days=randrange(21))
+        kwargs['start_date'] = start_date
+    if show.per_night:
+        if not end_date:
+            end_date = start_date + timezone.timedelta(days=randrange(1, 28))
+        kwargs['end_date'] = end_date
+    if show.per_adult:
+        if not adults:
+            adults = randrange(1, 5)
+        kwargs['adults'] = adults
+        if show.variable_price:
+            kwargs['price_per_adult'] = Decimal(randrange(20, 100) / 2)
+        else:
+            kwargs['price_per_adult'] = show.price_per_adult
+    if show.per_child:
+        if not children:
+            children = randrange(1, 5)
+        kwargs['children'] = children
+        if show.variable_price:
+            kwargs['price_per_child'] = Decimal(randrange(20, 80) / 2)
+        else:
+            kwargs['price_per_child'] = show.price_per_child
+    if show.per_senior:
+        if not seniors:
+            seniors = randrange(1, 5)
+        kwargs['seniors'] = seniors
+        if show.variable_price:
+            kwargs['price_per_senior'] = Decimal(randrange(20, 90) / 2)
+        else:
+            kwargs['price_per_senior'] = show.price_per_senior
+    if show.per_unit:
+        if not units:
+            units = randrange(1, 5)
+        kwargs['units'] = units
+    if show.variable_price:
+        kwargs['price_per_unit'] = Decimal(randrange(20, 200) / 2)
+    else:
+        kwargs['price_per_unit'] = show.price_per_unit
+    model = TicketSale(**kwargs)
     model.save()
-    deposit_models.SafeRentalDeposit.objects.filter(id=model.id).update(created=date)
+    TicketSale.objects.filter(id=model.id).update(created=date)
+    model.refresh_from_db()
     return model
 
 

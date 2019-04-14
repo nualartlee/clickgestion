@@ -202,11 +202,23 @@ class TicketSalesForm(forms.Form):
     def save(self):
         if self.instance:
             ticketsale = self.instance
+            if ticketsale.transaction.closed:
+                return ticketsale
         else:
             ticketsale = TicketSale()
 
         for field in self.fields:
             setattr(ticketsale, field, self.cleaned_data[field])
+
+        ticketsale.per_adult = ticketsale.show.per_adult
+        ticketsale.per_child = ticketsale.show.per_child
+        ticketsale.per_night = ticketsale.show.per_night
+        ticketsale.per_senior = ticketsale.show.per_senior
+        ticketsale.per_unit = ticketsale.show.per_unit
+
+        if not ticketsale.per_night:
+            ticketsale.end_date = ticketsale.start_date
+
         ticketsale.save()
         return ticketsale
 
@@ -366,7 +378,6 @@ class TicketSalesForm(forms.Form):
                         self.selected_show.currency.symbol,
                         title=gettext_lazy('Price per adult'),
                         css_class='col-auto',
-                        #value=self.selected_show.price_per_adult,
                     ),
                     css_class='col-2',
                 ) if self.selected_show.per_adult else None,
@@ -381,7 +392,6 @@ class TicketSalesForm(forms.Form):
                         self.selected_show.currency.symbol,
                         title=gettext_lazy('Price per child'),
                         css_class='col-auto',
-                        #value=self.selected_show.price_per_child,
                     ),
                     css_class='col-2',
                 ) if self.selected_show.per_child else None,
@@ -396,7 +406,6 @@ class TicketSalesForm(forms.Form):
                         self.selected_show.currency.symbol,
                         title=gettext_lazy('Price per senior'),
                         css_class='col-auto',
-                        #value=self.selected_show.price_per_senior,
                     ),
                     css_class='col-2',
                 ) if self.selected_show.per_senior else None,
@@ -412,8 +421,6 @@ class TicketSalesForm(forms.Form):
                         title=gettext_lazy('Price per unit') if self.selected_show.per_unit else
                         gettext_lazy('Price'),
                         css_class='col-auto',
-                        #value=self.selected_show.price_per_unit,
-                        #initial=self.selected_show.price_per_unit,
                     ),
                     css_class='col-2',
                 ) if self.selected_show.per_unit or self.selected_show.per_transaction else None,
@@ -497,3 +504,9 @@ class TicketSalesForm(forms.Form):
                 self.fields['price_per_unit'].widget = forms.HiddenInput()
                 self.fields['price_per_unit'].required = False
                 self.fields['price_per_unit'].disabled = True
+
+        # Disable all if transaction is closed
+        if self.instance.transaction.closed:
+            for field in self.fields:
+                self.fields[field].disabled = True
+

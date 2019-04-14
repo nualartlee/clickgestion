@@ -1,6 +1,6 @@
 from django.urls import reverse
 from clickgestion.core.test import CustomTestCase, CustomViewTestCase
-from unittest import skip
+from clickgestion.core.views import message
 
 
 class TestNotFoundView(CustomTestCase, CustomViewTestCase):
@@ -89,9 +89,9 @@ class TestLogoutView(CustomTestCase, CustomViewTestCase):
 class TestMessageView(CustomTestCase, CustomViewTestCase):
 
     def test_message_view(self):
-        response = self.client.get(reverse('message'))
+        request = self.client.request()
+        response = message(request, {})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'core/message.html')
 
 
 class TestForbiddenView(CustomTestCase, CustomViewTestCase):

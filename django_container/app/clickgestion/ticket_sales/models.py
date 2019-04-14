@@ -154,10 +154,6 @@ class TicketSale(BaseConcept):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        #try:
-        #    show = self.show
-        #except Show.DoesNotExist:
-        #    self.show = Show.objects.filter(enabled=True).first()
 
     def __str__(self):
         return self.code
@@ -168,28 +164,44 @@ class TicketSale(BaseConcept):
 
     @property
     def description_short(self):
-        desc = '{} {} '.format(self.name, self.show.name)
+        desc = '{} {}: {}'.format(self.name, self.show.company.name, self.show.name)
         # Date required
         if self.date_required or self.per_night:
-            desc += ':{}'.format(self.start_date.strftime('%a, %d %b %Y'))
+            desc += ' {}'.format(self.start_date.strftime('%a, %d %b %Y'))
         # Per night
         if self.per_night:
-            desc += ' - {}'.format(self.start_date.strftime('%a, %d %b %Y'))
+            desc += ' - {}'.format(self.end_date.strftime('%a, %d %b %Y'))
         # Per transaction
         if not (self.per_adult or self.per_child or self.per_senior or self.per_unit):
             pass
         # Per unit
         if self.per_unit:
-            desc += ' {}'.format(gettext_lazy('Units: %(units)s') % {'units': self.units})
+            if self.units == 1:
+                text = gettext_lazy('%(units)s Unit x %(price)s;')
+            else:
+                text = gettext_lazy('%(units)s Units x %(price)s;')
+            desc += ' {}'.format(text % {'units': self.units, 'price': self.price_per_unit})
         # Per adult
         if self.per_adult:
-            desc += ' {}'.format(gettext_lazy('Adults: %(units)s') % {'units': self.adults})
+            if self.adults == 1:
+                text = gettext_lazy('%(adults)s Adult x %(price)s;')
+            else:
+                text = gettext_lazy('%(adults)s Adults x %(price)s;')
+            desc += ' {}'.format(text % {'adults': self.adults, 'price': self.price_per_adult})
         # Per child
         if self.per_child:
-            desc += ' {}'.format(gettext_lazy('Children: %(units)s') % {'units': self.children})
+            if self.children == 1:
+                text = gettext_lazy('%(children)s Child x %(price)s;')
+            else:
+                text = gettext_lazy('%(children)s Children x %(price)s;')
+            desc += ' {}'.format(text % {'children': self.children, 'price': self.price_per_child})
         # Per senior
         if self.per_senior:
-            desc += ' {}'.format(gettext_lazy('Seniors: %(units)s') % {'units': self.seniors})
+            if self.seniors == 1:
+                text = gettext_lazy('%(seniors)s Senior x %(price)s;')
+            else:
+                text = gettext_lazy('%(seniors)s Seniors x %(price)s;')
+            desc += ' {}'.format(text % {'seniors': self.seniors, 'price': self.price_per_senior})
         return desc
 
     def get_value(self):
@@ -229,24 +241,24 @@ class TicketSale(BaseConcept):
             self.value = value_model(amount=amount)
         return self.value
 
-    def save(self):
+    #def save(self):
 
-        self.date_required = self.show.date_required
-        self.per_adult = self.show.per_adult
-        self.per_child = self.show.per_child
-        self.per_night = self.show.per_night
-        self.per_senior = self.show.per_senior
-        self.per_unit = self.show.per_unit
+    #    self.date_required = self.show.date_required
+    #    self.per_adult = self.show.per_adult
+    #    self.per_child = self.show.per_child
+    #    self.per_night = self.show.per_night
+    #    self.per_senior = self.show.per_senior
+    #    self.per_unit = self.show.per_unit
 
-        #if not self.price_per_adult:
-        #    self.price_per_adult = self.show.price_per_adult
-        #if not self.price_per_child:
-        #    self.price_per_child = self.show.price_per_child
-        #if not self.price_per_senior:
-        #    self.price_per_senior = self.show.price_per_senior
-        #if not self.price_per_unit:
-        #    self.price_per_unit = self.show.price_per_unit
+    #    #if not self.price_per_adult:
+    #    #    self.price_per_adult = self.show.price_per_adult
+    #    #if not self.price_per_child:
+    #    #    self.price_per_child = self.show.price_per_child
+    #    #if not self.price_per_senior:
+    #    #    self.price_per_senior = self.show.price_per_senior
+    #    #if not self.price_per_unit:
+    #    #    self.price_per_unit = self.show.price_per_unit
 
-        if not self.per_night:
-            self.end_date = self.start_date
-        super().save()
+    #    if not self.per_night:
+    #        self.end_date = self.start_date
+    #    super().save()
