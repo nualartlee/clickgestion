@@ -105,7 +105,7 @@ class TicketSalesForm(forms.Form):
             people += children
         if self.selected_show.per_senior and seniors:
             people += seniors
-        if not (self.selected_show.per_unit or self.selected_show.per_transaction):
+        if self.selected_show.per_adult or self.selected_show.per_child or self.selected_show.per_senior:
             if people <= 0:
                 error = gettext_lazy('No people.')
                 raise ValidationError(error)
@@ -200,12 +200,9 @@ class TicketSalesForm(forms.Form):
     #    self.data = data_copy
 
     def save(self):
-        if self.instance:
-            ticketsale = self.instance
-            if ticketsale.transaction.closed:
-                return ticketsale
-        else:
-            ticketsale = TicketSale()
+        ticketsale = self.instance
+        if ticketsale.transaction.closed:
+            return ticketsale
 
         for field in self.fields:
             setattr(ticketsale, field, self.cleaned_data[field])
@@ -506,7 +503,7 @@ class TicketSalesForm(forms.Form):
                 self.fields['price_per_unit'].disabled = True
 
         # Disable all if transaction is closed
-        if self.instance.transaction.closed:
+        if self.instance and self.instance.transaction.closed:
             for field in self.fields:
                 self.fields[field].disabled = True
 

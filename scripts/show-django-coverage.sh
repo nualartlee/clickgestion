@@ -26,6 +26,7 @@ check_errs $EUID "This script must be run as root"
 echo
 echo
 docker-compose exec django coverage run --source='.' manage.py test --settings=clickgestion.settings.production $1
+check_errs $? "Tests failed, skipping coverage"
 
 # Generage html report
 echo

@@ -761,7 +761,7 @@ def create_shows():
 
     # Taxi
     showcompany = create_showcompany('Taxi')
-    create_show(showcompany, 'Taxi Service',
+    create_show(showcompany, 'Service',
                 variable_price=True, price_per_unit=10.0,
                 )
 
