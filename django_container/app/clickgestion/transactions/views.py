@@ -15,6 +15,23 @@ from clickgestion.transactions.filters import TransactionFilter
 import urllib
 
 
+def clear_transaction_session_data(session, transaction):
+    """
+    Clear any session data related to the given transaction
+
+    :param session: The session to clear
+    :param transaction: The transaction
+    """
+    name = 'depositreturn_transaction_code'
+    code = session.get(name, False)
+    if transaction.code == code:
+        session.pop(name)
+    name = 'refund_transaction_code'
+    code = session.get(name, False)
+    if transaction.code == code:
+        session.pop(name)
+
+
 def get_available_concepts(employee, transaction):
     """
     Get a list of the available concepts that can be added to the given transaction.
@@ -120,13 +137,8 @@ def transaction_delete(request, *args, **kwargs):
     # POST
     if request.method == 'POST':
 
-        # Clear session variables related to this transaction
-        code = request.session.get('refund_transaction_code', None)
-        if transaction.code == code:
-            request.session.pop('refund_transaction_code', None)
-        code = request.session.get('depositreturn_transaction_code', None)
-        if transaction.code == code:
-            request.session.pop('depositreturn_transaction_code', None)
+        # Clear session data related to this transaction
+        clear_transaction_session_data(request.session, transaction)
 
         # Delete the transaction
         transaction.delete()
@@ -200,6 +212,11 @@ def transaction_edit(request, *args, **kwargs):
         # Delete and go home
         # Note that the form.data value is still a string before validating
         if form.data['cancel_button'] == 'True':
+
+            # Clear session data related to this transaction
+            clear_transaction_session_data(request.session, transaction)
+
+            # Delete
             transaction.delete()
             return redirect('index')
 
@@ -316,6 +333,11 @@ def transaction_pay(request, *args, **kwargs):
         # If cancel has been set, delete and go home
         # Note that value is still string before validating
         if form.data['cancel_button'] == 'True':
+
+            # Clear session data related to this transaction
+            clear_transaction_session_data(request.session, transaction)
+
+            # Delete
             transaction.delete()
             return redirect('index')
 

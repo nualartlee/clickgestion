@@ -30,17 +30,18 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': 0,
             'children': 0,
-            'type': service.servicetype.id,
             'end_date': timezone.now() + timezone.timedelta(days=7),
             'final_submit': True,
             'seniors': 0,
             'service': service.id,
             'start_date': timezone.now(),
+            'type': service.servicetype.id,
         }
         form = ServiceSalesForm(data=form_data)
         message = '\nService: {}\nForm Data: {}\nErrors: {}\n'.format(service.name, form_data, form.errors)
-        self.assertIn('No people.', form.non_field_errors(), msg=message)
-        self.assertFalse(form.is_valid(), msg=message)
+        if service.per_adult or service.per_child or service.per_senior:
+            self.assertIn('No people.', form.non_field_errors(), msg=message)
+            self.assertFalse(form.is_valid(), msg=message)
 
     def test_form_ok(self, service=None):
         if not service:
@@ -48,12 +49,12 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': 1,
             'children': 1,
-            'type': service.servicetype.id,
             'end_date': timezone.now() + timezone.timedelta(days=7),
             'final_submit': True,
             'seniors': 1,
             'service': service.id,
             'start_date': timezone.now(),
+            'type': service.servicetype.id,
         }
         form = ServiceSalesForm(data=form_data)
         message = '\nService: {}\nForm Data: {}\nErrors: {}\n'.format(service.name, form_data, form.errors)
@@ -68,12 +69,12 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': 2,
             'children': 0,
-            'type': service.servicetype.id,
             'end_date': '{}'.format(timezone.now().date() - timezone.timedelta(days=1)),
             'final_submit': True,
             'seniors': 0,
             'service': service.id,
             'start_date': '{}'.format(timezone.now().date()),
+            'type': service.servicetype.id,
         }
         form = ServiceSalesForm(data=form_data)
         message = '\nService: {}\nForm Data: {}\nErrors: {}\n'.format(service.name, form_data, form.errors)
@@ -88,11 +89,11 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': 2,
             'children': 0,
-            'type': service.servicetype.id,
             'end_date': timezone.now(),
             'final_submit': True,
-            'service': service.id,
             'seniors': 0,
+            'service': service.id,
+            'type': service.servicetype.id,
         }
         form = ServiceSalesForm(data=form_data)
         message = '\nService: {}\nForm Data: {}\nErrors: {}\n'.format(service.name, form_data, form.errors)
@@ -107,12 +108,12 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': 2,
             'children': 0,
-            'type': service.servicetype.id,
             'end_date': timezone.now() - timezone.timedelta(days=45),
             'final_submit': True,
             'seniors': 0,
             'service': service.id,
             'start_date': timezone.now() - timezone.timedelta(days=50),
+            'type': service.servicetype.id,
         }
         form = ServiceSalesForm(data=form_data)
         message = '\nService: {}\nForm Data: {}\nErrors: {}\n'.format(service.name, form_data, form.errors)
@@ -141,12 +142,12 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': adults,
             'children': children,
-            'type': service.servicetype.id,
             'end_date': end_date,
             'final_submit': True,
             'seniors': seniors,
             'service': service.id,
             'start_date': start_date,
+            'type': service.servicetype.id,
             'units': 1,
         }
         form = ServiceSalesForm(form_data, instance=servicesale)
@@ -177,12 +178,12 @@ class ServiceSalesFormTest(CustomTestCase):
         form_data = {
             'adults': adults,
             'children': children,
-            'type': service.servicetype.id,
             'end_date': end_date,
             'final_submit': True,
             'seniors': seniors,
             'service': service.id,
             'start_date': start_date,
+            'type': service.servicetype.id,
             'units': 1,
         }
         form = ServiceSalesForm(form_data, instance=servicesale)
@@ -196,23 +197,23 @@ class ServiceSalesFormTest(CustomTestCase):
         form_real_data = {
             'adults': 3,
             'children': 3,
-            'type': service.servicetype,
             'end_date': (timezone.now() + timezone.timedelta(days=7)).date(),
             'final_submit': True,
             'seniors': 3,
             'service': service,
             'start_date': timezone.now().date(),
+            'type': service.servicetype,
             'units': 3,
         }
         form_data = {
             'adults': 3,
             'children': 3,
-            'type': service.servicetype.id,
             'end_date': timezone.now() + timezone.timedelta(days=7),
             'final_submit': True,
             'seniors': 3,
             'service': service.id,
             'start_date': timezone.now(),
+            'type': service.servicetype.id,
             'units': 3,
         }
         form = ServiceSalesForm(data=form_data)
@@ -238,7 +239,7 @@ class ServiceSalesFormTest(CustomTestCase):
             per_child=True,
             per_night=True,
             per_senior=True,
-            per_unit=True,
+            per_unit=False,
             variable_price=True,
         )
         self.run_service_tests(service)

@@ -39,8 +39,9 @@ class TicketSalesFormTest(CustomTestCase):
         }
         form = TicketSalesForm(data=form_data)
         message = '\nShow: {}\nForm Data: {}\nErrors: {}\n'.format(show.name, form_data, form.errors)
-        self.assertIn('No people.', form.non_field_errors(), msg=message)
-        self.assertFalse(form.is_valid(), msg=message)
+        if show.per_adult or show.per_child or show.per_senior:
+            self.assertIn('No people.', form.non_field_errors(), msg=message)
+            self.assertFalse(form.is_valid(), msg=message)
 
     def test_form_ok(self, show=None):
         if not show:

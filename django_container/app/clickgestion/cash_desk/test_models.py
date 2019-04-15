@@ -34,6 +34,9 @@ class TestCashCloseModel(CustomTestCase, CustomModelTestCase):
         model_creation.create_test_models(days=3)
         cls.model_object = apps.get_model('cash_desk.CashClose').objects.first()
 
+    def test_save_again(self):
+        self.assertEqual(self.model_object.save(), None)
+
 
 class TestCashFloatDepositModel(BaseConceptModelTest):
 

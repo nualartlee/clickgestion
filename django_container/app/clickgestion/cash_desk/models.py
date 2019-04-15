@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
@@ -119,6 +120,8 @@ class CashClose(models.Model):
     """
     A cash close records an end of day cash desk close operation.
     """
+    # Cash desk is closed
+    closed = models.BooleanField(verbose_name=gettext_lazy('Closed'), default=False)
     code = models.CharField(
         verbose_name=gettext_lazy('Code'), max_length=32, unique=True, default=get_new_cashclose_code, editable=False)
     created = models.DateTimeField(verbose_name=gettext_lazy('Created'), auto_now_add=True)
@@ -176,5 +179,33 @@ class CashClose(models.Model):
     def deposits_in_holding_totals(self):
         return totalizers.get_deposits_in_holding_totals(datetime=self.created)
 
+    def save(self, *args, **kwargs):
+
+        # Return if already closed
+        if self.closed:
+            return
+
+        # Save the cash desk close
+        self.closed = True
+        super().save(*args, **kwargs)
+
+        # Save cashclose on all closed transactions
+        closed_transactions = apps.get_model('transactions.Transaction').objects.filter(closed=True, cashclose=None)
+        closed_transactions.update(cashclose=self)
+
+        # Deposit the balance as the first transaction of the next cash desk
+        transaction = apps.get_model('transactions.Transaction')(
+            employee=self.employee,
+            notes='Cash Close Deposit',
+        )
+        transaction.save()
+        for dummy_value in self.balance:
+            value = apps.get_model('concepts.ConceptValue')(
+                amount=dummy_value.amount,
+                currency=dummy_value.currency,
+            )
+            deposit = CashFloatDeposit(transaction=transaction, value=value)
+            deposit.save()
+        transaction.close(self.employee)
 
 

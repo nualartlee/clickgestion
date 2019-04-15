@@ -25,7 +25,7 @@ class ServiceType(models.Model):
 
 
 class Service(models.Model):
-    # Company
+    # Service Type
     servicetype = models.ForeignKey(
         'service_sales.ServiceType',
         verbose_name=gettext_lazy('Service Type'),

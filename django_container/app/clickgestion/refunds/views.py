@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext
 from django.contrib.auth.decorators import login_required
 from clickgestion.core.views import message
+from django.core.exceptions import ObjectDoesNotExist
 from clickgestion.refunds.models import Refund
 import urllib
 
@@ -39,13 +40,12 @@ def refund_new(request, *args, **kwargs):
             extra_context['message'] = gettext('Cannot refund {}'.format(concept.description_short))
             return message(request, extra_context)
 
-        # Check for a transaction waiting for the concept to return
+        # Check for a transaction waiting for the concept to refund
         transaction_code = request.session.pop('refund_transaction_code', None)
-        if transaction_code:
-            transaction = get_object_or_404(apps.get_model('transactions.Transaction'), code=transaction_code)
-
-        # Create the transaction if not provided
-        else:
+        try:
+            transaction = apps.get_model('transactions.Transaction').objects.get(code=transaction_code)
+        except ObjectDoesNotExist:
+            # Create the transaction if not provided
             transaction_model = apps.get_model('transactions.Transaction')
             transaction = transaction_model()
 

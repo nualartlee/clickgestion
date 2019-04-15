@@ -17,6 +17,7 @@ from clickgestion.service_sales.models import Service, ServiceType, ServiceSale,
 from django.conf import settings
 from clickgestion.ticket_sales.models import Show, ShowCompany, TicketSale, TicketSaleSettings
 from django.utils import timezone
+from clickgestion.concepts import totalizers
 from clickgestion.transactions.models import Transaction
 
 User = get_user_model()
@@ -225,6 +226,8 @@ def create_default_models():
     create_saferentaldepositsettings()
     create_shows()
     create_ticketsalesettings()
+    create_services()
+    create_servicesalesettings()
 
 
 def create_depositreturnsettings():
@@ -362,6 +365,7 @@ def create_permission_groups():
         SafeRental,
         deposit_models.SafeRentalDeposit,
         TicketSale,
+        ServiceSale,
     ]
     create_group('Sales Employees', sales_models)
     sales_models.append(Refund)
@@ -486,6 +490,47 @@ def create_service(servicetype, name, **kwargs):
     return service
 
 
+def create_services():
+    # Room
+    servicetype = create_servicetype('Room')
+    create_service(servicetype, 'Air Conditioning',
+                   per_night=True,
+                   per_unit=True, price_per_unit=8,
+                   )
+    create_service(servicetype, 'Fan',
+                   per_night=True,
+                   per_unit=True, price_per_unit=4,
+                   )
+    create_service(servicetype, 'Late Checkout 13:00',
+                   price_per_unit=15,
+                   date_required=True,
+                   )
+    create_service(servicetype, 'Late Checkout 14:00',
+                   price_per_unit=20,
+                   date_required=True,
+                   )
+    create_service(servicetype, 'Late Checkout 15:00',
+                   price_per_unit=30,
+                   date_required=True,
+                   )
+    create_service(servicetype, 'Sheet Change',
+                   per_unit=True, price_per_unit=3,
+                   date_required=True,
+                   )
+    create_service(servicetype, 'Towel Change',
+                   per_unit=True, price_per_unit=2,
+                   date_required=True,
+                   )
+    # Pool
+    servicetype = create_servicetype('Pool')
+    create_service(servicetype, 'Pool Float & Towel',
+                   per_unit=True, price_per_unit=2,
+                   )
+    create_service(servicetype, 'Lounger',
+                   per_unit=True, price_per_unit=2,
+                   )
+
+
 def create_servicesalesettings():
     try:
         model = ServiceSaleSettings.objects.get()
@@ -524,15 +569,6 @@ def create_servicetype(name, **kwargs):
         servicetype.save()
 
     return servicetype
-
-
-def create_services():
-    # Room
-    servicetype = create_servicetype('Room')
-    create_service(servicetype, 'Late Checkout',
-                   per_night=True,
-                   price_per_unit=20,
-                   )
 
 
 def create_show(company, name, **kwargs):
@@ -888,6 +924,30 @@ def create_test_aptrentaldeposit(transaction, aptrental, date):
 
 
 def create_test_cashclose(date, employee):
+    # Withdraw excess balance
+    transaction = None
+
+    # Get closed transactions
+    closed_transactions = Transaction.objects.filter(closed=True, cashclose=None) \
+        .prefetch_related('concepts__value__currency')
+
+    # Get closed concepts
+    closed_concepts = BaseConcept.objects.filter(transaction__in=closed_transactions) \
+        .prefetch_related('value__currency')
+
+    # Get the balance
+    balance = totalizers.get_value_totals(closed_concepts)
+
+    # Withdraw from large amounts
+    for dummy_value in balance:
+        if dummy_value.amount > 2000:
+            withdraw_amount = randrange(int(dummy_value.amount/100)) * 100
+            if not transaction:
+                transaction = create_test_transaction(employee, date)
+            create_test_cashfloatwithdrawal(transaction, date, amount=withdraw_amount, currency=dummy_value.currency)
+    if transaction:
+        transaction.close(employee)
+
     fake = Faker()
     notes = None
     if randrange(100) < 30:  # pragma: no cover
@@ -902,12 +962,12 @@ def create_test_cashclose(date, employee):
     )
     model.save()
     CashClose.objects.filter(id=model.id).update(created=date)
-    transactions = Transaction.objects.filter(closed_date__date__lte=date, cashclose=None)
-    if transactions.exists():
-        for transaction in transactions:
-            transaction.cashclose = model
-            transaction.edited = date
-            transaction.save()
+    #transactions = Transaction.objects.filter(closed_date__date__lte=date, cashclose=None)
+    #if transactions.exists():
+    #    for transaction in transactions:
+    #        transaction.cashclose = model
+    #        transaction.edited = date
+    #        transaction.save()
     return model
 
 
@@ -929,9 +989,11 @@ def create_test_cashfloatdeposit(transaction, date):
     return model
 
 
-def create_test_cashfloatwithdrawal(transaction, date):
-    currency = get_random_currency()
-    amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
+def create_test_cashfloatwithdrawal(transaction, date, currency=None, amount=None):
+    if not currency:
+        currency = get_random_currency()
+    if not amount:
+        amount = randrange(21) * 100 + randrange(21) * 10 + randrange(21) * 5
     value = ConceptValue(
         credit=False,
         currency=currency,
@@ -1125,7 +1187,7 @@ def create_test_random_transaction_client(date):  # pragma: no cover
 
     # Service sale
     if 60 < selector <= 70:
-        ticketsale = create_test_ticketsale(transaction, date)
+        servicesale = create_test_servicesale(transaction, date)
 
     # Ticket sale
     if 70 < selector <= 80:
@@ -1190,7 +1252,7 @@ def create_test_saferentaldeposit(transaction, saferental, date):
 
 def create_test_servicesale(
         transaction, date, service=None, start_date=None, end_date=None,
-        adults=None, children=None, seniors=None, units=None):
+        adults=None, children=None, seniors=None, units=None):  # pragma: no cover
     if not service:
         services = Service.objects.all()
         selector = randrange(services.count())
@@ -1253,7 +1315,7 @@ def create_test_servicesale(
 
 def create_test_ticketsale(
         transaction, date, show=None, start_date=None, end_date=None,
-        adults=None, children=None, seniors=None, units=None):
+        adults=None, children=None, seniors=None, units=None):  # pragma: no cover
     if not show:
         shows = Show.objects.all()
         selector = randrange(shows.count())

@@ -131,7 +131,7 @@ class CustomTestCase(TestCase):  # pragma: no cover
 
         # Create a servicetype, service and servicesale
         cls.servicetype = model_creation.create_servicetype('Room')
-        cls.service = model_creation.create_service(cls.servicetype, 'Late Checkout')
+        cls.service = model_creation.create_service(cls.servicetype, 'Fan')
         transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
         cls.servicesale = model_creation.create_test_servicesale(transaction, timezone.now())
 

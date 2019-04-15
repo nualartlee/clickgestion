@@ -1,6 +1,6 @@
-from clickgestion.ticket_sales.models import Show, TicketSale
+from clickgestion.ticket_sales.models import Show
 from clickgestion.core.test import CustomTestCase, CustomModelTestCase
-from clickgestion.concepts.test_models import BaseConceptModelTest
+from clickgestion.concepts.test_models import ConceptModelTest
 from clickgestion.core import model_creation
 from django.utils import timezone
 
@@ -17,7 +17,7 @@ class TestShow(CustomTestCase, CustomModelTestCase):
         cls.model_object = cls.show
 
 
-class TestTicketSale(BaseConceptModelTest):
+class TestTicketSale(ConceptModelTest):
 
     @classmethod
     def setUpTestData(cls):
