@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^parking-rentals/', include('clickgestion.parking_rentals.urls')),
     url(r'^refunds/', include('clickgestion.refunds.urls')),
     url(r'^safe-rentals/', include('clickgestion.safe_rentals.urls')),
+    url(r'^service-sales/', include('clickgestion.service_sales.urls')),
     url(r'^ticket-sales/', include('clickgestion.ticket_sales.urls')),
     url(r'^transactions/', include('clickgestion.transactions.urls')),
 ]

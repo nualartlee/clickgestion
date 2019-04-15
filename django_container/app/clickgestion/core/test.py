@@ -129,6 +129,12 @@ class CustomTestCase(TestCase):  # pragma: no cover
         )
         cls.saferentaldeposit.save()
 
+        # Create a servicetype, service and servicesale
+        cls.servicetype = model_creation.create_servicetype('Room')
+        cls.service = model_creation.create_service(cls.servicetype, 'Late Checkout')
+        transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
+        cls.servicesale = model_creation.create_test_servicesale(transaction, timezone.now())
+
         # Create a company, show and ticket sale
         cls.showcompany = model_creation.create_showcompany('Aqualandia & Mundomar')
         cls.show = model_creation.create_show(cls.showcompany, 'Aqualandia One Day Ticket')

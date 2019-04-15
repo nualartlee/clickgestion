@@ -13,6 +13,7 @@ from clickgestion.parking_rentals.models import ParkingRental, ParkingRentalSett
 from random import randrange
 from clickgestion.refunds.models import Refund, RefundSettings
 from clickgestion.safe_rentals.models import SafeRental, SafeRentalSettings
+from clickgestion.service_sales.models import Service, ServiceType, ServiceSale, ServiceSaleSettings
 from django.conf import settings
 from clickgestion.ticket_sales.models import Show, ShowCompany, TicketSale, TicketSaleSettings
 from django.utils import timezone
@@ -458,6 +459,80 @@ def create_saferentalsettings():
             permission_group=Group.objects.get(name='Sales Transaction'),
         ).save()
     return model
+
+
+def create_service(servicetype, name, **kwargs):
+    try:
+        service = Service.objects.get(name=name)
+    except:
+        service = Service(servicetype=servicetype, name=name)
+        fields = [
+            'per_adult',
+            'per_child',
+            'per_night',
+            'per_senior',
+            'per_unit',
+            'price_per_adult',
+            'price_per_child',
+            'price_per_senior',
+            'price_per_unit',
+            'variable_price',
+        ]
+        for field in fields:
+            if kwargs.get(field, False):
+                setattr(service, field, kwargs[field])
+        service.save()
+
+    return service
+
+
+def create_servicesalesettings():
+    try:
+        model = ServiceSaleSettings.objects.get()
+    except:
+        model = ServiceSaleSettings(
+            accounting_group='Production',
+            apt_number_required=False,
+            apt_number_visible=True,
+            client_address_required=False,
+            client_address_visible=True,
+            client_email_required=False,
+            client_email_visible=True,
+            client_first_name_required=True,
+            client_first_name_visible=True,
+            client_id_required=False,
+            client_id_visible=True,
+            client_last_name_required=True,
+            client_last_name_visible=True,
+            client_phone_number_required=False,
+            client_phone_number_visible=True,
+            client_signature_required=False,
+            employee_signature_required=False,
+            notes_required=False,
+            notes_visible=True,
+            vat_percent=21,
+            permission_group=Group.objects.get(name='Sales Transaction'),
+        ).save()
+    return model
+
+
+def create_servicetype(name, **kwargs):
+    try:
+        servicetype = ServiceType.objects.get(name=name)
+    except:
+        servicetype = ServiceType(name=name)
+        servicetype.save()
+
+    return servicetype
+
+
+def create_services():
+    # Room
+    servicetype = create_servicetype('Room')
+    create_service(servicetype, 'Late Checkout',
+                   per_night=True,
+                   price_per_unit=20,
+                   )
 
 
 def create_show(company, name, **kwargs):
@@ -1034,19 +1109,23 @@ def create_test_random_transaction_client(date):  # pragma: no cover
     selector = randrange(100)
 
     # Apt rental
-    if selector <= 50:
+    if selector <= 40:
         aptrental = create_test_aptrental(transaction, date)
         create_test_aptrentaldeposit(transaction, aptrental, date)
 
     # Parking rental
-    if 50 < selector <= 60:
+    if 40 < selector <= 50:
         parkingrental = create_test_parkingrental(transaction, date)
         create_test_parkingrentaldeposit(transaction, parkingrental, date)
 
     # Safe rental
-    if 60 < selector <= 70:
+    if 50 < selector <= 60:
         saferental = create_test_saferental(transaction, date)
         create_test_saferentaldeposit(transaction, saferental, date)
+
+    # Service sale
+    if 60 < selector <= 70:
+        ticketsale = create_test_ticketsale(transaction, date)
 
     # Ticket sale
     if 70 < selector <= 80:
@@ -1106,6 +1185,69 @@ def create_test_saferentaldeposit(transaction, saferental, date):
     )
     model.save()
     deposit_models.SafeRentalDeposit.objects.filter(id=model.id).update(created=date)
+    return model
+
+
+def create_test_servicesale(
+        transaction, date, service=None, start_date=None, end_date=None,
+        adults=None, children=None, seniors=None, units=None):
+    if not service:
+        services = Service.objects.all()
+        selector = randrange(services.count())
+        service = services[selector]
+    kwargs = {
+        'service': service,
+        'transaction': transaction,
+        'per_adult': service.per_adult,
+        'per_child': service.per_child,
+        'per_night': service.per_night,
+        'per_senior': service.per_senior,
+        'per_unit': service.per_unit,
+    }
+    if service.date_required or service.per_night:
+        if not start_date:
+            start_date = date + timezone.timedelta(days=randrange(21))
+        kwargs['start_date'] = start_date
+    if service.per_night:
+        if not end_date:
+            end_date = start_date + timezone.timedelta(days=randrange(1, 28))
+        kwargs['end_date'] = end_date
+    if service.per_adult:
+        if not adults:
+            adults = randrange(1, 5)
+        kwargs['adults'] = adults
+        if service.variable_price:
+            kwargs['price_per_adult'] = Decimal(randrange(20, 100) / 2)
+        else:
+            kwargs['price_per_adult'] = service.price_per_adult
+    if service.per_child:
+        if not children:
+            children = randrange(1, 5)
+        kwargs['children'] = children
+        if service.variable_price:
+            kwargs['price_per_child'] = Decimal(randrange(20, 80) / 2)
+        else:
+            kwargs['price_per_child'] = service.price_per_child
+    if service.per_senior:
+        if not seniors:
+            seniors = randrange(1, 5)
+        kwargs['seniors'] = seniors
+        if service.variable_price:
+            kwargs['price_per_senior'] = Decimal(randrange(20, 90) / 2)
+        else:
+            kwargs['price_per_senior'] = service.price_per_senior
+    if service.per_unit:
+        if not units:
+            units = randrange(1, 5)
+        kwargs['units'] = units
+    if service.variable_price:
+        kwargs['price_per_unit'] = Decimal(randrange(20, 200) / 2)
+    else:
+        kwargs['price_per_unit'] = service.price_per_unit
+    model = ServiceSale(**kwargs)
+    model.save()
+    ServiceSale.objects.filter(id=model.id).update(created=date)
+    model.refresh_from_db()
     return model
 
 

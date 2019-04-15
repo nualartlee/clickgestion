@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'clickgestion.refunds',
     'clickgestion.parking_rentals',
     'clickgestion.safe_rentals',
+    'clickgestion.service_sales',
     'clickgestion.ticket_sales',
 ]
 
@@ -184,6 +185,7 @@ CONCEPTS = [
     'deposits.parkingrentaldeposit',
     'safe_rentals.saferental',
     'deposits.saferentaldeposit',
+    'service_sales.servicesale',
     'ticket_sales.ticketsale',
     'cash_desk.cashfloatdeposit',
     'cash_desk.cashfloatwithdrawal',
