@@ -35,7 +35,9 @@ def concept_delete(request, *args, **kwargs):  # pragma: no cover
     # Get the transaction
     transaction = concept.transaction
     if transaction.closed:
-        return redirect('message', message=gettext('Transaction Closed'))
+        extra_context['header'] = gettext('Error')
+        extra_context['message'] = gettext('Transaction Closed')
+        return message(request, extra_context)
     extra_context['transaction'] = transaction
 
     # Use default delete view

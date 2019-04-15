@@ -1,10 +1,11 @@
 from django.apps import apps
 from clickgestion.deposits.models import DepositReturn
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import gettext
 from django.contrib.auth.decorators import login_required
+from clickgestion.core.views import message
 from django.utils import timezone
 import urllib
-from django.utils.translation import gettext
 
 
 def deposits_due_today(request, *args, **kwargs):
@@ -50,7 +51,7 @@ def depositreturn_new(request, *args, **kwargs):
         if not concept.can_return_deposit:
             extra_context['header'] = gettext('Error')
             extra_context['message'] = gettext('Cannot return {}'.format(concept.description_short))
-            return redirect('message')
+            return message(request, extra_context)
 
         # Check for a transaction waiting for the concept to return
         transaction_code = request.session.pop('depositreturn_transaction_code', None)

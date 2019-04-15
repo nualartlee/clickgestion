@@ -1,9 +1,10 @@
 from django.apps import apps
-from clickgestion.refunds.models import Refund
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-import urllib
 from django.utils.translation import gettext
+from django.contrib.auth.decorators import login_required
+from clickgestion.core.views import message
+from clickgestion.refunds.models import Refund
+import urllib
 
 """
 For future use
@@ -36,7 +37,7 @@ def refund_new(request, *args, **kwargs):
         if not concept.can_refund:
             extra_context['header'] = gettext('Error')
             extra_context['message'] = gettext('Cannot refund {}'.format(concept.description_short))
-            return redirect('message')
+            return message(request, extra_context)
 
         # Check for a transaction waiting for the concept to return
         transaction_code = request.session.pop('refund_transaction_code', None)
