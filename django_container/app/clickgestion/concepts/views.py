@@ -105,6 +105,7 @@ def concept_edit(request, *args, **kwargs):  # pragma: no cover
                 return redirect('transaction_edit', transaction_code=transaction.code)
 
         extra_context['form'] = form
+
         return render(request, 'concepts/concept_edit.html', extra_context)
 
     # GET

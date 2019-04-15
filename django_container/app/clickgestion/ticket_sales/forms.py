@@ -267,7 +267,7 @@ class TicketSalesForm(forms.Form):
 
         # Set default selection
         self.selected_show = self.show_choices.first()
-        if self.instance_show:
+        if self.instance_show and self.instance_show in self.show_choices:
             self.selected_show = self.instance_show
 
         # Update selection according to form input
