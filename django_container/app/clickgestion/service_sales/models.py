@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings,get_default_currency
 from decimal import Decimal
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.db import models
 
 
@@ -149,8 +149,8 @@ class ServiceSale(BaseConcept):
     _verbose_name = 'Service Sale'
 
     class Meta:
-        verbose_name = gettext_lazy('Service Sale')
-        verbose_name_plural = gettext_lazy('Service Sales')
+        verbose_name = pgettext_lazy('Concept name', 'Service Sale')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Service Sales')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

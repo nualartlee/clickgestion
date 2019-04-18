@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from clickgestion.concepts.models import BaseConcept, ConceptSettings, ConceptValue
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.core.exceptions import FieldError
 from django.db import models
 
@@ -34,15 +34,15 @@ class Refund(BaseConcept):
     _verbose_name = 'Refund'
 
     class Meta:
-        verbose_name = gettext_lazy('Refund')
-        verbose_name_plural = gettext_lazy('Refunds')
+        verbose_name = pgettext_lazy('Concept name', 'Refund')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Refunds')
 
     def __str__(self):
         return self.code
 
     @property
     def description_short(self):
-        desc = '{} {}'.format(gettext_lazy('Refund'), self.refunded_concept.description_short)
+        desc = '{} {}'.format(pgettext_lazy('Concept name', 'Refund'), self.refunded_concept.description_short)
         return desc
 
     @property

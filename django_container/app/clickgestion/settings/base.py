@@ -199,3 +199,19 @@ DEPOSIT_CONCEPTS = [
     'parkingrentaldeposit',
     'saferentaldeposit',
 ]
+
+# Departments
+DEPARTMENTS = {
+    'production': 'Production',
+    'deposits': 'Deposits',
+    'cash_desk': 'Cash Desk',
+}
+
+# Permission Groups
+PERMISSION_GROUPS = {
+    'sales_employee': 'Sales Employee',
+    'refund_employee': 'Refund Employee',
+    'cash_desk_employee': 'Cash Desk Employee',
+    'sales_transaction': 'Sales Transaction',
+    'cash_desk_transaction': 'Cash Desk Transaction',
+}

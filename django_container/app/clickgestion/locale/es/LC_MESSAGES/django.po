@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-15 22:38+0100\n"
+"POT-Creation-Date: 2019-04-18 01:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,93 +17,784 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: clickgestion/apt_rentals/forms.py:11 clickgestion/apt_rentals/forms.py:35
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:15
-msgid "Checkin"
-msgstr "Llegada"
-
-#: clickgestion/apt_rentals/forms.py:17 clickgestion/apt_rentals/forms.py:44
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:16
-msgid "Checkout"
-msgstr "Salida"
-
-#: clickgestion/apt_rentals/forms.py:36
-msgid "Arrival date"
-msgstr "Fecha de llegada"
-
-#: clickgestion/apt_rentals/forms.py:45
-msgid "Departure date"
-msgstr "Fecha de salida"
-
-#: clickgestion/apt_rentals/forms.py:61
-msgid "Missing prices in selected dates"
-msgstr "Faltan precios en las fechas seleccionadas"
-
-#: clickgestion/apt_rentals/models.py:25
-msgid "Nightly Rate Range"
-msgstr "Rango De Precios Por Noche"
-
-#: clickgestion/apt_rentals/models.py:26
-msgid "Nightly Rate Ranges"
-msgstr "Rangos De Precios Por Noche"
-
-#: clickgestion/apt_rentals/models.py:29
-msgid "Nightly Rate Range %(id)s"
-msgstr "Rango De Precios %(id)s"
-
-#: clickgestion/apt_rentals/models.py:75 clickgestion/apt_rentals/models.py:125
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:9
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:9
-#: clickgestion/transactions/views.py:23
-msgid "Apartment Rental"
-msgstr "Alquiler De Apartamento"
-
-#: clickgestion/apt_rentals/models.py:76
+#: clickgestion/apt_rentals/apps.py:7
 msgid "Apartment Rentals"
 msgstr "Alquileres De Apartamentos"
 
-#: clickgestion/apt_rentals/models.py:79
-msgid "Apt Rental %(id)s"
-msgstr "Alquiler De Apt %(id)s"
+#: clickgestion/apt_rentals/forms.py:39
+#: clickgestion/parking_rentals/forms.py:39
+#: clickgestion/safe_rentals/forms.py:39
+msgid "Arrival date"
+msgstr "Fecha de llegada"
 
-#: clickgestion/apt_rentals/models.py:96
+#: clickgestion/apt_rentals/forms.py:47
+#: clickgestion/parking_rentals/forms.py:47
+#: clickgestion/safe_rentals/forms.py:47
+msgid "Departure date"
+msgstr "Fecha de salida"
+
+#: clickgestion/apt_rentals/forms.py:57 clickgestion/service_sales/forms.py:370
+#: clickgestion/ticket_sales/forms.py:370
+msgid "Number of adults"
+msgstr "Número de adultos"
+
+#: clickgestion/apt_rentals/forms.py:65 clickgestion/service_sales/forms.py:384
+#: clickgestion/ticket_sales/forms.py:384
+msgid "Number of children"
+msgstr "Número de niños"
+
+#: clickgestion/apt_rentals/forms.py:75
+msgid "Add Apartment Deposit"
+msgstr "Añadir Fianza"
+
+#: clickgestion/apt_rentals/forms.py:95
+#: clickgestion/parking_rentals/forms.py:77
+#: clickgestion/safe_rentals/forms.py:77
+msgid "Missing prices in selected dates."
+msgstr "Faltan precios en las fechas seleccionadas"
+
+#: clickgestion/apt_rentals/forms.py:103
+#: clickgestion/parking_rentals/forms.py:85
+#: clickgestion/safe_rentals/forms.py:85
+msgid "Departure date is the same as arrival."
+msgstr "Fecha de salida igual a fecha de llegada."
+
+#: clickgestion/apt_rentals/forms.py:106
+#: clickgestion/parking_rentals/forms.py:88
+#: clickgestion/safe_rentals/forms.py:88
+msgid "Departure date is before arrival."
+msgstr "Fecha de salida anterior a fecha de llegada."
+
+#: clickgestion/apt_rentals/forms.py:114
+msgid "Five people maximum."
+msgstr "Máximo cinco personas."
+
+#: clickgestion/apt_rentals/forms.py:122
+msgid "One to four adults only."
+msgstr "Solo entre uno y cuatro adultos."
+
+#: clickgestion/apt_rentals/forms.py:129
+msgid "Up to four children only."
+msgstr "Solo hasta cuatro niños."
+
+#: clickgestion/apt_rentals/forms.py:136
+#: clickgestion/parking_rentals/forms.py:96
+#: clickgestion/safe_rentals/forms.py:96
+msgid "Arrival date is too far back."
+msgstr "Fecha de llegada demasiado retrasada."
+
+#: clickgestion/apt_rentals/models.py:13 clickgestion/concepts/models.py:117
+#: clickgestion/concepts/templates/concepts/concept_list.html:41
+msgid "Start Date"
+msgstr "Fecha de Inicio"
+
+#: clickgestion/apt_rentals/models.py:14 clickgestion/concepts/models.py:115
+#: clickgestion/concepts/templates/concepts/concept_list.html:42
+msgid "End Date"
+msgstr "Fecha de Fin"
+
+#: clickgestion/apt_rentals/models.py:15
+msgid "Monday"
+msgstr "Lunes"
+
+#: clickgestion/apt_rentals/models.py:16
+msgid "Tuesday"
+msgstr "Martes"
+
+#: clickgestion/apt_rentals/models.py:17
+msgid "Wednesday"
+msgstr "Miercoles"
+
+#: clickgestion/apt_rentals/models.py:18
+msgid "Thursday"
+msgstr "Jueves"
+
+#: clickgestion/apt_rentals/models.py:19
+msgid "Friday"
+msgstr "Viernes"
+
+#: clickgestion/apt_rentals/models.py:20
+msgid "Saturday"
+msgstr "Sabado"
+
+#: clickgestion/apt_rentals/models.py:21
+msgid "Sunday"
+msgstr "Domingo"
+
+#: clickgestion/apt_rentals/models.py:22 clickgestion/cash_desk/models.py:127
+#: clickgestion/concepts/models.py:82 clickgestion/concepts/models.py:113
+#: clickgestion/concepts/models.py:358 clickgestion/service_sales/models.py:11
+#: clickgestion/service_sales/models.py:36
+#: clickgestion/ticket_sales/models.py:11
+#: clickgestion/ticket_sales/models.py:36
+#: clickgestion/transactions/models.py:63
+msgid "Created"
+msgstr "Creado/a"
+
+#: clickgestion/apt_rentals/models.py:23 clickgestion/cash_desk/models.py:130
+#: clickgestion/concepts/models.py:86 clickgestion/concepts/models.py:126
+#: clickgestion/concepts/models.py:367 clickgestion/service_sales/models.py:17
+#: clickgestion/service_sales/models.py:72
+#: clickgestion/ticket_sales/models.py:17
+#: clickgestion/ticket_sales/models.py:72
+#: clickgestion/transactions/models.py:66
+msgid "Updated"
+msgstr "Modificado/a"
+
+#: clickgestion/apt_rentals/models.py:26
+msgid "Nightly Rate Range"
+msgstr "Rango De Precios Por Noche"
+
+#: clickgestion/apt_rentals/models.py:27
+msgid "Nightly Rate Ranges"
+msgstr "Rangos De Precios Por Noche"
+
+#: clickgestion/apt_rentals/models.py:30
+#, python-format
+msgid "Nightly Rate Range %(id)s"
+msgstr "Rango De Precios %(id)s"
+
+#: clickgestion/apt_rentals/models.py:67 clickgestion/apt_rentals/models.py:68
+msgid "Apartment Rental Settings"
+msgstr "Configuración De Alquileres De Apartamentos"
+
+#: clickgestion/apt_rentals/models.py:77 clickgestion/deposits/models.py:35
+#: clickgestion/service_sales/models.py:105
+#: clickgestion/ticket_sales/models.py:105
+msgid "Adults"
+msgstr "Adultos"
+
+#: clickgestion/apt_rentals/models.py:79 clickgestion/deposits/models.py:37
+#: clickgestion/service_sales/models.py:107
+#: clickgestion/ticket_sales/models.py:107
+msgid "Children"
+msgstr "Niños"
+
+#: clickgestion/apt_rentals/models.py:82
+msgid "Array Of Rates"
+msgstr "Rango de Precios"
+
+#: clickgestion/apt_rentals/models.py:92
+msgctxt "Concept name"
+msgid "Apartment Rental"
+msgstr "Alquiler De Apartamento"
+
+#: clickgestion/apt_rentals/models.py:93
+msgctxt "Concept name plural"
+msgid "Apartment Rentals"
+msgstr "Alquileres De Apartamentos"
+
+#: clickgestion/apt_rentals/models.py:117
 #, python-format
 msgid ""
-"Apartment Rental: %(checkin)s - %(checkout)s, %(nights)s nights, %(price)s"
+"Apartment Rental: %(start_date)s - %(end_date)s, Adults: %(adults)s, "
+"Children: %(children)s"
 msgstr ""
-"Alquiler Apartamento: %(checkin)s - %(checkout)s, %(nights)s noches, "
-"%(price)s"
+"Alquiler de Apartamento: %(start_date)s - %(end_date)s, Adultos: %(adults)s, "
+"Niños: %(children)s"
 
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:17
-msgid "Nights"
-msgstr "Noches"
+#: clickgestion/cash_desk/apps.py:7
+msgid "Cash Desk"
+msgstr "Caja"
 
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:18
-msgid "Rates per night"
-msgstr "Precios por noche"
+#: clickgestion/cash_desk/filters.py:11
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:39
+#: clickgestion/concepts/filters.py:43
+#: clickgestion/concepts/templates/concepts/concept_list.html:37
+#: clickgestion/core/templates/core/document_a4.html:77
+#: clickgestion/transactions/filters.py:15
+#: clickgestion/transactions/templates/transactions/transaction_list.html:39
+msgid "Reference"
+msgstr "Referencia"
 
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_detail.html:19
-msgid "Total"
-msgstr "Total"
+#: clickgestion/cash_desk/filters.py:19 clickgestion/transactions/filters.py:31
+msgctxt "Date range from"
+msgid "From"
+msgstr "Desde"
 
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:18
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:91
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:54
+#: clickgestion/cash_desk/filters.py:20 clickgestion/concepts/filters.py:29
+#: clickgestion/concepts/filters.py:37 clickgestion/concepts/filters.py:50
+#: clickgestion/transactions/filters.py:32
+msgctxt "Date range to"
+msgid "To"
+msgstr "Hasta"
+
+#: clickgestion/cash_desk/filters.py:31 clickgestion/cash_desk/models.py:129
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_document_a4.html:54
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:42
+#: clickgestion/transactions/models.py:65
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:88
+msgid "Notes"
+msgstr "Notas"
+
+#: clickgestion/cash_desk/forms.py:26 clickgestion/transactions/forms.py:172
+msgid "Additional notes"
+msgstr "Notas adicionales"
+
+#: clickgestion/cash_desk/forms.py:27 clickgestion/transactions/forms.py:173
+msgid "Add a note..."
+msgstr "Añadir una nota..."
+
+#: clickgestion/cash_desk/forms.py:78 clickgestion/cash_desk/forms.py:134
+#: clickgestion/concepts/forms.py:40
+msgid "Enter a positive amount."
+msgstr "Introduzca un número positivo."
+
+#: clickgestion/cash_desk/models.py:19 clickgestion/cash_desk/models.py:20
+msgid "Cash Float Deposit Settings"
+msgstr "Configuración de Depósitos de Caja"
+
+#: clickgestion/cash_desk/models.py:37
+msgctxt "Concept name"
+msgid "Cash Float Deposit"
+msgstr "Depósito de Caja"
+
+#: clickgestion/cash_desk/models.py:38
+msgctxt "Concept name plural"
+msgid "Cash Float Deposits"
+msgstr "Depósitos de Caja"
+
+#: clickgestion/cash_desk/models.py:62 clickgestion/cash_desk/models.py:63
+msgid "Cash Float Withdrawal Settings"
+msgstr "Configuración de Retiros de Caja"
+
+#: clickgestion/cash_desk/models.py:80
+msgctxt "Concept name"
+msgid "Cash Float Withdrawal"
+msgstr "Retiro de Caja"
+
+#: clickgestion/cash_desk/models.py:81
+msgctxt "Concept name plural"
+msgid "Cash Float Withdrawals"
+msgstr "Retiros de Caja"
+
+#: clickgestion/cash_desk/models.py:124 clickgestion/transactions/models.py:61
+msgid "Closed"
+msgstr "Cerrado"
+
+#: clickgestion/cash_desk/models.py:126 clickgestion/concepts/models.py:107
+#: clickgestion/transactions/models.py:50
+msgid "Code"
+msgstr "Código"
+
+#: clickgestion/cash_desk/models.py:128
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:41
+#: clickgestion/concepts/filters.py:61
+#: clickgestion/core/templates/core/document_a4.html:79
+#: clickgestion/transactions/models.py:64
+msgid "Employee"
+msgstr "Empleado"
+
+#: clickgestion/cash_desk/models.py:133
+msgid "Cash Desk Closure"
+msgstr "Cierre de Caja"
+
+#: clickgestion/cash_desk/models.py:134
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:21
+#: clickgestion/cash_desk/views.py:177
+msgid "Cash Desk Closures"
+msgstr "Cierres de Caja"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_balance.html:15
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:21
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_document_a4.html:32
+msgid "Cash Balance"
+msgstr "Saldo En Caja"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_balance.html:34
+msgid "Deposits In Holding"
+msgstr "Fianzas En Custodia"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_balance.html:46
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_balance.html:80
+msgid "Number of concepts"
+msgstr "Número de conceptos"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_balance.html:68
+#: clickgestion/concepts/totalizers.py:98
+msgid "Breakdown By Concept Type"
+msgstr "Desglose Por Tipo De Concepto"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:11
+#: clickgestion/core/templates/core/index.html:43
+msgid "Close Cash Desk"
+msgstr "Cerrar Caja"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:53
+msgid "Confirm and close cash desk"
+msgstr "Confirmar y cerrar caja"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:54
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:66
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:58
+msgid "Go back"
+msgstr "Volver atrás"
+
+#: clickgestion/cash_desk/templates/cash_desk/cash_desk_close.html:59
+#: clickgestion/concepts/templates/concepts/concept_edit.html:24
+#: clickgestion/core/templates/core/delete.html:18
+#: clickgestion/core/templates/core/message.html:15
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:69
+msgid "Back"
+msgstr "Volver"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_detail.html:10
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_detail.html:11
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_document.html:5
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_document.html:6
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:118
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:119
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:10
+#: clickgestion/transactions/templates/transactions/transaction_detail.html:11
+#: clickgestion/transactions/templates/transactions/transaction_document.html:5
+#: clickgestion/transactions/templates/transactions/transaction_document.html:6
+#: clickgestion/transactions/templates/transactions/transaction_list.html:120
+#: clickgestion/transactions/templates/transactions/transaction_list.html:121
+msgid "Print"
+msgstr "Imprimir"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_document_a4.html:5
+#: clickgestion/cash_desk/views.py:128 clickgestion/transactions/models.py:43
+msgid "Cash Desk Close"
+msgstr "Cierre de Caja"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:26
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:80
+#: clickgestion/concepts/templates/concepts/concept_list.html:24
+#: clickgestion/concepts/templates/concepts/concept_list.html:77
+#: clickgestion/transactions/templates/transactions/transaction_list.html:26
+#: clickgestion/transactions/templates/transactions/transaction_list.html:82
+msgid "Filter"
+msgstr "Filtro"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:32
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:98
+#: clickgestion/concepts/templates/concepts/concept_list.html:30
+#: clickgestion/concepts/templates/concepts/concept_list.html:95
+#: clickgestion/transactions/templates/transactions/transaction_list.html:32
+#: clickgestion/transactions/templates/transactions/transaction_list.html:100
+msgid "Clear Filter"
+msgstr "Quitar Filtro"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:40
+#: clickgestion/core/templates/core/document_a4.html:78
+#: clickgestion/transactions/templates/transactions/transaction_list.html:43
+msgid "Date"
+msgstr "Fecha"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:43
+msgid "Balance"
+msgstr "Saldo"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:44
+#: clickgestion/deposits/apps.py:7
+msgid "Deposits"
+msgstr "Fianzas"
+
+#: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:92
+#: clickgestion/concepts/templates/concepts/concept_list.html:89
+#: clickgestion/transactions/templates/transactions/transaction_list.html:94
+msgid "Search"
+msgstr "Buscar"
+
+#: clickgestion/cash_desk/views.py:24 clickgestion/cash_desk/views.py:67
+msgid "Cash Desk Balance"
+msgstr "Saldo En Caja"
+
+#: clickgestion/cash_desk/views.py:114
+msgid "Cash Desk Closed"
+msgstr "Caja Cerrada"
+
+#: clickgestion/concepts/apps.py:7 clickgestion/concepts/views.py:131
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:47
+#: clickgestion/transactions/templates/transactions/transaction_list.html:42
+msgid "Concepts"
+msgstr "Conceptos"
+
+#: clickgestion/concepts/filters.py:15
+#: clickgestion/concepts/templates/concepts/concept_list.html:38
+#: clickgestion/transactions/filters.py:11
+msgid "Apt."
+msgstr "Apt."
+
+#: clickgestion/concepts/filters.py:19 clickgestion/transactions/filters.py:20
+#: clickgestion/transactions/forms.py:34 clickgestion/transactions/models.py:57
+msgid "First Name"
+msgstr "Nombre"
+
+#: clickgestion/concepts/filters.py:23 clickgestion/transactions/filters.py:24
+#: clickgestion/transactions/forms.py:35 clickgestion/transactions/models.py:59
+msgid "Last Name"
+msgstr "Apellidos"
+
+#: clickgestion/concepts/filters.py:28
+msgctxt "Date range from"
+msgid "Start Date From"
+msgstr "Fecha de Inicio Desde"
+
+#: clickgestion/concepts/filters.py:36
+msgctxt "Date range from"
+msgid "End Date From"
+msgstr "Fecha Fin Desde"
+
+#: clickgestion/concepts/filters.py:49
+msgctxt "Date range from"
+msgid "Transactions From"
+msgstr "Transacciones Desde"
+
+#: clickgestion/concepts/filters.py:75 clickgestion/service_sales/forms.py:330
+msgid "Type"
+msgstr "Tipo"
+
+#: clickgestion/concepts/filters.py:78
+msgid "Deposit Status"
+msgstr "Situación De Fianza"
+
+#: clickgestion/concepts/filters.py:81
+msgctxt "Deposit has been returned"
+msgid "Returned"
+msgstr "Devuelta"
+
+#: clickgestion/concepts/filters.py:82
+msgctxt "Deposit has not been returned"
+msgid "Not Returned"
+msgstr "No Devuelta"
+
+#: clickgestion/concepts/filters.py:86
+msgid "Refund Status"
+msgstr "Situación De Reembolso"
+
+#: clickgestion/concepts/filters.py:89
+msgctxt "Concept has been refunded"
+msgid "Refunded"
+msgstr "Reembolsado"
+
+#: clickgestion/concepts/filters.py:90
+msgctxt "Concept has not been refunded"
+msgid "Not Refunded"
+msgstr "No Reembolsado"
+
+#: clickgestion/concepts/models.py:58
+#: clickgestion/core/templates/core/document_a4.html:56
+#: clickgestion/service_sales/models.py:15
+#: clickgestion/service_sales/models.py:46
+#: clickgestion/ticket_sales/models.py:15
+#: clickgestion/ticket_sales/models.py:46
+msgid "Name"
+msgstr "Nombre"
+
+#: clickgestion/concepts/models.py:59
+msgid "Alphabetic Code"
+msgstr "Código Alfabético"
+
+#: clickgestion/concepts/models.py:60
+msgid "Numeric Code"
+msgstr "Código Numérico"
+
+#: clickgestion/concepts/models.py:61 clickgestion/service_sales/models.py:13
+#: clickgestion/service_sales/models.py:44
+#: clickgestion/ticket_sales/models.py:13
+#: clickgestion/ticket_sales/models.py:44
+msgid "Enabled"
+msgstr "Activo"
+
+#: clickgestion/concepts/models.py:62
+msgid "Default"
+msgstr "Por Defecto"
+
+#: clickgestion/concepts/models.py:63
+msgid "Exchange Rate"
+msgstr "Tipo De Cambio"
+
+#: clickgestion/concepts/models.py:65
+msgid "Symbol"
+msgstr "Símbolo"
+
+#: clickgestion/concepts/models.py:68 clickgestion/concepts/models.py:72
+#: clickgestion/concepts/models.py:84 clickgestion/service_sales/models.py:39
+#: clickgestion/ticket_sales/models.py:39
+msgid "Currency"
+msgstr "Divisa"
+
+#: clickgestion/concepts/models.py:69
+msgid "Currencies"
+msgstr "Divisas"
+
+#: clickgestion/concepts/models.py:80 clickgestion/deposits/models.py:184
+#: clickgestion/deposits/models.py:197 clickgestion/deposits/models.py:260
+#: clickgestion/deposits/models.py:273
+msgid "Amount"
+msgstr "Cantidad"
+
+#: clickgestion/concepts/models.py:83
+msgid "Credit"
+msgstr "Crédito"
+
+#: clickgestion/concepts/models.py:89
+msgid "Concept Value"
+msgstr "Valor De Concepto"
+
+#: clickgestion/concepts/models.py:90
+msgid "Concept Values"
+msgstr "Valores De Concepto"
+
+#: clickgestion/concepts/models.py:104 clickgestion/concepts/models.py:339
+msgid "Department"
+msgstr "Departamento"
+
+#: clickgestion/concepts/models.py:109
+msgid "Concept Class"
+msgstr "Clase De Concepto"
+
+#: clickgestion/concepts/models.py:111
+msgid "Concept Name"
+msgstr "Nombre De Concepto"
+
+#: clickgestion/concepts/models.py:121
+#: clickgestion/concepts/templates/concepts/concept_edit.html:13
+#: clickgestion/concepts/templates/concepts/concept_edit.html:15
+#: clickgestion/transactions/models.py:69
+#: clickgestion/transactions/models.py:169
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:10
+msgid "Transaction"
+msgstr "Transacción"
+
+#: clickgestion/concepts/models.py:129
+msgid "Value"
+msgstr "Valor"
+
+#: clickgestion/concepts/models.py:132 clickgestion/concepts/models.py:369
+msgid "VAT Percent"
+msgstr "Porcentaje de IVA"
+
+#: clickgestion/concepts/models.py:341
+msgid "Apt Number Required"
+msgstr "Númer de Apt. Requerido"
+
+#: clickgestion/concepts/models.py:342
+msgid "Apt Number Visible"
+msgstr "Número de Apt. Visible"
+
+#: clickgestion/concepts/models.py:343
+msgid "Address Required"
+msgstr "Dirección Requerida"
+
+#: clickgestion/concepts/models.py:344
+msgid "Address Visible"
+msgstr "Dirección Visible"
+
+#: clickgestion/concepts/models.py:345
+msgid "Email Required"
+msgstr "Email Requerido"
+
+#: clickgestion/concepts/models.py:346
+msgid "Email Visible"
+msgstr "Email Visible"
+
+#: clickgestion/concepts/models.py:347
+msgid "First Name Required"
+msgstr "Nombre Requerido"
+
+#: clickgestion/concepts/models.py:348
+msgid "First Name Visible"
+msgstr "Nombre Visible"
+
+#: clickgestion/concepts/models.py:349
+msgid "Passport/ID Required"
+msgstr "Pasaporte/DNI Requerido"
+
+#: clickgestion/concepts/models.py:350
+msgid "Passport/ID Visible"
+msgstr "Pasaporte/DNI Visible"
+
+#: clickgestion/concepts/models.py:351
+msgid "Last Name Required"
+msgstr "Apellido Requerido"
+
+#: clickgestion/concepts/models.py:352
+msgid "Last Name Visible"
+msgstr "Apellido Visible"
+
+#: clickgestion/concepts/models.py:353
+msgid "Phone Required"
+msgstr "Teléfono Requerido"
+
+#: clickgestion/concepts/models.py:354
+msgid "Phone Visible"
+msgstr "Teléfono Visible"
+
+#: clickgestion/concepts/models.py:356
+msgid "Client Signature Required"
+msgstr "Firma De Cliente Requerida"
+
+#: clickgestion/concepts/models.py:360
+msgid "Employee Signature Required"
+msgstr "Firma De Empleado Requerida"
+
+#: clickgestion/concepts/models.py:361
+msgid "Notes Required"
+msgstr "Notas Requeridas"
+
+#: clickgestion/concepts/models.py:362
+msgid "Notes Visible"
+msgstr "Notas Visibles"
+
+#: clickgestion/concepts/models.py:365
+msgid "Permission Group"
+msgstr "Grupo De Permiso"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:13
+#: clickgestion/transactions/templates/transactions/transaction_actions.html:12
+msgid "View The Transaction"
+msgstr "Ver La Transacción"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:17
+msgid "View All Concepts On The Same Transaction"
+msgstr "Ver Todos Los Conceptos De La Transacción"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:21
+msgid "View The Concept's Details"
+msgstr "Ver Detalles Del Concepto"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:26
+msgid "Return The Deposit"
+msgstr "Devolver La Fianza"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:32
+msgid "View The Deposit Return"
+msgstr "Ver La Devolución De Fianza"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:38
+msgid "View The Deposit Returned"
+msgstr "Ver La Fianza Devuelta"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:44
+msgid "Refund This Concept"
+msgstr "Reembolsar Este Concepto"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:50
+msgid "View The Refund"
+msgstr "Ver El Reembolso"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:56
+msgid "View The Refunded Concept"
+msgstr "Ver El Concepto Reembolsado"
+
+#: clickgestion/concepts/templates/concepts/concept_actions.html:62
+msgid "Delete This Concept"
+msgstr "Borrar Este Concepto"
+
+#: clickgestion/concepts/templates/concepts/concept_edit.html:13
+msgid "closed"
+msgstr "cerrada"
+
+#: clickgestion/concepts/templates/concepts/concept_edit.html:15
+msgid "opened"
+msgstr "abierta"
+
+#: clickgestion/concepts/templates/concepts/concept_edit.html:24
+#: clickgestion/core/templates/core/delete.html:18
+#: clickgestion/core/templates/core/message.html:15
+msgid "Click to go back"
+msgstr "Pincha para volver"
+
+#: clickgestion/concepts/templates/concepts/concept_edit.html:26
+msgid "Add this concept to the transaction"
+msgstr "Añadir Este Concepto A La Transacción"
+
+#: clickgestion/concepts/templates/concepts/concept_edit.html:26
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:102
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:72
 msgid "Save"
 msgstr "Guardar"
 
-#: clickgestion/apt_rentals/templates/apt_rentals/rental_edit.html:19
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:95
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:57
+#: clickgestion/concepts/templates/concepts/concept_edit.html:27
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:106
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:75
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: clickgestion/apt_rentals/views.py:22 clickgestion/apt_rentals/views.py:103
-#: clickgestion/transactions/views.py:88 clickgestion/transactions/views.py:204
+#: clickgestion/concepts/templates/concepts/concept_list.html:39
+#: clickgestion/transactions/models.py:115
+#: clickgestion/transactions/templates/transactions/transaction_list.html:41
+msgid "Client"
+msgstr "Cliente"
+
+#: clickgestion/concepts/templates/concepts/concept_list.html:40
+msgid "Description"
+msgstr "Descripción"
+
+#: clickgestion/concepts/templates/concepts/concept_list.html:43
+#: clickgestion/transactions/models.py:117
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:51
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:75
+msgid "Total"
+msgstr "Total"
+
+#: clickgestion/concepts/templates/concepts/concept_list.html:44
+#: clickgestion/concepts/templates/concepts/concept_list.html:112
+#: clickgestion/transactions/templates/transactions/transaction_list.html:46
+#: clickgestion/transactions/templates/transactions/transaction_list.html:137
+msgid "Actions"
+msgstr "Acciones"
+
+#: clickgestion/concepts/templates/concepts/concept_listitem.html:25
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:77
+msgid "Edit"
+msgstr "Editar"
+
+#: clickgestion/concepts/templates/concepts/concept_listitem.html:28
+#: clickgestion/concepts/templates/concepts/concept_rowitem.html:51
+#: clickgestion/core/templates/core/delete.html:21
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:80
+#: clickgestion/transactions/templates/transactions/transaction_rowitem.html:83
+msgid "Delete"
+msgstr "Borrar"
+
+#: clickgestion/concepts/templates/concepts/concept_rowitem.html:38
+msgctxt "Return this deposit"
+msgid "Return"
+msgstr "Devolver"
+
+#: clickgestion/concepts/templates/concepts/concept_rowitem.html:44
+msgctxt "Refund this concept"
+msgid "Refund"
+msgstr "Reembolsar"
+
+#: clickgestion/concepts/templates/concepts/concept_rowitem.html:57
+#: clickgestion/transactions/templates/transactions/transaction_rowitem.html:87
+msgid "View Actions"
+msgstr "Ver Acciones"
+
+#: clickgestion/concepts/totalizers.py:67
+msgid "Breakdown By Concept type"
+msgstr "Desglose Por Tipo De Concepto"
+
+#: clickgestion/concepts/totalizers.py:139
+#: clickgestion/concepts/totalizers.py:170
+msgid "Breakdown By Department"
+msgstr "Desglose Por Departamento"
+
+#: clickgestion/concepts/totalizers.py:185
+msgid "Deposits In Holding By Type"
+msgstr "Fianzas En Custodia Por Tipo"
+
+#: clickgestion/concepts/views.py:38 clickgestion/deposits/views.py:53
+#: clickgestion/refunds/views.py:39
+msgid "Error"
+msgstr "Error"
+
+#: clickgestion/concepts/views.py:39 clickgestion/concepts/views.py:92
+#: clickgestion/transactions/views.py:129
+#: clickgestion/transactions/views.py:200
+#: clickgestion/transactions/views.py:323
 msgid "Transaction Closed"
 msgstr "Transacción Cerrada"
 
-#: clickgestion/apt_rentals/views.py:60
+#: clickgestion/concepts/views.py:44
 msgid "Delete {}?"
 msgstr "Borrar {}?"
 
@@ -123,234 +814,728 @@ msgstr "contraseña"
 msgid "Password"
 msgstr "Contraseña"
 
-#: clickgestion/core/forms.py:37 clickgestion/core/templates/core/base.html:33
+#: clickgestion/core/forms.py:37
 msgid "Login"
 msgstr "Entrar"
 
-#: clickgestion/core/templates/core/base.html:29
+#: clickgestion/core/templates/admin/base.html:33
+#: clickgestion/core/templates/core/header.html:13
 msgid "Logout"
 msgstr "Salir"
 
-#: clickgestion/core/templates/core/base.html:37
-msgid "Admin"
-msgstr "Admin"
+#: clickgestion/core/templates/admin/base.html:43
+#: clickgestion/core/templates/admin/baseoriginal.html:56
+msgid "Home"
+msgstr "Inicio"
 
-#: clickgestion/core/templates/core/delete.html:18
-#: clickgestion/core/templates/core/message.html:15
-msgid "Click to go back"
-msgstr "Pincha para volver"
+#: clickgestion/core/templates/admin/base.html:60
+#: clickgestion/core/templates/core/index.html:57
+msgid "Administration"
+msgstr "Administración"
 
-#: clickgestion/core/templates/core/delete.html:18
-#: clickgestion/core/templates/core/message.html:15
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:51
-msgid "Back"
-msgstr "Volver"
+#: clickgestion/core/templates/admin/baseoriginal.html:30
+msgid "Welcome,"
+msgstr "Bienvenido,"
 
-#: clickgestion/core/templates/core/delete.html:21
-#: clickgestion/transactions/templates/concepts/concept_listitem.html:19
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:42
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:32
-msgid "Delete"
-msgstr "Borrar"
+#: clickgestion/core/templates/admin/baseoriginal.html:35
+msgid "View site"
+msgstr "Ver Sitio"
+
+#: clickgestion/core/templates/admin/baseoriginal.html:40
+msgid "Documentation"
+msgstr "Documentación"
+
+#: clickgestion/core/templates/admin/baseoriginal.html:44
+msgid "Change password"
+msgstr "Cambiar contraseña"
+
+#: clickgestion/core/templates/admin/baseoriginal.html:46
+msgid "Log out"
+msgstr "Salir"
 
 #: clickgestion/core/templates/core/delete.html:21
 msgid "Click to delete"
 msgstr "Pincha para borrar"
 
-#: clickgestion/core/templates/core/index.html:13
+#: clickgestion/core/templates/core/document_a4.html:21
+msgid "Document"
+msgstr "Documento"
+
+#: clickgestion/core/templates/core/document_a4.html:60
+#: clickgestion/transactions/models.py:56
+msgid "Email"
+msgstr "Email"
+
+#: clickgestion/core/templates/core/document_a4.html:63
+msgid "Phone Number"
+msgstr "Número De Teléfono"
+
+#: clickgestion/core/templates/core/document_a4.html:66
+#: clickgestion/transactions/models.py:55
+msgid "Address"
+msgstr "Dirección"
+
+#: clickgestion/core/templates/core/document_a4.html:93
+msgid "Thank You"
+msgstr "Gracias"
+
+#: clickgestion/core/templates/core/index.html:15
 msgid "Start A New Transaction"
 msgstr "Iniciar Nueva Transacción"
 
-#: clickgestion/core/templates/core/index.html:14
+#: clickgestion/core/templates/core/index.html:16
 msgid "View Open Transactions"
 msgstr "Ver Transacciones Pendientes"
 
-#: clickgestion/core/templates/core/index.html:24
+#: clickgestion/core/templates/core/index.html:17
+msgid "View Deposits Due Today"
+msgstr "Ver Fianzas A Devolver Hoy"
+
+#: clickgestion/core/templates/core/index.html:29
 msgid "View All Transactions"
 msgstr "Ver Todas Las Transacciones"
 
-#: clickgestion/core/templates/core/index.html:25
+#: clickgestion/core/templates/core/index.html:30
+msgid "View All Concepts"
+msgstr "Ver Todos Los Conceptos"
+
+#: clickgestion/core/templates/core/index.html:42
 msgid "View Current Cash Balance"
-msgstr "Ver Balance De Caja"
+msgstr "Ver Saldo De Caja"
 
-#: clickgestion/core/templates/core/index.html:26
-msgid "Close Cash Desk"
-msgstr "Cerrar Caja"
+#: clickgestion/core/templates/core/index.html:44
+msgid "View All Cash Desk Closures"
+msgstr "Ver Todos Los Cierres De Caja"
 
-#: clickgestion/transactions/filters.py:9
-msgid "Search by employee"
-msgstr "Buscar por empleado"
+#: clickgestion/deposits/models.py:14
+msgid "Maximum Amount"
+msgstr "Cantidad Máxima"
 
-#: clickgestion/transactions/forms.py:33 clickgestion/transactions/forms.py:85
-msgid "Apartment"
-msgstr "Apartamento"
+#: clickgestion/deposits/models.py:16
+msgid "Minimum Amount"
+msgstr "Cantidad Mínima"
 
-#: clickgestion/transactions/forms.py:34 clickgestion/transactions/forms.py:86
-msgid "First Name"
-msgstr "Nombre"
+#: clickgestion/deposits/models.py:18
+msgid "Amount Per Adult/Night"
+msgstr "Cantidad Por Adulto/Noche"
 
-#: clickgestion/transactions/forms.py:35 clickgestion/transactions/forms.py:87
-msgid "Last Name"
-msgstr "Apellidos"
+#: clickgestion/deposits/models.py:21
+msgid "Amount Per Child/Night"
+msgstr "Cantidad Por Niño/Noche"
 
-#: clickgestion/transactions/forms.py:102
-msgid "The client's apartment number"
-msgstr "El número de apartamento del cliente"
+#: clickgestion/deposits/models.py:25 clickgestion/deposits/models.py:26
+msgid "Apartment Rental Deposit Settings"
+msgstr "Configuración De Fianzas De Apartamento"
 
-#: clickgestion/transactions/forms.py:103
-msgid "101"
-msgstr "101"
+#: clickgestion/deposits/models.py:47
+msgctxt "Concept name"
+msgid "Apartment Rental Deposit"
+msgstr "Fianza De Apartamento"
 
-#: clickgestion/transactions/forms.py:111
-msgid "The client's first name"
-msgstr "El nombre del cliente"
+#: clickgestion/deposits/models.py:48
+msgctxt "Concept name plural"
+msgid "Apartment Rental Deposits"
+msgstr "Fianzas De Apartamento"
 
-#: clickgestion/transactions/forms.py:112
-msgid "John"
-msgstr "Juan"
+#: clickgestion/deposits/models.py:72
+#, python-format
+msgid ""
+"Apartment Deposit: %(start_date)s - %(end_date)s, Adults: %(adults)s, "
+"Children: %(children)s"
+msgstr ""
+"Fianza De Apartamento: %(start_date)s - %(end_date)s, Adultos: %(adults)s, "
+"Niños: %(children)s"
 
-#: clickgestion/transactions/forms.py:120
-msgid "The client's last name"
-msgstr "Appellidos del cliente"
+#: clickgestion/deposits/models.py:120 clickgestion/deposits/models.py:121
+msgid "Deposit Return Settings"
+msgstr "Configuración De Devoluciones De Fianza"
 
-#: clickgestion/transactions/forms.py:121
-msgid "Smith"
-msgstr "Martínez Gomez"
+#: clickgestion/deposits/models.py:132
+msgid "Returned Deposit"
+msgstr "Fianza Devuelta"
 
-#: clickgestion/transactions/models.py:48
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:9
-msgid "Transaction"
-msgstr "Transacción"
+#: clickgestion/deposits/models.py:144
+msgctxt "Concept name"
+msgid "Deposit Return"
+msgstr "Devolución De Fianza"
 
-#: clickgestion/transactions/models.py:49
-#: clickgestion/transactions/views.py:156
+#: clickgestion/deposits/models.py:145
+msgctxt "Concept name plural"
+msgid "Deposit Returns"
+msgstr "Devoluciones De Fianza"
+
+#: clickgestion/deposits/models.py:152
+msgctxt "Deposit return:"
+msgid "Return"
+msgstr "Devolución"
+
+#: clickgestion/deposits/models.py:187 clickgestion/deposits/models.py:188
+msgid "Parking Rental Deposit Settings"
+msgstr "Configuración De Fianzas De Parking"
+
+#: clickgestion/deposits/models.py:207
+msgctxt "Concept name"
+msgid "Parking Rental Deposit"
+msgstr "Fianza De Parking"
+
+#: clickgestion/deposits/models.py:208
+msgctxt "Concept name plural"
+msgid "Parking Rental Deposits"
+msgstr "Fianzas De Parking"
+
+#: clickgestion/deposits/models.py:263 clickgestion/deposits/models.py:264
+msgid "Safe Rental Deposit Settings"
+msgstr "Configuración De Fianzas De Caja Fuerte"
+
+#: clickgestion/deposits/models.py:283
+msgctxt "Concept name"
+msgid "Safe Rental Deposit"
+msgstr "Fianza De Caja Fuerte"
+
+#: clickgestion/deposits/models.py:284
+msgctxt "Concept name plural"
+msgid "Safe Rental Deposits"
+msgstr "Fianzas De Caja Fuerte"
+
+#: clickgestion/deposits/views.py:54
+msgid "Cannot return {}"
+msgstr "Devolución de {} no permitida"
+
+#: clickgestion/parking_rentals/apps.py:7
+msgid "Parking Rentals"
+msgstr "Alquileres De Parking"
+
+#: clickgestion/parking_rentals/forms.py:57
+msgid "Add Parking Deposit"
+msgstr "Añadir Fianza De Parking"
+
+#: clickgestion/parking_rentals/models.py:13
+#: clickgestion/safe_rentals/models.py:13
+msgid "Amount Per Night"
+msgstr "Precio Por Noche"
+
+#: clickgestion/parking_rentals/models.py:17
+#: clickgestion/parking_rentals/models.py:18
+msgid "Parking Rental Settings"
+msgstr "Configuración De Alquileres De Parking"
+
+#: clickgestion/parking_rentals/models.py:35
+msgctxt "Concept name"
+msgid "Parking Rental"
+msgstr "Alquiler De Parking"
+
+#: clickgestion/parking_rentals/models.py:36
+msgctxt "Concept name"
+msgid "Parking Rentals"
+msgstr "Alquileres De Parking"
+
+#: clickgestion/parking_rentals/models.py:58
+#, python-format
+msgid "Parking Rental: %(start_date)s - %(end_date)s"
+msgstr "Alquiler De Parking: %(start_date)s - %(end_date)s"
+
+#: clickgestion/refunds/apps.py:7
+msgid "Refunds"
+msgstr "Reembolsos"
+
+#: clickgestion/refunds/models.py:13 clickgestion/refunds/models.py:14
+msgid "Refund Settings"
+msgstr "Configuración De Reembolsos"
+
+#: clickgestion/refunds/models.py:25
+msgid "Refunded Concept"
+msgstr "Concepto Reembolsado"
+
+#: clickgestion/refunds/models.py:37 clickgestion/refunds/models.py:45
+msgctxt "Concept name"
+msgid "Refund"
+msgstr "Reembolso"
+
+#: clickgestion/refunds/models.py:38
+msgctxt "Concept name plural"
+msgid "Refunds"
+msgstr "Reembolsos"
+
+#: clickgestion/refunds/views.py:40
+msgid "Cannot refund {}"
+msgstr "Reembolso de {} no permitido"
+
+#: clickgestion/safe_rentals/apps.py:7
+msgid "Safe Rentals"
+msgstr "Alquileres De Caja Fuerte"
+
+#: clickgestion/safe_rentals/forms.py:57
+msgid "Add Safe Deposit"
+msgstr "Añadir Fianza De Caja Fuerte"
+
+#: clickgestion/safe_rentals/models.py:17
+#: clickgestion/safe_rentals/models.py:18
+msgid "Safe Rental Settings"
+msgstr "Configuración De Alquiler De Cajas Fuertes"
+
+#: clickgestion/safe_rentals/models.py:35
+msgctxt "Concept name"
+msgid "Safe Rental"
+msgstr "Alquiler De Caja Fuerte"
+
+#: clickgestion/safe_rentals/models.py:36
+msgctxt "Concept name plural"
+msgid "Safe Rentals"
+msgstr "Alquileres De Caja Fuerte"
+
+#: clickgestion/safe_rentals/models.py:58
+#, python-format
+msgid "Safe Rental: %(start_date)s - %(end_date)s"
+msgstr "Alquiler De Caja Fuerte: %(start_date)s - %(end_date)s"
+
+#: clickgestion/service_sales/apps.py:7
+msgid "Service Sales"
+msgstr "Venta De Servicios"
+
+#: clickgestion/service_sales/forms.py:110
+#: clickgestion/ticket_sales/forms.py:110
+msgid "No people."
+msgstr "No Hay Personas."
+
+#: clickgestion/service_sales/forms.py:341
+#: clickgestion/service_sales/models.py:75
+#: clickgestion/service_sales/models.py:76
+#: clickgestion/service_sales/models.py:137
+msgid "Service"
+msgstr "Servicio"
+
+#: clickgestion/service_sales/forms.py:352
+#: clickgestion/ticket_sales/forms.py:352
+msgid "Tour/Show date"
+msgstr "Fecha de Tour/Show"
+
+#: clickgestion/service_sales/forms.py:360
+#: clickgestion/ticket_sales/forms.py:360
+msgid "End date"
+msgstr "Fecha Fin"
+
+#: clickgestion/service_sales/forms.py:376
+#: clickgestion/ticket_sales/forms.py:376
+msgid "Price per adult"
+msgstr "Precio por adulto"
+
+#: clickgestion/service_sales/forms.py:390
+#: clickgestion/ticket_sales/forms.py:390
+msgid "Price per child"
+msgstr "Precio por niño"
+
+#: clickgestion/service_sales/forms.py:398
+#: clickgestion/ticket_sales/forms.py:398
+msgid "Number of seniors"
+msgstr "Número de Pensionistas"
+
+#: clickgestion/service_sales/forms.py:404
+#: clickgestion/ticket_sales/forms.py:404
+msgid "Price per senior"
+msgstr "Precio Por Pensionista"
+
+#: clickgestion/service_sales/forms.py:412
+#: clickgestion/ticket_sales/forms.py:412
+msgid "Number of units"
+msgstr "Número de unidades"
+
+#: clickgestion/service_sales/forms.py:418
+#: clickgestion/ticket_sales/forms.py:418
+msgid "Price per unit"
+msgstr "Precios por unidad"
+
+#: clickgestion/service_sales/forms.py:419
+#: clickgestion/service_sales/forms.py:499
+#: clickgestion/ticket_sales/forms.py:419
+#: clickgestion/ticket_sales/forms.py:499
+msgid "Price"
+msgstr "Precio"
+
+#: clickgestion/service_sales/models.py:20
+#: clickgestion/service_sales/models.py:31
+msgid "Service Type"
+msgstr "Tipo De Servicio"
+
+#: clickgestion/service_sales/models.py:21
+msgid "Service Types"
+msgstr "Tipos De Servicio"
+
+#: clickgestion/service_sales/models.py:42
+#: clickgestion/service_sales/models.py:109
+#: clickgestion/ticket_sales/models.py:42
+#: clickgestion/ticket_sales/models.py:109
+msgid "Date Required"
+msgstr "Fecha Requerida"
+
+#: clickgestion/service_sales/models.py:48
+#: clickgestion/service_sales/models.py:111
+#: clickgestion/ticket_sales/models.py:48
+#: clickgestion/ticket_sales/models.py:111
+msgid "Book Per Adult"
+msgstr "Reservar Por Adulto"
+
+#: clickgestion/service_sales/models.py:50
+#: clickgestion/service_sales/models.py:113
+#: clickgestion/ticket_sales/models.py:50
+#: clickgestion/ticket_sales/models.py:113
+msgid "Book Per Child"
+msgstr "Reservar Por Niño"
+
+#: clickgestion/service_sales/models.py:52
+#: clickgestion/service_sales/models.py:115
+#: clickgestion/ticket_sales/models.py:52
+#: clickgestion/ticket_sales/models.py:115
+msgid "Book Per Night"
+msgstr "Reservar Por Noche"
+
+#: clickgestion/service_sales/models.py:54
+#: clickgestion/service_sales/models.py:117
+#: clickgestion/ticket_sales/models.py:54
+#: clickgestion/ticket_sales/models.py:117
+msgid "Book Per Senior"
+msgstr "Reservar Por Pensionista"
+
+#: clickgestion/service_sales/models.py:56
+#: clickgestion/service_sales/models.py:119
+#: clickgestion/ticket_sales/models.py:56
+#: clickgestion/ticket_sales/models.py:119
+msgid "Book Per Unit"
+msgstr "Reservar Por Unidad"
+
+#: clickgestion/service_sales/models.py:58
+#: clickgestion/service_sales/models.py:121
+#: clickgestion/ticket_sales/models.py:58
+#: clickgestion/ticket_sales/models.py:121
+msgid "Price Per Adult"
+msgstr "Precio Por Adulto"
+
+#: clickgestion/service_sales/models.py:61
+#: clickgestion/service_sales/models.py:124
+#: clickgestion/ticket_sales/models.py:61
+#: clickgestion/ticket_sales/models.py:124
+msgid "Price Per Child"
+msgstr "Precio Por Niño"
+
+#: clickgestion/service_sales/models.py:64
+#: clickgestion/service_sales/models.py:127
+#: clickgestion/ticket_sales/models.py:64
+#: clickgestion/ticket_sales/models.py:127
+msgid "Price Per Senior"
+msgstr "Precio Por Pensionista"
+
+#: clickgestion/service_sales/models.py:67
+#: clickgestion/service_sales/models.py:130
+#: clickgestion/ticket_sales/models.py:67
+#: clickgestion/ticket_sales/models.py:130
+msgid "Price Per Unit"
+msgstr "Precio Por Unidad"
+
+#: clickgestion/service_sales/models.py:70
+#: clickgestion/ticket_sales/models.py:70
+msgid "Variable Price"
+msgstr "Precio Variable"
+
+#: clickgestion/service_sales/models.py:95
+#: clickgestion/service_sales/models.py:96
+msgid "Service Sale Settings"
+msgstr "Configuración De Venta De Servicios"
+
+#: clickgestion/service_sales/models.py:133
+#: clickgestion/ticket_sales/models.py:133
+msgid "Seniors"
+msgstr "Pensionistas"
+
+#: clickgestion/service_sales/models.py:142
+#: clickgestion/ticket_sales/models.py:142
+msgid "Units"
+msgstr "Unidades"
+
+#: clickgestion/service_sales/models.py:152
+msgctxt "Concept name"
+msgid "Service Sale"
+msgstr "Venta De Servicio"
+
+#: clickgestion/service_sales/models.py:153
+msgctxt "Concept name plural"
+msgid "Service Sales"
+msgstr "Ventas De Servicios"
+
+#: clickgestion/service_sales/models.py:180
+#: clickgestion/ticket_sales/models.py:180
+#, python-format
+msgid "%(units)s Unit x %(price)s;"
+msgstr "%(units)s Unidad x %(price)s;"
+
+#: clickgestion/service_sales/models.py:182
+#: clickgestion/ticket_sales/models.py:182
+#, python-format
+msgid "%(units)s Units x %(price)s;"
+msgstr "%(units)s Unidades x %(price)s;"
+
+#: clickgestion/service_sales/models.py:187
+#: clickgestion/ticket_sales/models.py:187
+#, python-format
+msgid "%(adults)s Adult x %(price)s;"
+msgstr "%(adults)s Adulto x %(price)s;"
+
+#: clickgestion/service_sales/models.py:189
+#: clickgestion/ticket_sales/models.py:189
+#, python-format
+msgid "%(adults)s Adults x %(price)s;"
+msgstr "%(adults)s Adultos x %(price)s;"
+
+#: clickgestion/service_sales/models.py:194
+#: clickgestion/ticket_sales/models.py:194
+#, python-format
+msgid "%(children)s Child x %(price)s;"
+msgstr "%(children)s Niño x %(price)s;"
+
+#: clickgestion/service_sales/models.py:196
+#: clickgestion/ticket_sales/models.py:196
+#, python-format
+msgid "%(children)s Children x %(price)s;"
+msgstr "%(children)s Niños x %(price)s;"
+
+#: clickgestion/service_sales/models.py:201
+#: clickgestion/ticket_sales/models.py:201
+#, python-format
+msgid "%(seniors)s Senior x %(price)s;"
+msgstr "%(seniors)s Pensionista x %(price)s;"
+
+#: clickgestion/service_sales/models.py:203
+#: clickgestion/ticket_sales/models.py:203
+#, python-format
+msgid "%(seniors)s Seniors x %(price)s;"
+msgstr "%(seniors)s Pensionistas x %(price)s;"
+
+#: clickgestion/ticket_sales/apps.py:7
+msgid "Ticket Sales"
+msgstr "Venta De Tickets"
+
+#: clickgestion/ticket_sales/forms.py:330
+#: clickgestion/ticket_sales/models.py:31
+msgid "Company"
+msgstr "Compañía"
+
+#: clickgestion/ticket_sales/forms.py:341
+#: clickgestion/ticket_sales/models.py:75
+#: clickgestion/ticket_sales/models.py:137
+msgid "Tour/Show"
+msgstr "Tour/Show"
+
+#: clickgestion/ticket_sales/models.py:20
+msgid "Tour/Show Company"
+msgstr "Compañía De Tour/Show"
+
+#: clickgestion/ticket_sales/models.py:21
+msgid "Tour/Show Companies"
+msgstr "Compañías De Tour/Show"
+
+#: clickgestion/ticket_sales/models.py:76
+msgid "Tours/Shows"
+msgstr "Tours/Shows"
+
+#: clickgestion/ticket_sales/models.py:95
+#: clickgestion/ticket_sales/models.py:96
+msgid "Ticket Sale Settings"
+msgstr "Configuración De Venta De Tickets"
+
+#: clickgestion/ticket_sales/models.py:152
+msgctxt "Concept name"
+msgid "Ticket Sale"
+msgstr "Venta De Tickets"
+
+#: clickgestion/ticket_sales/models.py:153
+msgctxt "Concept name plural"
+msgid "Ticket Sales"
+msgstr "Ventas De Tickets"
+
+#: clickgestion/transactions/apps.py:7 clickgestion/transactions/models.py:70
+#: clickgestion/transactions/templates/transactions/transaction_list.html:21
+#: clickgestion/transactions/views.py:257
 msgid "Transactions"
 msgstr "Transacciones"
 
-#: clickgestion/transactions/models.py:52
-msgid "Transaction %(code)s"
-msgstr "Transacción %(code)s"
+#: clickgestion/transactions/forms.py:33
+msgid "Apartment"
+msgstr "Apartamento"
+
+#: clickgestion/transactions/forms.py:58
+msgid "No concepts."
+msgstr "Ningún Concepto."
+
+#: clickgestion/transactions/forms.py:104
+msgid "The client's apartment number"
+msgstr "El número de apartamento del cliente"
+
+#: clickgestion/transactions/forms.py:105
+msgid "101"
+msgstr "101"
+
+#: clickgestion/transactions/forms.py:113
+msgid "The client's first name"
+msgstr "El nombre del cliente"
+
+#: clickgestion/transactions/forms.py:114
+msgid "John"
+msgstr "Juan"
+
+#: clickgestion/transactions/forms.py:122
+msgid "The client's last name"
+msgstr "Appellidos del cliente"
+
+#: clickgestion/transactions/forms.py:123
+msgid "Smith"
+msgstr "Martínez Gomez"
+
+#: clickgestion/transactions/forms.py:133
+msgid "The client's ID/Passport number"
+msgstr "Pasaporte/DNI del cliente"
+
+#: clickgestion/transactions/forms.py:142
+msgid "The client's email address"
+msgstr "Email del cliente"
+
+#: clickgestion/transactions/forms.py:151
+msgid "The client's phone number"
+msgstr "El número de teléfono del cliente"
+
+#: clickgestion/transactions/forms.py:162
+msgid "The client's address"
+msgstr "Dirección del cliente"
+
+#: clickgestion/transactions/forms.py:163
+msgid "10 First Ave"
+msgstr "Avda. Zaragoza"
+
+#: clickgestion/transactions/models.py:40
+msgid "Apt Number"
+msgstr "Número De Apt."
+
+#: clickgestion/transactions/models.py:58
+msgid "Passport/ID"
+msgstr "Pasaporte/DNI"
+
+#: clickgestion/transactions/models.py:60
+msgid "Phone"
+msgstr "Teléfono"
 
 #: clickgestion/transactions/models.py:62
-msgid "Not Set"
-msgstr " "
+msgid "Close Date"
+msgstr "Fecha De Cierre"
 
-#: clickgestion/transactions/models.py:70
-#, python-brace-format
-msgid "Transaction #:{0} Apt:{1} Client: {2} Concepts: {3} Total: {4}"
-msgstr "Transacción #:{0} Apt:{1} Cliente: {2} Conceptos: {3} Total: {4}"
+#: clickgestion/transactions/models.py:112
+#: clickgestion/transactions/templates/transactions/transaction_list.html:40
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:22
+msgid "Apt"
+msgstr "Apt"
 
-#: clickgestion/transactions/models.py:97
-msgid "Abstract Concept"
-msgstr "Concepto Abstracto"
+#: clickgestion/transactions/models.py:164
+msgid "Invoice"
+msgstr "Factura"
 
-#: clickgestion/transactions/models.py:98
-msgid "Abstract Concepts"
-msgstr "Conceptos Abstractos"
+#: clickgestion/transactions/models.py:166
+msgid "Deposit Transaction"
+msgstr "Transacción De Fianza"
 
-#: clickgestion/transactions/models.py:101
-msgid "Abstract Concept %(id)s"
-msgstr "Concepto Abstracto %(id)s"
+#: clickgestion/transactions/models.py:168
+msgid "Cash Management"
+msgstr "Contabilidad"
 
-#: clickgestion/transactions/models.py:118
-msgid "Concept Data Object"
-msgstr "Objeto De Datos De Concepto"
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:48
+msgid "Taxable"
+msgstr "Base Imponible"
 
-#: clickgestion/transactions/templates/concepts/concept_listitem.html:16
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:39
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:29
-msgid "Edit"
-msgstr "Editar"
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:49
+msgid "Rate"
+msgstr "Tipo"
 
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:22
-msgid "Transaction: #"
-msgstr "Transacción: #"
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:50
+msgid "Tax"
+msgstr "IVA"
 
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:25
-msgid "Apartment: "
-msgstr "Apartamento: "
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:70
+#: clickgestion/transactions/templates/transactions/transaction_list.html:45
+msgid "Totals"
+msgstr "Totales"
 
-#: clickgestion/transactions/templates/transactions/transaction_detail.html:28
-msgid "Client: "
-msgstr "Cliente: "
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:99
+msgid "Employee Signature:"
+msgstr "Firma De Empleado:"
+
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:108
+msgid "Client Signature:"
+msgstr "Firma Del Cliente:"
+
+#: clickgestion/transactions/templates/transactions/transaction_document_a4.html:120
+msgid "Thank You, Please Come Again!"
+msgstr "Gracias, Esperamos Verle Pronto!"
 
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:10
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:10
-msgid "Transaction #"
-msgstr "Transacción #"
+msgid "Transaction "
+msgstr "Transacción "
 
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:21
 msgid "Select concepts to add below: "
 msgstr "Selecciona conceptos para añadir más abajo"
 
 #: clickgestion/transactions/templates/transactions/transaction_edit.html:45
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:22
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:37
 msgid "Total: "
 msgstr "Total: "
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:74
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:81
 msgid "Click to select a concept to add"
 msgstr "Pincha para seleccionar el concepto a añadir"
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:75
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:82
 msgid "Add Concept"
 msgstr "Añadir Concepto"
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:87
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:98
 msgid "Go to payment screen"
 msgstr "Ir a la página de pago"
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:87
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:98
 msgid "Proceed To Payment"
 msgstr "Proceder A Pagar"
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:91
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:102
 msgid "Save the transaction as pending"
 msgstr "Guardar la transacción como pendiente"
 
-#: clickgestion/transactions/templates/transactions/transaction_edit.html:95
+#: clickgestion/transactions/templates/transactions/transaction_edit.html:106
 msgid "Cancel the transaction and delete all data"
 msgstr "Cancelar la transacción y borrar todo"
 
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:15
-msgid "Apt"
-msgstr "Apt"
+#: clickgestion/transactions/templates/transactions/transaction_list.html:44
+msgid "Cash Close"
+msgstr "Cierre De Caja"
 
-#: clickgestion/transactions/templates/transactions/transaction_listitem.html:18
-msgid "Client"
-msgstr "Cliente"
+#: clickgestion/transactions/templates/transactions/transaction_listitem.html:72
+msgid "View"
+msgstr "Ver"
 
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:48
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:66
 msgid "Confirm and close this transaction"
 msgstr "Confirmar y cerrar esta transacción"
 
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:48
-msgid "Confirm"
-msgstr "Confirmar"
-
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:51
-msgid "Go back to add concepts"
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:69
+msgid "Go back to edit concepts"
 msgstr "Volver para añadir conceptos"
 
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:54
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:72
 msgid "Finish this transaction later"
 msgstr "Finalizar esta transacción mas tarde"
 
-#: clickgestion/transactions/templates/transactions/transaction_pay.html:57
+#: clickgestion/transactions/templates/transactions/transaction_pay.html:75
 msgid "Cancel this transaction and delete all data"
 msgstr "Cancelar esta transacción y borrar todo"
 
-#: clickgestion/transactions/views.py:42
+#: clickgestion/transactions/templates/transactions/transaction_rowitem.html:52
+msgid "Opened"
+msgstr "Abierta"
+
+#: clickgestion/transactions/views.py:133
 msgid "Delete Transaction?"
 msgstr "Borrar la Transacción?"
-
-#: clickgestion/transactions/views.py:257
-#, python-format
-msgid "Pending transactions by %(employee)s"
-msgstr "Transacciones pendientes de %(employee)s"
-
-#~ msgid "Checkin: "
-#~ msgstr "Llegada: "
-
-#~ msgid "Checkout: "
-#~ msgstr "Salida: "

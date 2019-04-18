@@ -46,7 +46,6 @@ def create_aptrentalsettings():
         model = AptRentalSettings.objects.get()
     except:
         model = AptRentalSettings(
-            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -62,11 +61,12 @@ def create_aptrentalsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=10,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -76,7 +76,6 @@ def create_aptrentaldepositsettings():
         model = deposit_models.AptRentalDepositSettings.objects.get()
     except:
         model = deposit_models.AptRentalDepositSettings(
-            accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -92,11 +91,12 @@ def create_aptrentaldepositsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['deposits'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=0,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -106,7 +106,6 @@ def create_cashfloatdepositsettings():
         model = CashFloatDepositSettings.objects.get()
     except:
         model = CashFloatDepositSettings(
-            accounting_group='Cash',
             apt_number_required=False,
             apt_number_visible=False,
             client_address_required=False,
@@ -122,10 +121,11 @@ def create_cashfloatdepositsettings():
             client_phone_number_required=False,
             client_phone_number_visible=False,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['cash_desk'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='Cash Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['cash_desk_transaction']),
             vat_percent=0,
         ).save()
     return model
@@ -136,7 +136,6 @@ def create_cashfloatwithdrawalsettings():
         model = CashFloatWithdrawalSettings.objects.get()
     except:
         model = CashFloatWithdrawalSettings(
-            accounting_group='Cash',
             apt_number_required=False,
             apt_number_visible=False,
             client_address_required=False,
@@ -152,10 +151,11 @@ def create_cashfloatwithdrawalsettings():
             client_phone_number_required=False,
             client_phone_number_visible=False,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['cash_desk'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='Cash Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['cash_desk_transaction']),
             vat_percent=0,
         ).save()
     return model
@@ -235,7 +235,6 @@ def create_depositreturnsettings():
         model = deposit_models.DepositReturnSettings.objects.get()
     except:
         model = deposit_models.DepositReturnSettings(
-            accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -251,10 +250,11 @@ def create_depositreturnsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=True,
+            department=settings.DEPARTMENTS['deposits'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
             vat_percent=0,
         ).save()
     return model
@@ -297,7 +297,6 @@ def create_parkingrentaldepositsettings():
     except:
         model = deposit_models.ParkingRentalDepositSettings(
             amount=10.0,
-            accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -313,11 +312,12 @@ def create_parkingrentaldepositsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['deposits'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=0,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -328,7 +328,6 @@ def create_parkingrentalsettings():
     except:
         model = ParkingRentalSettings(
             amount_per_night=5.0,
-            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -344,18 +343,17 @@ def create_parkingrentalsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=10,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
 
 def create_permission_groups():
-    cash_models = [CashFloatDeposit, CashFloatWithdrawal]
-    create_group('Cash Employees', cash_models)
     sales_models = [
         AptRental,
         deposit_models.AptRentalDeposit,
@@ -367,10 +365,13 @@ def create_permission_groups():
         TicketSale,
         ServiceSale,
     ]
-    create_group('Sales Employees', sales_models)
+    create_group(settings.PERMISSION_GROUPS['sales_employee'], sales_models)
     sales_models.append(Refund)
-    create_group('Sales Transaction', sales_models)
-    create_group('Cash Transaction', cash_models)
+    create_group(settings.PERMISSION_GROUPS['sales_transaction'], sales_models)
+    cash_models = [CashFloatDeposit, CashFloatWithdrawal]
+    create_group(settings.PERMISSION_GROUPS['cash_desk_transaction'], cash_models)
+    cash_models.append(CashClose)
+    create_group(settings.PERMISSION_GROUPS['cash_desk_employee'], cash_models)
 
 
 def create_refundsettings():
@@ -378,7 +379,6 @@ def create_refundsettings():
         model = RefundSettings.objects.get()
     except:
         model = RefundSettings(
-            accounting_group='Sales',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -394,10 +394,11 @@ def create_refundsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=True,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
             vat_percent=0,
         ).save()
     return model
@@ -409,7 +410,6 @@ def create_saferentaldepositsettings():
     except:
         model = deposit_models.SafeRentalDepositSettings(
             amount=10.0,
-            accounting_group='Deposits',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -425,11 +425,12 @@ def create_saferentaldepositsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['deposits'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=0,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -440,7 +441,6 @@ def create_saferentalsettings():
     except:
         model = SafeRentalSettings(
             amount_per_night=2.0,
-            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -456,11 +456,12 @@ def create_saferentalsettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=10,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -536,7 +537,6 @@ def create_servicesalesettings():
         model = ServiceSaleSettings.objects.get()
     except:
         model = ServiceSaleSettings(
-            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -552,11 +552,12 @@ def create_servicesalesettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=21,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 
@@ -1413,7 +1414,6 @@ def create_ticketsalesettings():
         model = TicketSaleSettings.objects.get()
     except:
         model = TicketSaleSettings(
-            accounting_group='Production',
             apt_number_required=False,
             apt_number_visible=True,
             client_address_required=False,
@@ -1429,11 +1429,12 @@ def create_ticketsalesettings():
             client_phone_number_required=False,
             client_phone_number_visible=True,
             client_signature_required=False,
+            department=settings.DEPARTMENTS['production'],
             employee_signature_required=False,
             notes_required=False,
             notes_visible=True,
             vat_percent=21,
-            permission_group=Group.objects.get(name='Sales Transaction'),
+            permission_group=Group.objects.get(name=settings.PERMISSION_GROUPS['sales_transaction']),
         ).save()
     return model
 

@@ -26,7 +26,7 @@ class TestCashCloseModel(CustomTestCase, CustomModelTestCase):
             'notes',
             'updated',
             'balance',
-            'breakdown_by_accounting_group',
+            'breakdown_by_department',
             'breakdown_by_concept_type',
             'breakdowns',
             'concepts',

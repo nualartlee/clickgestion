@@ -44,7 +44,6 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.model_attrs = [
-            'accounting_group',
             'can_refund',
             'can_return_deposit',
             'child',
@@ -52,6 +51,7 @@ class BaseConceptModelTest(CustomTestCase, CustomModelTestCase):
             'concept_class',
             'concept_name',
             'created',
+            'department',
             'deposit_return',
             'description_short',
             'end_date',

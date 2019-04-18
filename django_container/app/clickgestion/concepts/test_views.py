@@ -1,11 +1,12 @@
-from clickgestion.core.test import CustomTestCase, CustomViewTestCase
+from clickgestion.apt_rentals.forms import AptRentalForm
 from clickgestion.core.model_creation import create_test_transaction
-from django.utils import timezone
-import urllib
-from django.shortcuts import reverse
+from clickgestion.core.test import CustomTestCase, CustomViewTestCase
 from clickgestion.concepts.views import get_transaction_from_kwargs, get_concept_and_form_from_kwargs
 from django.urls.exceptions import Http404
-from clickgestion.apt_rentals.forms import AptRentalForm
+from django.shortcuts import reverse
+from django.conf import settings
+from django.utils import timezone
+import urllib
 
 
 class ConceptActionsViewTest(CustomTestCase, CustomViewTestCase):  # pragma: no cover
@@ -39,7 +40,7 @@ class ConceptListViewTest(CustomTestCase, CustomViewTestCase):
 
     def test_filtered_ok(self):
         filter_data = {
-            'accounting_group': 'Deposits',
+            'department': settings.DEPARTMENTS['deposits'],
         }
         params = urllib.parse.urlencode(filter_data)
         # Return

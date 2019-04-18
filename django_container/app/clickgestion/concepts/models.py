@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.contrib.auth.models import Group
 from django.db import models
 from django.contrib.auth.models import Permission
@@ -99,9 +99,9 @@ class BaseConcept(models.Model):
     Sale, rent, refund, etc...
     This model is to be inherited by the required concept types
     """
-    # Accounting group for totalizing functions
-    accounting_group = models.CharField(
-        verbose_name=gettext_lazy('Accounting Group'), max_length=32, blank=True, null=True,
+    # Department for totalizing functions
+    department = models.CharField(
+        verbose_name=gettext_lazy('Department'), max_length=32, blank=True, null=True,
     )
     # Human identification code
     code = models.CharField(verbose_name=gettext_lazy('Code'), max_length=32, unique=True, editable=False)
@@ -139,7 +139,7 @@ class BaseConcept(models.Model):
     def can_refund(self):
 
         # Get status
-        is_production = self.accounting_group == 'Production'
+        is_production = self.department == settings.DEPARTMENTS['production']
         is_not_a_refund = self.concept_class != 'refund'
         is_closed = self.transaction.closed
         is_not_refunded = not self.refund_concept
@@ -208,7 +208,7 @@ class BaseConcept(models.Model):
 
     @property
     def name(self):
-        return gettext_lazy(self.concept_name)
+        return pgettext_lazy('Concept name', self.concept_name)
 
     @derive_from_child
     def name_plural(self):
@@ -240,8 +240,8 @@ class BaseConcept(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # Save the accounting group
-        self.accounting_group = self.settings.accounting_group
+        # Save the department
+        self.department = self.settings.department
 
         # Save the concept class
         self.concept_class = self._concept_class
@@ -335,8 +335,8 @@ class ConceptSettings(SingletonModel):
     """
     Settings applicable to all transaction concept types
     """
-    # Accounting group for totalizing functions
-    accounting_group = models.CharField(verbose_name=gettext_lazy('Accounting Group'), max_length=32, blank=True, null=True)
+    # Department for totalizing functions
+    department = models.CharField(verbose_name=gettext_lazy('Department'), max_length=32, blank=True, null=True)
     # Required/visible transaction fields when this type of concept is included
     apt_number_required = models.BooleanField(default=False, verbose_name=gettext_lazy('Apt Number Required'))
     apt_number_visible = models.BooleanField(default=True, verbose_name=gettext_lazy('Apt Number Visible'))

@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy
 from django.db import models
 from django.contrib.auth.models import Permission
 import re
+from django.conf import settings
 from django.utils import timezone
 import uuid
 
@@ -157,13 +158,13 @@ class Transaction(models.Model):
 
     @property
     def title(self):
-        accounting_groups = self.concepts.values_list(
-            'accounting_group', flat=True).order_by('accounting_group').distinct()
-        if 'Production' in accounting_groups:
+        departments = self.concepts.values_list(
+            'department', flat=True).order_by('department').distinct()
+        if settings.DEPARTMENTS['production'] in departments:
             return gettext_lazy('Invoice')
-        if 'Deposits' in accounting_groups:
+        if settings.DEPARTMENTS['deposits'] in departments:
             return gettext_lazy('Deposit Transaction')
-        if 'Cash' in accounting_groups:
+        if settings.DEPARTMENTS['cash_desk'] in departments:
             return gettext_lazy('Cash Management')
         return gettext_lazy('Transaction')
 

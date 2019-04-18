@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings, ConceptValue
 from django.core.exceptions import FieldError
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.db import models
 
 
@@ -44,8 +44,8 @@ class AptRentalDeposit(BaseConcept):
     _verbose_name = 'Apartment Rental Deposit'
 
     class Meta:
-        verbose_name = gettext_lazy('Apartment Rental Deposit')
-        verbose_name_plural = gettext_lazy('Apartment Rental Deposits')
+        verbose_name = pgettext_lazy('Concept name', 'Apartment Rental Deposit')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Apartment Rental Deposits')
 
     def __init__(self, *args, **kwargs):
         aptrental = kwargs.pop('aptrental', None)
@@ -141,15 +141,15 @@ class DepositReturn(BaseConcept):
     _verbose_name = 'Deposit Return'
 
     class Meta:
-        verbose_name = gettext_lazy('Deposit Return')
-        verbose_name_plural = gettext_lazy('Deposit Returns')
+        verbose_name = pgettext_lazy('Concept name', 'Deposit Return')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Deposit Returns')
 
     def __str__(self):
         return self.code
 
     @property
     def description_short(self):
-        desc = '{} {}'.format(gettext_lazy('Return'), self.returned_deposit.description_short)
+        desc = '{} {}'.format(pgettext_lazy('Deposit return:', 'Return'), self.returned_deposit.description_short)
         return desc
 
     def get_value(self):
@@ -204,8 +204,8 @@ class ParkingRentalDeposit(BaseConcept):
     _verbose_name = 'Parking Rental Deposit'
 
     class Meta:
-        verbose_name = gettext_lazy('Parking Rental Deposit')
-        verbose_name_plural = gettext_lazy('Parking Rental Deposits')
+        verbose_name = pgettext_lazy('Concept name', 'Parking Rental Deposit')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Parking Rental Deposits')
 
     def __init__(self, *args, **kwargs):
         parkingrental = kwargs.pop('parkingrental', None)
@@ -280,8 +280,8 @@ class SafeRentalDeposit(BaseConcept):
     _verbose_name = 'Safe Rental Deposit'
 
     class Meta:
-        verbose_name = gettext_lazy('Safe Rental Deposit')
-        verbose_name_plural = gettext_lazy('Safe Rental Deposits')
+        verbose_name = pgettext_lazy('Concept name', 'Safe Rental Deposit')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Safe Rental Deposits')
 
     def __init__(self, *args, **kwargs):
         saferental = kwargs.pop('saferental', None)
