@@ -11,7 +11,6 @@ from django.conf import settings
 from django.utils import timezone
 from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
-from clickgestion.transactions.filters import TransactionFilter
 import urllib
 
 
@@ -301,6 +300,7 @@ class TransactionList(PaginationMixin, ListView):
         # Add filters by permission
 
         # Filter the queryset
+        from clickgestion.transactions.filters import TransactionFilter
         self.filter = TransactionFilter(data)
         self.queryset = self.filter.qs.select_related('cashclose')\
             .prefetch_related('concepts__value__currency') \

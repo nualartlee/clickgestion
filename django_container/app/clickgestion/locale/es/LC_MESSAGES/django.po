@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-18 01:56+0200\n"
+"POT-Creation-Date: 2019-04-19 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,74 +21,88 @@ msgstr ""
 msgid "Apartment Rentals"
 msgstr "Alquileres De Apartamentos"
 
-#: clickgestion/apt_rentals/forms.py:39
+#: clickgestion/apt_rentals/forms.py:14
+msgid "Add Deposit"
+msgstr "Añadir Fianza"
+
+#: clickgestion/apt_rentals/forms.py:42
+msgid "Departure Date"
+msgstr "Fecha de salida"
+
+#: clickgestion/apt_rentals/forms.py:43
+msgid "Arrival Date"
+msgstr "Fecha de llegada"
+
+#: clickgestion/apt_rentals/forms.py:51
 #: clickgestion/parking_rentals/forms.py:39
 #: clickgestion/safe_rentals/forms.py:39
 msgid "Arrival date"
 msgstr "Fecha de llegada"
 
-#: clickgestion/apt_rentals/forms.py:47
+#: clickgestion/apt_rentals/forms.py:59
 #: clickgestion/parking_rentals/forms.py:47
 #: clickgestion/safe_rentals/forms.py:47
 msgid "Departure date"
 msgstr "Fecha de salida"
 
-#: clickgestion/apt_rentals/forms.py:57 clickgestion/service_sales/forms.py:370
+#: clickgestion/apt_rentals/forms.py:69 clickgestion/service_sales/forms.py:370
 #: clickgestion/ticket_sales/forms.py:370
 msgid "Number of adults"
 msgstr "Número de adultos"
 
-#: clickgestion/apt_rentals/forms.py:65 clickgestion/service_sales/forms.py:384
+#: clickgestion/apt_rentals/forms.py:77 clickgestion/service_sales/forms.py:384
 #: clickgestion/ticket_sales/forms.py:384
 msgid "Number of children"
 msgstr "Número de niños"
 
-#: clickgestion/apt_rentals/forms.py:75
+#: clickgestion/apt_rentals/forms.py:87
 msgid "Add Apartment Deposit"
 msgstr "Añadir Fianza"
 
-#: clickgestion/apt_rentals/forms.py:95
+#: clickgestion/apt_rentals/forms.py:107
 #: clickgestion/parking_rentals/forms.py:77
 #: clickgestion/safe_rentals/forms.py:77
 msgid "Missing prices in selected dates."
 msgstr "Faltan precios en las fechas seleccionadas"
 
-#: clickgestion/apt_rentals/forms.py:103
+#: clickgestion/apt_rentals/forms.py:115
 #: clickgestion/parking_rentals/forms.py:85
 #: clickgestion/safe_rentals/forms.py:85
 msgid "Departure date is the same as arrival."
 msgstr "Fecha de salida igual a fecha de llegada."
 
-#: clickgestion/apt_rentals/forms.py:106
+#: clickgestion/apt_rentals/forms.py:118
 #: clickgestion/parking_rentals/forms.py:88
 #: clickgestion/safe_rentals/forms.py:88
 msgid "Departure date is before arrival."
 msgstr "Fecha de salida anterior a fecha de llegada."
 
-#: clickgestion/apt_rentals/forms.py:114
+#: clickgestion/apt_rentals/forms.py:126
 msgid "Five people maximum."
 msgstr "Máximo cinco personas."
 
-#: clickgestion/apt_rentals/forms.py:122
+#: clickgestion/apt_rentals/forms.py:134
 msgid "One to four adults only."
 msgstr "Solo entre uno y cuatro adultos."
 
-#: clickgestion/apt_rentals/forms.py:129
+#: clickgestion/apt_rentals/forms.py:141
 msgid "Up to four children only."
 msgstr "Solo hasta cuatro niños."
 
-#: clickgestion/apt_rentals/forms.py:136
+#: clickgestion/apt_rentals/forms.py:148
 #: clickgestion/parking_rentals/forms.py:96
 #: clickgestion/safe_rentals/forms.py:96
 msgid "Arrival date is too far back."
 msgstr "Fecha de llegada demasiado retrasada."
 
-#: clickgestion/apt_rentals/models.py:13 clickgestion/concepts/models.py:117
+#: clickgestion/apt_rentals/models.py:13 clickgestion/concepts/forms.py:22
+#: clickgestion/concepts/models.py:117
 #: clickgestion/concepts/templates/concepts/concept_list.html:41
 msgid "Start Date"
 msgstr "Fecha de Inicio"
 
-#: clickgestion/apt_rentals/models.py:14 clickgestion/concepts/models.py:115
+#: clickgestion/apt_rentals/models.py:14 clickgestion/concepts/forms.py:9
+#: clickgestion/concepts/models.py:115
 #: clickgestion/concepts/templates/concepts/concept_list.html:42
 msgid "End Date"
 msgstr "Fecha de Fin"
@@ -236,7 +250,7 @@ msgid "Add a note..."
 msgstr "Añadir una nota..."
 
 #: clickgestion/cash_desk/forms.py:78 clickgestion/cash_desk/forms.py:134
-#: clickgestion/concepts/forms.py:40
+#: clickgestion/concepts/forms.py:54
 msgid "Enter a positive amount."
 msgstr "Introduzca un número positivo."
 
@@ -291,7 +305,7 @@ msgstr "Cierre de Caja"
 
 #: clickgestion/cash_desk/models.py:134
 #: clickgestion/cash_desk/templates/cash_desk/cashclose_list.html:21
-#: clickgestion/cash_desk/views.py:177
+#: clickgestion/cash_desk/views.py:176
 msgid "Cash Desk Closures"
 msgstr "Cierres de Caja"
 
@@ -357,7 +371,7 @@ msgid "Print"
 msgstr "Imprimir"
 
 #: clickgestion/cash_desk/templates/cash_desk/cashclose_document_a4.html:5
-#: clickgestion/cash_desk/views.py:128 clickgestion/transactions/models.py:43
+#: clickgestion/cash_desk/views.py:127 clickgestion/transactions/models.py:43
 msgid "Cash Desk Close"
 msgstr "Cierre de Caja"
 
@@ -400,11 +414,11 @@ msgstr "Fianzas"
 msgid "Search"
 msgstr "Buscar"
 
-#: clickgestion/cash_desk/views.py:24 clickgestion/cash_desk/views.py:67
+#: clickgestion/cash_desk/views.py:23 clickgestion/cash_desk/views.py:66
 msgid "Cash Desk Balance"
 msgstr "Saldo En Caja"
 
-#: clickgestion/cash_desk/views.py:114
+#: clickgestion/cash_desk/views.py:113
 msgid "Cash Desk Closed"
 msgstr "Caja Cerrada"
 
@@ -788,8 +802,8 @@ msgid "Error"
 msgstr "Error"
 
 #: clickgestion/concepts/views.py:39 clickgestion/concepts/views.py:92
-#: clickgestion/transactions/views.py:129
-#: clickgestion/transactions/views.py:200
+#: clickgestion/transactions/views.py:128
+#: clickgestion/transactions/views.py:199
 #: clickgestion/transactions/views.py:323
 msgid "Transaction Closed"
 msgstr "Transacción Cerrada"
@@ -1352,7 +1366,7 @@ msgstr "Ventas De Tickets"
 
 #: clickgestion/transactions/apps.py:7 clickgestion/transactions/models.py:70
 #: clickgestion/transactions/templates/transactions/transaction_list.html:21
-#: clickgestion/transactions/views.py:257
+#: clickgestion/transactions/views.py:256
 msgid "Transactions"
 msgstr "Transacciones"
 
@@ -1536,6 +1550,6 @@ msgstr "Cancelar esta transacción y borrar todo"
 msgid "Opened"
 msgstr "Abierta"
 
-#: clickgestion/transactions/views.py:133
+#: clickgestion/transactions/views.py:132
 msgid "Delete Transaction?"
 msgstr "Borrar la Transacción?"

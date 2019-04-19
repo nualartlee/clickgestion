@@ -1,5 +1,4 @@
 from clickgestion.concepts.models import BaseConcept
-from clickgestion.cash_desk.filters import CashCloseFilter
 from clickgestion.cash_desk.forms import CashCloseForm
 from clickgestion.cash_desk.models import CashClose
 from clickgestion.core.utilities import custom_permission_required
@@ -221,6 +220,7 @@ class CashCloseList(PaginationMixin, ListView):
         # Add filters by permission
 
         # Filter the queryset
+        from clickgestion.cash_desk.filters import CashCloseFilter
         self.filter = CashCloseFilter(data)
         self.queryset = self.filter.qs \
             .prefetch_related('transactions__concepts__value__currency') \

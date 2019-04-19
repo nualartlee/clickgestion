@@ -39,7 +39,7 @@ class DepositReturnForm(ConceptForm):
         )
 
 
-class ParkingRentalDepositForm(AptRentalForm):
+class ParkingRentalDepositForm(AptRentalDepositForm):
 
     class Meta:
         model = ParkingRentalDeposit
