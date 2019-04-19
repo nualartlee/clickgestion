@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.apps import apps
 from django.contrib.postgres.fields import ArrayField
 from clickgestion.concepts.models import BaseConcept, ConceptSettings
-from django.utils.translation import gettext, gettext_lazy
+from django.utils.translation import gettext, gettext_lazy, pgettext_lazy
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -89,8 +89,8 @@ class AptRental(BaseConcept):
     _verbose_name = 'Apartment Rental'
 
     class Meta:
-        verbose_name = gettext_lazy('Apartment Rental')
-        verbose_name_plural = gettext_lazy('Apartment Rentals')
+        verbose_name = pgettext_lazy('Concept name', 'Apartment Rental')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Apartment Rentals')
 
     def __str__(self):
         return self.code

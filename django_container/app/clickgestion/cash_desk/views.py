@@ -45,7 +45,7 @@ def cash_desk_balance(request, *args, **kwargs):
     # Get breakdowns
     breakdowns = [
         totalizers.get_deposits_in_holding_breakdown(),
-        #totalizers.get_breakdown_by_accounting_group(concepts=closed_concepts),
+        #totalizers.get_breakdown_by_department(concepts=closed_concepts),
         #totalizers.get_breakdown_by_concept_type(concepts=closed_concepts),
     ]
 
@@ -87,7 +87,7 @@ def cash_desk_close(request, *args, **kwargs):
     # Get breakdowns
     breakdowns = [
         totalizers.get_deposits_in_holding_breakdown(),
-        #totalizers.get_breakdown_by_accounting_group(concepts=closed_concepts),
+        #totalizers.get_breakdown_by_department(concepts=closed_concepts),
         #totalizers.get_breakdown_by_concept_type(concepts=closed_concepts),
     ]
 

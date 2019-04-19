@@ -1,5 +1,5 @@
 import django_filters
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from clickgestion.transactions.models import Transaction
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
@@ -28,9 +28,16 @@ class TransactionFilter(django_filters.FilterSet):
     closed_date.field.label = ''
     closed_date.field.widget.attrs['type'] = 'date'
     closed_date.field.widget.attrs['class'] = 'dateinput form-control'
-    closed_date.field.widget.attrs['fromlabel'] = 'From'
-    closed_date.field.widget.attrs['tolabel'] = 'To'
+    closed_date.field.widget.attrs['fromlabel'] = pgettext_lazy('Date range from', 'From')
+    closed_date.field.widget.attrs['tolabel'] = pgettext_lazy('Date range to', 'To')
     closed_date.field.widget.template_name = 'core/date-from-to-widget.html'
+
+    employee = django_filters.ChoiceFilter(
+        choices=[
+            (x.employee.id, x.employee.get_full_name()) for x in
+            Transaction.objects.order_by('employee').distinct('employee')
+        ],
+    )
 
     class Meta:
         model = Transaction

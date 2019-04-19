@@ -1,5 +1,5 @@
 import django_filters
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from clickgestion.cash_desk.models import CashClose
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
@@ -16,9 +16,16 @@ class CashCloseFilter(django_filters.FilterSet):
     created.field.label = ''
     created.field.widget.attrs['type'] = 'date'
     created.field.widget.attrs['class'] = 'dateinput form-control'
-    created.field.widget.attrs['fromlabel'] = 'From'
-    created.field.widget.attrs['tolabel'] = 'To'
+    created.field.widget.attrs['fromlabel'] = pgettext_lazy('Date range from', 'From')
+    created.field.widget.attrs['tolabel'] = pgettext_lazy('Date range to', 'To')
     created.field.widget.template_name = 'core/date-from-to-widget.html'
+
+    employee = django_filters.ChoiceFilter(
+        choices=[
+            (x.employee.id, x.employee.get_full_name()) for x in
+            CashClose.objects.order_by('employee').distinct('employee')
+        ],
+    )
 
     notes = django_filters.CharFilter(lookup_expr='icontains')
     notes.field.label = gettext_lazy('Notes')

@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings
-from django.utils.translation import gettext, gettext_lazy
+from django.utils.translation import gettext, gettext_lazy, pgettext_lazy
 from django.db import models
 
 
@@ -32,8 +32,8 @@ class ParkingRental(BaseConcept):
     _verbose_name = 'Parking Rental'
 
     class Meta:
-        verbose_name = gettext_lazy('Parking Rental')
-        verbose_name_plural = gettext_lazy('Parking Rentals')
+        verbose_name = pgettext_lazy('Concept name', 'Parking Rental')
+        verbose_name_plural = pgettext_lazy('Concept name', 'Parking Rentals')
 
     def __str__(self):
         return self.code

@@ -12,17 +12,17 @@ class TestTotalizers(CustomTestCase):
         print('creating test models')
         create_test_models(days=7)
 
-    def test_get_breakdown_by_accounting_group(self):
-        assert totalizers.get_breakdown_by_accounting_group()
-        assert totalizers.get_breakdown_by_accounting_group(BaseConcept.objects.all())
+    def test_get_breakdown_by_department(self):
+        assert totalizers.get_breakdown_by_department()
+        assert totalizers.get_breakdown_by_department(BaseConcept.objects.all())
 
     def test_get_breakdown_by_concept_type(self):
         assert totalizers.get_breakdown_by_concept_type()
         assert totalizers.get_breakdown_by_concept_type(BaseConcept.objects.all())
 
-    def test_get_breakdowns_by_accounting_group_by_employee(self):
-        assert totalizers.get_breakdowns_by_accounting_group_by_employee()
-        assert totalizers.get_breakdowns_by_accounting_group_by_employee(BaseConcept.objects.all())
+    def test_get_breakdowns_by_department_by_employee(self):
+        assert totalizers.get_breakdowns_by_department_by_employee()
+        assert totalizers.get_breakdowns_by_department_by_employee(BaseConcept.objects.all())
 
     def test_get_breakdowns_by_concept_type_by_employee(self):
         assert totalizers.get_breakdowns_by_concept_type_by_employee()

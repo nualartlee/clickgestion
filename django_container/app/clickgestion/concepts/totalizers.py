@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy
+from django.conf import settings
 from django.db.models import Sum
 from django.utils import timezone
 
@@ -26,44 +27,6 @@ class DummyValue:
         self.amount = amount
         self.credit = credit
         self.currency = currency
-
-
-def get_breakdown_by_accounting_group(concepts='__all__'):
-    """
-    Totalize the given concepts according to the accounting group
-
-    :param concepts: The queryset of concepts to totalize
-    :return: a list of ConceptGroupTotals
-    """
-    # Concept models
-    base_concept = apps.get_model('concepts.BaseConcept')
-    concept_value = apps.get_model('concepts.ConceptValue')
-
-    # Get the concepts if not provided
-    if concepts == '__all__':
-       concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
-
-    # Get the distinct accounting groups
-    groups = [item[0] for item in concepts.values_list('accounting_group').order_by('accounting_group').distinct()]
-
-    # Create a list to hold the concept totals
-    breakdown_groups = []
-
-    # Select by group
-    for group in [g for g in groups if g]:
-        group_total = ConceptGroupTotal(
-            name=gettext_lazy(group),
-            concepts=concepts.filter(accounting_group=group).prefetch_related('value__currency'),
-            concept_count=None,
-            totals=None,
-        )
-        group_total.concept_count = group_total.concepts.count()
-        group_total.totals = get_value_totals(group_total.concepts)
-        breakdown_groups.append(group_total)
-
-    # Return the list of totals
-    breakdown = {'name': gettext_lazy('Breakdown By Accounting Group'), 'groups': breakdown_groups}
-    return breakdown
 
 
 def get_breakdown_by_concept_type(concepts='__all__'):
@@ -105,42 +68,6 @@ def get_breakdown_by_concept_type(concepts='__all__'):
     return breakdown
 
 
-def get_breakdowns_by_accounting_group_by_employee(concepts='__all__'):
-    """
-
-    :param concepts: The queryset of concepts to totalize
-    :return: a list of ConceptGroupTotals
-    """
-    # Concept models
-    base_concept = apps.get_model('concepts.BaseConcept')
-    concept_value = apps.get_model('concepts.ConceptValue')
-
-    # Get the concepts if not provided
-    if concepts == '__all__':
-        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
-
-    # Get the distinct employees
-    ids = [
-        item[0] for item in concepts.values_list('transaction__employee').order_by('transaction__employee').distinct()
-    ]
-    employees = User.objects.filter(id__in=ids).order_by('first_name', 'last_name')
-
-    # Create a list to hold the breakdowns
-    breakdowns = []
-
-    # Get breakdowns by employee
-    for employee in employees:
-        employee_concepts = concepts.filter(transaction__employee=employee.id).prefetch_related('value__currency')
-        breakdown = get_breakdown_by_accounting_group(employee_concepts)
-        breakdown['name'] = gettext_lazy(
-            '{employee}: Breakdown By Accounting Group'.format(employee=employee.get_full_name())
-        )
-        breakdowns.append(breakdown.copy())
-
-    # Return the breakdowns
-    return breakdowns
-
-
 def get_breakdowns_by_concept_type_by_employee(concepts='__all__'):
     """
 
@@ -168,9 +95,79 @@ def get_breakdowns_by_concept_type_by_employee(concepts='__all__'):
     for employee in employees:
         employee_concepts = concepts.filter(transaction__employee=employee.id).prefetch_related('value__currency')
         breakdown = get_breakdown_by_concept_type(employee_concepts)
-        breakdown['name'] = gettext_lazy(
-            '{employee}: Breakdown By Concept Type'.format(employee=employee.get_full_name())
+        breakdown['name'] = '{}: {}'.format(employee.get_full_name(), gettext_lazy('Breakdown By Concept Type'))
+        breakdowns.append(breakdown.copy())
+
+    # Return the breakdowns
+    return breakdowns
+
+
+def get_breakdown_by_department(concepts='__all__'):
+    """
+    Totalize the given concepts according to the department
+
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
+    """
+    # Concept models
+    base_concept = apps.get_model('concepts.BaseConcept')
+    concept_value = apps.get_model('concepts.ConceptValue')
+
+    # Get the concepts if not provided
+    if concepts == '__all__':
+        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
+
+    # Get the distinct departments
+    groups = [item[0] for item in concepts.values_list('department').order_by('department').distinct()]
+
+    # Create a list to hold the concept totals
+    breakdown_groups = []
+
+    # Select by group
+    for group in [g for g in groups if g]:
+        group_total = ConceptGroupTotal(
+            name=gettext_lazy(group),
+            concepts=concepts.filter(department=group).prefetch_related('value__currency'),
+            concept_count=None,
+            totals=None,
         )
+        group_total.concept_count = group_total.concepts.count()
+        group_total.totals = get_value_totals(group_total.concepts)
+        breakdown_groups.append(group_total)
+
+    # Return the list of totals
+    breakdown = {'name': gettext_lazy('Breakdown By Department'), 'groups': breakdown_groups}
+    return breakdown
+
+
+def get_breakdowns_by_department_by_employee(concepts='__all__'):
+    """
+
+    :param concepts: The queryset of concepts to totalize
+    :return: a list of ConceptGroupTotals
+    """
+    # Concept models
+    base_concept = apps.get_model('concepts.BaseConcept')
+    concept_value = apps.get_model('concepts.ConceptValue')
+
+    # Get the concepts if not provided
+    if concepts == '__all__':
+        concepts = base_concept.objects.filter(transaction__closed=True).prefetch_related('value__currency')
+
+    # Get the distinct employees
+    ids = [
+        item[0] for item in concepts.values_list('transaction__employee').order_by('transaction__employee').distinct()
+    ]
+    employees = User.objects.filter(id__in=ids).order_by('first_name', 'last_name')
+
+    # Create a list to hold the breakdowns
+    breakdowns = []
+
+    # Get breakdowns by employee
+    for employee in employees:
+        employee_concepts = concepts.filter(transaction__employee=employee.id).prefetch_related('value__currency')
+        breakdown = get_breakdown_by_department(employee_concepts)
+        breakdown['name'] = '{}: {}'.format(employee.get_full_name(), gettext_lazy('Breakdown By Department'))
         breakdowns.append(breakdown.copy())
 
     # Return the breakdowns
@@ -198,30 +195,27 @@ def get_deposits_in_holding_concepts(concepts='__all__', datetime=timezone.now()
     """
     # Concept models
     base_concept = apps.get_model('concepts.BaseConcept')
-    deposit_types = [
-        'Apartment Rental Deposit',
-    ]
 
     # Get the concepts if not provided
     if concepts == '__all__':
 
         # No deposit return concept
         holding1 = base_concept.objects.filter(
-            concept_name__in=deposit_types,
+            concept_class__in=settings.DEPOSIT_CONCEPTS,
             transaction__closed=True,
             depositreturns=None,
         ).prefetch_related('value__currency')
 
         # No deposit return concept closed
         holding2 = base_concept.objects.filter(
-            concept_name__in=deposit_types,
+            concept_class__in=settings.DEPOSIT_CONCEPTS,
             transaction__closed=True,
             depositreturns__transaction__closed=False,
         ).prefetch_related('value__currency')
 
         # No deposit return concept closed after given date
         holding3 = base_concept.objects.filter(
-            concept_name__in=deposit_types,
+            concept_class__in=settings.DEPOSIT_CONCEPTS,
             transaction__closed=True,
             depositreturns__transaction__closed_date__lte=datetime,
         ).prefetch_related('value__currency')

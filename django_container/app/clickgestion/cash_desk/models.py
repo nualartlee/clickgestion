@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.apps import apps
 from clickgestion.concepts.models import BaseConcept, ConceptSettings
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from django.db import models
 from django.utils import timezone
 from clickgestion.concepts import totalizers
@@ -34,8 +34,8 @@ class CashFloatDeposit(BaseConcept):
     _verbose_name = 'Cash Float Deposit'
 
     class Meta:
-        verbose_name = gettext_lazy('Cash Float Deposit')
-        verbose_name_plural = gettext_lazy('Cash Float Deposits')
+        verbose_name = pgettext_lazy('Concept name', 'Cash Float Deposit')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Cash Float Deposits')
 
     def __str__(self):
         return self.code
@@ -77,8 +77,8 @@ class CashFloatWithdrawal(BaseConcept):
     _verbose_name = 'Cash Float Withdrawal'
 
     class Meta:
-        verbose_name = gettext_lazy('Cash Float Withdrawal')
-        verbose_name_plural = gettext_lazy('Cash Float Withdrawals')
+        verbose_name = pgettext_lazy('Concept name', 'Cash Float Withdrawal')
+        verbose_name_plural = pgettext_lazy('Concept name plural', 'Cash Float Withdrawals')
 
     def __str__(self):
         return self.code
@@ -141,16 +141,16 @@ class CashClose(models.Model):
         return totalizers.get_value_totals(self.concepts)
 
     @property
-    def breakdown_by_accounting_group(self):
-        return totalizers.get_breakdown_by_accounting_group(self.concepts)
+    def breakdown_by_department(self):
+        return totalizers.get_breakdown_by_department(self.concepts)
 
     @property
     def breakdown_by_concept_type(self):
         return totalizers.get_breakdown_by_concept_type(self.concepts)
 
     @property
-    def breakdowns_by_accounting_group_by_employee(self):
-        return totalizers.get_breakdowns_by_accounting_group_by_employee(self.concepts)
+    def breakdowns_by_department_by_employee(self):
+        return totalizers.get_breakdowns_by_department_by_employee(self.concepts)
 
     @property
     def breakdowns_by_concept_type_by_employee(self):
@@ -160,10 +160,10 @@ class CashClose(models.Model):
     def breakdowns(self):
         breakdowns = [
             self.deposits_in_holding_breakdown,
-            self.breakdown_by_accounting_group,
+            self.breakdown_by_department,
             self.breakdown_by_concept_type,
         ]
-        breakdowns += self.breakdowns_by_accounting_group_by_employee
+        breakdowns += self.breakdowns_by_department_by_employee
         breakdowns += self.breakdowns_by_concept_type_by_employee
         return breakdowns
 

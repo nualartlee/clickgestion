@@ -19,7 +19,7 @@ class DepositFilter(ConceptFilter):
         choices=[
             (x, x) for x in
             BaseConcept.objects.filter(
-                accounting_group='Deposits').values_list('concept_name', flat=True).order_by('concept_name').distinct()
+                department=settings.DEPARTMENTS['deposits']).values_list('concept_name', flat=True).order_by('concept_name').distinct()
         ],
     )
     concept_name.field.label = gettext_lazy('Type')
@@ -120,7 +120,7 @@ class DepositFilter(ConceptFilter):
     def qs(self):
         concepts = super().qs
         return concepts.filter(
-            accounting_group='Deposits',
+            department=settings.DEPARTMENTS['deposits'],
             transaction__closed=True,
         )
 

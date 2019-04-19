@@ -1,6 +1,6 @@
 from django.apps import apps
 import django_filters
-from django.utils.translation import gettext_lazy
+from django.utils.translation import gettext_lazy, pgettext_lazy
 from crispy_forms.helper import FormHelper, Layout
 from crispy_forms.layout import Column, Field, Row
 from django.db.models import Q
@@ -25,16 +25,16 @@ class ConceptFilter(django_filters.FilterSet):
 
     start_date = django_filters.DateFromToRangeFilter()
     start_date.field.label = ''
-    start_date.field.widget.attrs['fromlabel'] = 'Start Date From'
-    start_date.field.widget.attrs['tolabel'] = 'To'
+    start_date.field.widget.attrs['fromlabel'] = pgettext_lazy('Date range from', 'Start Date From')
+    start_date.field.widget.attrs['tolabel'] = pgettext_lazy('Date range to', 'To')
     start_date.field.widget.attrs['type'] = 'date'
     start_date.field.widget.attrs['class'] = 'dateinput form-control'
     start_date.field.widget.template_name = 'core/date-from-to-widget.html'
 
     end_date = django_filters.DateFromToRangeFilter()
     end_date.field.label = ''
-    end_date.field.widget.attrs['fromlabel'] = 'End Date From'
-    end_date.field.widget.attrs['tolabel'] = 'To'
+    end_date.field.widget.attrs['fromlabel'] = pgettext_lazy('Date range from', 'End Date From')
+    end_date.field.widget.attrs['tolabel'] = pgettext_lazy('Date range to', 'To')
     end_date.field.widget.attrs['type'] = 'date'
     end_date.field.widget.attrs['class'] = 'dateinput form-control'
     end_date.field.widget.template_name = 'core/date-from-to-widget.html'
@@ -46,23 +46,30 @@ class ConceptFilter(django_filters.FilterSet):
 
     transaction__closed_date = django_filters.DateFromToRangeFilter()
     transaction__closed_date.field.label = ''
-    transaction__closed_date.field.widget.attrs['fromlabel'] = 'Transactions From'
-    transaction__closed_date.field.widget.attrs['tolabel'] = 'To'
+    transaction__closed_date.field.widget.attrs['fromlabel'] = pgettext_lazy('Date range from', 'Transactions From')
+    transaction__closed_date.field.widget.attrs['tolabel'] = pgettext_lazy('Date range to', 'To')
     transaction__closed_date.field.widget.attrs['type'] = 'date'
     transaction__closed_date.field.widget.attrs['class'] = 'dateinput form-control'
     transaction__closed_date.field.widget.template_name = 'core/date-from-to-widget.html'
 
-    accounting_group = django_filters.ChoiceFilter(
+    transaction__employee = django_filters.ChoiceFilter(
         choices=[
-            (x, x) for x in BaseConcept.objects.values_list(
-                'accounting_group', flat=True).order_by('accounting_group').distinct()
+            (x.transaction.employee.id, x.transaction.employee.get_full_name())
+            for x in BaseConcept.objects.distinct('transaction__employee').order_by('transaction__employee')
+        ],
+    )
+    transaction__employee.field.label = gettext_lazy('Employee')
+
+    department = django_filters.ChoiceFilter(
+        choices=[
+            (x, gettext_lazy(x)) for x in BaseConcept.objects.values_list(
+                'department', flat=True).order_by('department').distinct()
         ],
     )
 
     concept_name = django_filters.ChoiceFilter(
         choices=[
-            (x, x) for x in BaseConcept.objects.values_list(
-                'concept_name', flat=True).order_by('concept_name').distinct()
+            (x.concept_name, x.name) for x in BaseConcept.objects.order_by('concept_name').distinct('concept_name')
         ],
     )
     concept_name.field.label = gettext_lazy('Type')
@@ -71,24 +78,24 @@ class ConceptFilter(django_filters.FilterSet):
     deposit_status.field.label = gettext_lazy('Deposit Status')
     deposit_status.field.widget.choices = [
         ('1', '---------'),
-        ('2', gettext_lazy('Returned')),
-        ('3', gettext_lazy('Not Returned'))
+        ('2', pgettext_lazy('Deposit has been returned', 'Returned')),
+        ('3', pgettext_lazy('Deposit has not been returned', 'Not Returned'))
     ]
 
     refund_status = django_filters.BooleanFilter(method='refund_status_filter')
     refund_status.field.label = gettext_lazy('Refund Status')
     refund_status.field.widget.choices = [
         ('1', '---------'),
-        ('2', gettext_lazy('Refunded')),
-        ('3', gettext_lazy('Not Refunded'))
+        ('2', pgettext_lazy('Concept has been refunded', 'Refunded')),
+        ('3', pgettext_lazy('Concept has not been refunded', 'Not Refunded'))
     ]
 
     class Meta:
         model = BaseConcept
         fields = [
-            'accounting_group',
             'code',
             'concept_name',
+            'department',
             'end_date',
             'start_date',
             'transaction__apt_number',
@@ -175,7 +182,7 @@ class ConceptFilter(django_filters.FilterSet):
                 ),
                 Column(
                     Field(
-                        'accounting_group',
+                        'department',
                     ),
                     css_class='col-4',
                 ),
@@ -229,6 +236,6 @@ class ConceptFilter(django_filters.FilterSet):
         # Not refunded = 3 = False
         else:
             return queryset \
-                .filter(accounting_group='Production') \
+                .filter(department='Production') \
                 .exclude(concept_name='Refund') \
                 .filter(Q(refunds__transaction__closed=False) | Q(refunds__transaction=None))

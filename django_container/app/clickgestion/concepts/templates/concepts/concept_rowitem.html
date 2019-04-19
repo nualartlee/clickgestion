@@ -35,13 +35,13 @@
 
             {% if concept.can_return_deposit and request.session.depositreturn_transaction_code %}
             <a class="badge badge-warning ml-2" href="{% url 'depositreturn_new' concept_code=concept.code %}">
-                {% trans 'Return' %}
+                {% trans 'Return' context 'Return this deposit' %}
             </a>
             {% endif %}
 
             {% if concept.can_refund and request.session.refund_transaction_code %}
             <a class="badge badge-danger ml-2" href="{% url 'refund_new' concept_code=concept.code %}">
-                {% trans 'Refund' %}
+                {% trans 'Refund' context 'Refund this concept' %}
             </a>
             {% endif %}
 

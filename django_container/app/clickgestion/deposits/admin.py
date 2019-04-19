@@ -8,4 +8,6 @@ admin.site.register(models.DepositReturn)
 admin.site.register(models.DepositReturnSettings)
 admin.site.register(models.ParkingRentalDeposit)
 admin.site.register(models.ParkingRentalDepositSettings)
+admin.site.register(models.SafeRentalDeposit)
+admin.site.register(models.SafeRentalDepositSettings)
 
