@@ -11,7 +11,6 @@ from django.conf import settings
 from django.utils import timezone
 from clickgestion.transactions.models import Transaction
 from clickgestion.transactions.forms import TransactionEditForm, TransactionPayForm
-from clickgestion.transactions.filters import TransactionFilter
 import urllib
 
 
@@ -54,7 +53,8 @@ def get_available_concepts(employee, transaction):
         concept_model = apps.get_model(concept)
 
         # Skip this concept if not permitted by the user
-        if not permission in concepts_permitted_by_employee:
+        #if not permission in concepts_permitted_by_employee:
+        if not employee.has_perm(permission):
             continue
 
         # set default values
@@ -301,6 +301,7 @@ class TransactionList(PaginationMixin, ListView):
         # Add filters by permission
 
         # Filter the queryset
+        from clickgestion.transactions.filters import TransactionFilter
         self.filter = TransactionFilter(data)
         self.queryset = self.filter.qs.select_related('cashclose')\
             .prefetch_related('concepts__value__currency') \

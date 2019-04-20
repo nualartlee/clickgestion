@@ -13,15 +13,24 @@ from django.core.validators import MinValueValidator
 
 
 class TicketSalesForm(forms.Form):
-    adults = forms.IntegerField(validators=[MinValueValidator(0)])
-    children = forms.IntegerField(validators=[MinValueValidator(0)])
+    adults = forms.IntegerField(
+        label=gettext_lazy('Adults'),
+        validators=[MinValueValidator(0)],
+    )
+    children = forms.IntegerField(
+        label=gettext_lazy('Children'),
+        validators=[MinValueValidator(0)],
+    )
     company = forms.ModelChoiceField(
+        label=gettext_lazy('Company'),
         queryset=apps.get_model('ticket_sales.showcompany').objects.none(),
         empty_label=None,
     )
     end_date = forms.DateField(
+        label=gettext_lazy('End Date'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
+            format='%Y-%m-%d',
         ),
     )
     # This flag controls the final submit, set as false to update fields dynamically and reload the form
@@ -30,22 +39,31 @@ class TicketSalesForm(forms.Form):
         required=False,
         widget=forms.HiddenInput()
     )
-    price_per_adult = forms.DecimalField(min_value=0, disabled=True, required=False)
-    price_per_child = forms.DecimalField(min_value=0, disabled=True, required=False)
-    price_per_senior = forms.DecimalField(min_value=0, disabled=True, required=False)
-    price_per_unit = forms.DecimalField(min_value=0, disabled=True, required=False)
-    seniors = forms.IntegerField(validators=[MinValueValidator(0)])
+    price_per_adult = forms.DecimalField(min_value=0, disabled=True, required=False, decimal_places=2, max_digits=12)
+    price_per_child = forms.DecimalField(min_value=0, disabled=True, required=False, decimal_places=2, max_digits=12)
+    price_per_senior = forms.DecimalField(min_value=0, disabled=True, required=False, decimal_places=2, max_digits=12)
+    price_per_unit = forms.DecimalField(min_value=0, disabled=True, required=False, decimal_places=2, max_digits=12)
+    seniors = forms.IntegerField(
+        label=gettext_lazy('Seniors'),
+        validators=[MinValueValidator(0)],
+    )
     show = forms.ModelChoiceField(
+        label=gettext_lazy('Tour/Show'),
         queryset=apps.get_model('ticket_sales.show').objects.none(),
         empty_label=None,
     )
     start_date = forms.DateField(
+        label=gettext_lazy('Start Date'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
+            format='%Y-%m-%d',
         ),
         validators=[MinValueValidator((timezone.now() - timezone.timedelta(days=30)).date())],
     )
-    units = forms.IntegerField(validators=[MinValueValidator(1)])
+    units = forms.IntegerField(
+        label=gettext_lazy('Units'),
+        validators=[MinValueValidator(1)],
+    )
 
     # Passing this form as a ModelForm to make it compatible with default concept views
     class Meta:

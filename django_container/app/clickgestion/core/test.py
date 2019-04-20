@@ -9,6 +9,7 @@ from clickgestion.core import model_creation
 from django.apps import apps
 from clickgestion.parking_rentals.models import ParkingRental
 from clickgestion.safe_rentals.models import SafeRental
+from django.conf import settings
 
 
 def test_database_setup():  # pragma: no cover
@@ -35,12 +36,12 @@ class CustomTestCase(TestCase):  # pragma: no cover
     def setUpTestData(cls):
         model_creation.create_default_models()
 
-        sgroup = model_creation.create_group('Sales Employees', [])
-        cgroup = model_creation.create_group('Cash Employees', [])
+        sgroup = model_creation.create_permission_group(settings.PERMISSION_GROUPS['sales_employee'], [])
+        cgroup = model_creation.create_permission_group(settings.PERMISSION_GROUPS['cash_desk_employee'], [])
         # Create admin user
         cls.admin = model_creation.create_superuser('administrator', 'admin', 'admin', 'admin@admin.com')
         # Create normal user
-        cls.normaluser = model_creation.create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup, cgroup])
+        cls.normaluser = model_creation.create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup])
 
         # Create transaction
         cls.transaction = Transaction.objects.create(

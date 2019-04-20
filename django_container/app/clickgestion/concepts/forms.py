@@ -5,11 +5,25 @@ from django.core.exceptions import ValidationError
 
 
 class ConceptForm(forms.ModelForm):
+    end_date = forms.DateField(
+        label=gettext_lazy('End Date'),
+        widget=forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={'type': 'date'},
+        ),
+    )
     # This flag controls the final submit, set as false to update fields dynamically and reload the form
     final_submit = forms.BooleanField(
         initial=True,
         required=False,
         widget=forms.HiddenInput()
+    )
+    start_date = forms.DateField(
+        label=gettext_lazy('Start Date'),
+        widget=forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={'type': 'date'},
+        ),
     )
 
     def __init__(self, *args, **kwargs):
