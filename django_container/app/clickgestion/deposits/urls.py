@@ -1,4 +1,4 @@
-from clickgestion.deposits.forms import AptRentalDepositForm, DepositReturnForm
+from clickgestion.deposits.forms import AptRentalDepositForm, DepositReturnForm, ParkingRentalDepositForm, SafeRentalDepositForm
 from clickgestion.concepts.views import concept_delete, concept_detail, concept_edit
 from clickgestion.core.utilities import custom_permission_required
 from clickgestion.deposits import views
@@ -44,4 +44,38 @@ urlpatterns = [
     url(r'^returns/today$',
         custom_permission_required('deposits.add_depositreturn')(views.deposits_due_today),
         name='deposits_due_today'),
+
+    url(r'^parkingrental/new/(?P<transaction_code>T[A-F0-9]{10})$',
+        custom_permission_required('deposits.add_parkingrentaldeposit')(concept_edit),
+        {'concept_form': ParkingRentalDepositForm},
+        name='parkingrentaldeposit_new'),
+    url(r'^parkingrental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)$',
+        custom_permission_required('deposits.add_parkingrentaldeposit')(concept_detail),
+        {'concept_form': ParkingRentalDepositForm},
+        name='parkingrentaldeposit_detail'),
+    url(r'^parkingrental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/edit/$',
+        custom_permission_required('deposits.add_parkingrentaldeposit')(concept_edit),
+        {'concept_form': ParkingRentalDepositForm},
+        name='parkingrentaldeposit_edit'),
+    url(r'^parkingrental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$',
+        custom_permission_required('deposits.add_parkingrentaldeposit')(concept_delete),
+        {'concept_form': ParkingRentalDepositForm},
+        name='parkingrentaldeposit_delete'),
+
+    url(r'^saferental/new/(?P<transaction_code>T[A-F0-9]{10})$',
+        custom_permission_required('deposits.add_saferentaldeposit')(concept_edit),
+        {'concept_form': SafeRentalDepositForm},
+        name='saferentaldeposit_new'),
+    url(r'^saferental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)$',
+        custom_permission_required('deposits.add_saferentaldeposit')(concept_detail),
+        {'concept_form': SafeRentalDepositForm},
+        name='saferentaldeposit_detail'),
+    url(r'^saferental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/edit/$',
+        custom_permission_required('deposits.add_saferentaldeposit')(concept_edit),
+        {'concept_form': SafeRentalDepositForm},
+        name='saferentaldeposit_edit'),
+    url(r'^saferental/(?P<concept_code>T[A-F0-9]{10}-[A-Z0-9]+)/delete/$',
+        custom_permission_required('deposits.add_saferentaldeposit')(concept_delete),
+        {'concept_form': SafeRentalDepositForm},
+        name='saferentaldeposit_delete'),
 ]

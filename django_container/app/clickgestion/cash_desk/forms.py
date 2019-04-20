@@ -39,7 +39,6 @@ class CashFloatDepositForm(ConceptForm):
 
     currency = forms.ModelChoiceField(
         queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
-        #initial=apps.get_model('concepts.Currency').objects.filter(default=True).first(),
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -49,6 +48,8 @@ class CashFloatDepositForm(ConceptForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['end_date'].required = False
+        self.fields['start_date'].required = False
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         if self.instance:
             try:
@@ -95,7 +96,6 @@ class CashFloatWithdrawalForm(ConceptForm):
 
     currency = forms.ModelChoiceField(
         queryset=apps.get_model('concepts.Currency').objects.filter(enabled=True),
-        #initial=apps.get_model('concepts.Currency').objects.filter(default=True).first(),
     )
     amount = forms.DecimalField(decimal_places=2)
 
@@ -105,6 +105,8 @@ class CashFloatWithdrawalForm(ConceptForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['end_date'].required = False
+        self.fields['start_date'].required = False
         self.fields['currency'].initial = apps.get_model('concepts.Currency').objects.filter(default=True).first()
         if self.instance:
             try:

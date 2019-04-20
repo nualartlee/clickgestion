@@ -10,17 +10,25 @@ from django.core.exceptions import ValidationError
 
 
 class AptRentalForm(ConceptForm):
-    start_date = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-        ),
+    add_deposit = forms.BooleanField(
+        label=gettext_lazy('Add Deposit'),
+        initial=False,
+        required=False,
     )
-    end_date = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'type': 'date'},
-        ),
-    )
-    add_deposit = forms.BooleanField(initial=False, required=False)
+    #end_date = forms.DateField(
+    #    format='%Y-%m-%d',
+    #    label=gettext_lazy('Departure Date'),
+    #    widget=forms.DateInput(
+    #        attrs={'type': 'date'},
+    #    ),
+    #)
+    #start_date = forms.DateField(
+    #    format='%Y-%m-%d',
+    #    label=gettext_lazy('Arrival Date'),
+    #    widget=forms.DateInput(
+    #        attrs={'type': 'date'},
+    #    ),
+    #)
 
     class Meta:
         model = AptRental
@@ -28,7 +36,11 @@ class AptRentalForm(ConceptForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.set_layout()
 
+    def set_layout(self):
+        self.fields['end_date'].label = gettext_lazy('Departure Date')
+        self.fields['start_date'].label = gettext_lazy('Arrival Date')
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
