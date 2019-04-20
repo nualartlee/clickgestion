@@ -13,15 +13,24 @@ from django.core.validators import MinValueValidator
 
 
 class ServiceSalesForm(forms.Form):
-    adults = forms.IntegerField(validators=[MinValueValidator(0)])
-    children = forms.IntegerField(validators=[MinValueValidator(0)])
+    adults = forms.IntegerField(
+        label=gettext_lazy('Adults'),
+        validators=[MinValueValidator(0)],
+    )
+    children = forms.IntegerField(
+        label=gettext_lazy('Children'),
+        validators=[MinValueValidator(0)],
+    )
     type = forms.ModelChoiceField(
+        label=gettext_lazy('Type'),
         queryset=apps.get_model('service_sales.ServiceType').objects.none(),
         empty_label=None,
     )
     end_date = forms.DateField(
+        label=gettext_lazy('End Date'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
+            format='%Y-%m-%d',
         ),
     )
     # This flag controls the final submit, set as false to update fields dynamically and reload the form
@@ -34,18 +43,27 @@ class ServiceSalesForm(forms.Form):
     price_per_child = forms.DecimalField(min_value=0, disabled=True, required=False)
     price_per_senior = forms.DecimalField(min_value=0, disabled=True, required=False)
     price_per_unit = forms.DecimalField(min_value=0, disabled=True, required=False)
-    seniors = forms.IntegerField(validators=[MinValueValidator(0)])
+    seniors = forms.IntegerField(
+        label=gettext_lazy('Children'),
+        validators=[MinValueValidator(0)],
+    )
     service = forms.ModelChoiceField(
+        label=gettext_lazy('Service'),
         queryset=apps.get_model('service_sales.Service').objects.none(),
         empty_label=None,
     )
     start_date = forms.DateField(
+        label=gettext_lazy('Start Date'),
         widget=forms.DateInput(
             attrs={'type': 'date'},
+            format='%Y-%m-%d',
         ),
         validators=[MinValueValidator((timezone.now() - timezone.timedelta(days=30)).date())],
     )
-    units = forms.IntegerField(validators=[MinValueValidator(1)])
+    units = forms.IntegerField(
+        label=gettext_lazy('Units'),
+        validators=[MinValueValidator(1)],
+    )
 
     # Passing this form as a ModelForm to make it compatible with default concept views
     class Meta:

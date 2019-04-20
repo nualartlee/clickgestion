@@ -53,7 +53,8 @@ def get_available_concepts(employee, transaction):
         concept_model = apps.get_model(concept)
 
         # Skip this concept if not permitted by the user
-        if not permission in concepts_permitted_by_employee:
+        #if not permission in concepts_permitted_by_employee:
+        if not employee.has_perm(permission):
             continue
 
         # set default values

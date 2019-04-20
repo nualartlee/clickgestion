@@ -31,6 +31,7 @@ class TestGetAvailableConcepts(CustomTestCase):
         transaction.save()
         cn = get_available_concepts(self.admin, transaction)
         self.assertGreater(len(cn), 0)
+
         # Cash operations should be disabled
         for c in cn:
             if c['name'] in ['Cash Float Deposit', 'Cash Float Withdrawal']:

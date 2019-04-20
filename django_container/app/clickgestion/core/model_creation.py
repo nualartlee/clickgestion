@@ -260,19 +260,6 @@ def create_depositreturnsettings():
     return model
 
 
-def create_group(name, models):
-    try:
-        group = Group.objects.get(name=name)
-    except Group.DoesNotExist:
-        group = Group.objects.create(name=name)
-        # Add permissions
-        for permission in get_permissions_for_models(models):
-            if not permission in group.permissions.all():
-                group.permissions.add(permission)
-        group.save()
-    return group
-
-
 def create_nightraterange():
     try:
         model = NightRateRange.objects.get()
@@ -353,6 +340,19 @@ def create_parkingrentalsettings():
     return model
 
 
+def create_permission_group(name, models):
+    try:
+        group = Group.objects.get(name=name)
+    except Group.DoesNotExist:
+        group = Group.objects.create(name=name)
+        # Add permissions
+        for permission in get_permissions_for_models(models):
+            if not permission in group.permissions.all():
+                group.permissions.add(permission)
+        group.save()
+    return group
+
+
 def create_permission_groups():
     sales_models = [
         AptRental,
@@ -365,13 +365,13 @@ def create_permission_groups():
         TicketSale,
         ServiceSale,
     ]
-    create_group(settings.PERMISSION_GROUPS['sales_employee'], sales_models)
+    create_permission_group(settings.PERMISSION_GROUPS['sales_employee'], sales_models)
     sales_models.append(Refund)
-    create_group(settings.PERMISSION_GROUPS['sales_transaction'], sales_models)
+    create_permission_group(settings.PERMISSION_GROUPS['sales_transaction'], sales_models)
     cash_models = [CashFloatDeposit, CashFloatWithdrawal]
-    create_group(settings.PERMISSION_GROUPS['cash_desk_transaction'], cash_models)
+    create_permission_group(settings.PERMISSION_GROUPS['cash_desk_transaction'], cash_models)
     cash_models.append(CashClose)
-    create_group(settings.PERMISSION_GROUPS['cash_desk_employee'], cash_models)
+    create_permission_group(settings.PERMISSION_GROUPS['cash_desk_employee'], cash_models)
 
 
 def create_refundsettings():
@@ -1395,8 +1395,8 @@ def create_test_transaction(employee, date):
 
 
 def create_test_users():
-    sgroup = create_group('Sales Employees', [])
-    cgroup = create_group('Cash Employees', [])
+    sgroup = create_permission_group(settings.PERMISSION_GROUPS['sales_employee'], [])
+    cgroup = create_permission_group(settings.PERMISSION_GROUPS['cash_desk_employee'], [])
     create_user('sebas', 'Sebastian', 'Panti', 'sebas@clickgestion.com', [sgroup, cgroup])
     create_user('manu', 'Manuel', 'Borges', 'manu@clickgestion.com', [sgroup, cgroup])
     create_user('vanesa', 'Vanesa', 'Perez Del Mar', 'vanesa@clickgestion.com', [sgroup, cgroup])
@@ -1458,7 +1458,7 @@ def create_user(username, first, last, email, groups):
 
 
 def get_cash_employee():
-    group = create_group('Cash Employees', [])
+    group = create_permission_group(settings.PERMISSION_GROUPS['cash_desk_employee'], [])
     users = group.user_set.all()
     return users[randrange(users.count())]
 
@@ -1500,7 +1500,7 @@ def get_faker():  # pragma: no cover
 
 
 def get_sales_employee():
-    group = create_group('Sales Employees', [])
+    group = create_permission_group(settings.PERMISSION_GROUPS['sales_employee'], [])
     users = group.user_set.all()
     return users[randrange(users.count())]
 

@@ -27,6 +27,8 @@ class DepositReturnForm(ConceptForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['end_date'].required = False
+        self.fields['start_date'].required = False
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
