@@ -36,15 +36,6 @@ services:
         networks:
           default:
 
-    pgadmin4:
-        image: "dpage/pgadmin4"
-        secrets:
-          - postgres_password
-          - certbot_email
-        environment:
-          PGADMIN_DEFAULT_EMAIL: certbot_email
-          PGADMIN_DEFAULT_PASSWORD: postgres_password
-
     django:
         build: ./django_container/
         volumes:
