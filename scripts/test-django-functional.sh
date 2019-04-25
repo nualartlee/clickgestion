@@ -19,18 +19,31 @@ echo
 # Check user is root
 check_errs $EUID "This script must be run as root"
 
-# Stop and remove any old selenium containers
-name=selenium
-running=$(docker ps --format "{{.Names}}" | grep -w "$name")
-if [[ "$running" == "$name" ]];
+# Run selenium in a docker container
+container_name=selenium
+network_name=clickgestion_default
+
+# Check if container already exists
+existing=$(docker ps -a --format "{{.Names}}" | grep -w "$container_name")
+running=$(docker ps --format "{{.Names}}" | grep -w "$container_name")
+if [[ "$existing" == "$container_name" ]];
 then
-    docker stop $name >/dev/null
-    docker rm $name >/dev/null
+    # Run the existing container
+    if [[ "$running" != "$container_name" ]];
+    then
+        echo "Starting existing selenium container"
+        docker container start $container_name
+    else
+        echo "A selenium container is already running"
+    fi
+else
+    # Start a new selenium docker container
+    echo "Building new selenium container"
+    docker run -d --net $network_name --name $container_name -p 5900:5900 -v /dev/shm:/dev/shm selenium/standalone-firefox-debug >/dev/null
 fi
-# Start a new selenium docker container
-docker run -d --net clickgestion_default --name $name -v /dev/shm:/dev/shm selenium/standalone-firefox:3.141.59-mercury >/dev/null
-check_errs $? "Failed deploying selenium container for tests"
-echo "Selenium container built"
+
+# Connect to network
+docker network connect $network_name $container_name >/dev/null 2>&1
 
 # Loop until selenium container is ready
 until docker-compose exec django echo "Selenium container ready"
@@ -42,6 +55,16 @@ done
 # Execute functional tests
 docker-compose exec django python3 clickgestion/core/functional_test.py
 check_errs $? "Django Functional Tests Failed"
+
+# Stop the container if it was not running initially
+if [[ "$running" != "$container_name" ]];
+then
+    echo "Selenium container stopped"
+    docker container stop $container_name
+else
+    echo "Selenium container left running"
+fi
+
 
 # Exit
 echo "Django Functional Tests Passed"
