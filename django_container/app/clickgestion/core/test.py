@@ -28,12 +28,18 @@ def test_database_setup():  # pragma: no cover
 
 class CustomTestCase(TestCase):  # pragma: no cover
 
+    def log_admin_in(self):
+        self.client.force_login(self.admin)
+
+    def log_normaluser_in(self):
+        self.client.force_login(self.normaluser)
+
     def setUp(self):
         test_name = self._testMethodName
         print('\n\n      ---- %s ----\n' % test_name)
 
     @classmethod
-    def setUpTestData(cls):
+    def setUpDatabase(cls):
         model_creation.create_default_models()
 
         sgroup = model_creation.create_permission_group(settings.PERMISSION_GROUPS['sales_employee'], [])
@@ -142,13 +148,10 @@ class CustomTestCase(TestCase):  # pragma: no cover
         transaction = model_creation.create_test_transaction(cls.admin, timezone.now())
         cls.ticketsale = model_creation.create_test_ticketsale(transaction, timezone.now())
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.setUpDatabase()
         print("\n\n============ %s ===============\n\n" % cls.__name__)
-
-    def log_admin_in(self):
-        self.client.force_login(self.admin)
-
-    def log_normaluser_in(self):
-        self.client.force_login(self.normaluser)
 
 
 class CustomModelTestCase:  # pragma: no cover
