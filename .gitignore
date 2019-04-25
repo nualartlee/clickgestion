@@ -1,0 +1,7 @@
+__pycache__/
+.coverage
+.idea/
+**/clickgestion/static/
+htmlcov/
+logs/
+venv/
